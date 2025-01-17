@@ -1,11 +1,11 @@
-title: Hexo
+title: Gerekli Gereksiz Şeyler
 subtitle: ''
 description: ''
 keywords: null
-author: John Doe
-language: en
-timezone: ''
-url: http://example.com
+author: Gerekli Gereksiz Adam
+language: tr
+timezone: 'Europe/Istanbul'
+url: https://gerekligereksiz.github.io
 permalink: ':year/:month/:day/:title/'
 permalink_defaults: null
 pretty_urls:
