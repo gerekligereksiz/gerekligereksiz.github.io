@@ -1,0 +1,32 @@
+{{/* Project override of landing_page.html (partials) */}}
+{{ warnf "Using project override: layouts/partials/landing_page.html" }}
+<div class="container mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 px-4">
+  {{ with .Params.sidebar }}
+    <aside class="md:col-span-3 space-y-4 {{ if .sticky }}sticky top-24{{ end }}">
+      {{ with .title }}<h2 class="text-xl font-semibold">{{ . }}</h2>{{ end }}
+      {{ with .text }}<div class="prose dark:prose-invert">{{ . | markdownify }}</div>{{ end }}
+      {{ with .links }}
+        <nav class="space-y-2">
+          {{ range . }}
+            <a href="{{ .url }}" class="block text-primary-700 hover:underline dark:text-primary-400">{{ .label }}</a>
+          {{ end }}
+        </nav>
+      {{ end }}
+    </aside>
+    <main class="md:col-span-9">
+      {{ range $index, $block := $.Params.sections }}
+        {{ if or (not $block.demo) ($block.demo | and (eq (os.Getenv "HUGO_BLOX_DEMO") "true")) }}
+          {{ partial "functions/parse_block_v2" (dict "page" $ "block" $block) }}
+        {{ end }}
+      {{ end }}
+    </main>
+  {{ else }}
+    <main class="md:col-span-12">
+      {{ range $index, $block := .Params.sections }}
+        {{ if or (not $block.demo) ($block.demo | and (eq (os.Getenv "HUGO_BLOX_DEMO") "true")) }}
+          {{ partial "functions/parse_block_v2" (dict "page" $ "block" $block) }}
+        {{ end }}
+      {{ end }}
+    </main>
+  {{ end }}
+</div>

@@ -2,6 +2,15 @@
 title: 'Anasayfa'
 date: 2025-08-26
 type: landing
+sidebar:
+  title: Hızlı Menü
+  text: "Kısa açıklama."
+  sticky: false
+  links:
+    - label: Blog
+      url: /blog/
+    - label: Hakkımda
+      url: /authors/admin/
 sections:
   - block: collection
     id: posts
