@@ -1,7 +1,16 @@
 {{/* Project override of landing_page.html (partials) */}}
 <div class="container mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 px-4">
   {{ with .Params.sidebar }}
-    <aside class="md:col-span-3 space-y-4 {{ if .sticky }}sticky top-24{{ end }}">
+    {{/* Determine sidebar/main column spans with safe, static Tailwind classes */}}
+    {{ $span := .span | default 3 }}
+    {{ $asideClass := "md:col-span-3" }}
+    {{ $mainClass := "md:col-span-9" }}
+    {{ if eq $span 4 }}
+      {{ $asideClass = "md:col-span-4" }}
+      {{ $mainClass = "md:col-span-8" }}
+    {{ end }}
+
+    <aside class="{{ $asideClass }} space-y-4 {{ if .sticky }}sticky{{ end }}" {{ if .sticky }}style="top: {{ .sticky_offset | default 96 }}px"{{ end }}>
       {{ with .title }}<h2 class="text-xl font-semibold">{{ . }}</h2>{{ end }}
       {{ with .text }}<div class="prose dark:prose-invert">{{ . | markdownify }}</div>{{ end }}
       {{ with .links }}
@@ -12,7 +21,7 @@
         </nav>
       {{ end }}
     </aside>
-    <main class="md:col-span-9">
+    <main class="{{ $mainClass }}">
       {{ range $index, $block := $.Params.sections }}
         {{ if or (not $block.demo) ($block.demo | and (eq (os.Getenv "HUGO_BLOX_DEMO") "true")) }}
           {{ partial "functions/parse_block_v2" (dict "page" $ "block" $block) }}

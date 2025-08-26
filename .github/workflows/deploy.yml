@@ -63,38 +63,42 @@ jobs:
           go-version: '1.21.x'
           cache: true
 
+      - name: Set Hugo cache dir to runner temp
+        run: echo "HUGO_CACHEDIR=$RUNNER_TEMP/hugo_cache_runner/" >> $GITHUB_ENV
+
       # Ensure cache directory exists and is writable
       - name: Prepare Hugo cache
         run: |
           mkdir -p "$HUGO_CACHEDIR"
           chmod -R u+rwX "$HUGO_CACHEDIR" || true
 
-      # Cache Go & Hugo module data to speed up `hugo mod` and asset pipeline
+      # Cache Go module data only (avoid caching Hugo's module cache to prevent stale permissions)
       - uses: actions/cache@v4
         with:
           path: |
-            ~/.cache/hugo_mod
             ~/go/pkg/mod
-            ${{ env.HUGO_CACHEDIR }}
           key: ${{ runner.os }}-go-mod-${{ hashFiles('go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-mod-
 
       - name: Clean Hugo Module Cache
         run: |
+          # Ensure fresh Hugo module cache each run to avoid permission issues
+          rm -rf "$HUGO_CACHEDIR" ~/.cache/hugo_mod || true
+          mkdir -p "$HUGO_CACHEDIR"
+          chmod -R u+rwX "$HUGO_CACHEDIR" || true
+          umask 022
           hugo mod clean
-          rm -rf "$HUGO_CACHEDIR/modules" || true
 
       - name: Fetch Hugo Modules
         run: |
           hugo mod get -u
           hugo mod vendor
 
-      # Cache dependencies (Go modules, node_modules) - stable, rarely changes
+      # Cache dependencies (node_modules) - stable, rarely changes
       - uses: actions/cache@v4
         with:
           path: |
-            /tmp/hugo_cache_runner/
             node_modules/
             modules/*/node_modules/
           key: ${{ runner.os }}-hugo-deps-${{ hashFiles('**/go.mod', '**/package-lock.json', '**/pnpm-lock.yaml') }}

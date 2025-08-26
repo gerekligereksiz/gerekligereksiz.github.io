@@ -5,7 +5,9 @@ type: landing
 sidebar:
   title: Hızlı Menü
   text: "Kısa açıklama."
-  sticky: false
+  sticky: true
+  sticky_offset: 96
+  span: 4
   links:
     - label: Blog
       url: /blog/
@@ -43,12 +45,12 @@ sections:
       # Choose a listing view
       view: card
       spacing:
-        padding: ['1rem', 0, 0, 0]
+        padding: ['0.5rem', 0, 0, 0]
   - block: markdown
     content:
       text: |
         <div class="text-center">
-          <a href="/blog/" style="text-decoration: none;" class="inline-block px-4 py-2 rounded-md bg-primary-700 text-white hover:bg-primary-800 dark:bg-primary-500 dark:hover:bg-primary-400">Tümünü gör</a>
+          <a href="/blog/" class="inline-block px-4 py-2 rounded-md bg-primary-700 text-white hover:bg-primary-800 no-underline dark:bg-primary-500 dark:hover:bg-primary-400">Tümünü gör</a>
         </div>
     design:
       spacing:
