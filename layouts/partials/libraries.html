@@ -1,0 +1,192 @@
+{{/* Project override of libraries.html with safe asset loading */}}
+
+{{/* Load Alpine JS extension? */}}
+{{ if (.Page.Store.Get "has_alpine") }}
+  <script>console.log('✓ Alpine.js loading on demand');</script>
+  {{ $alpine_js := resources.Get "dist/lib/alpinejs/cdn.min.js" }}
+  {{ if $alpine_js }}
+    {{ $alpine_js = $alpine_js | resources.Fingerprint "sha256" }}
+    <script src="{{ $alpine_js.RelPermalink }}" integrity="{{ $alpine_js.Data.Integrity }}" defer></script>
+  {{ else }}
+    {{ warnf "Alpine.js not found at assets/dist/lib/alpinejs/cdn.min.js" }}
+  {{ end }}
+{{ end }}
+
+{{/* Show site search? */}}
+{{ $show_search := site.Params.header.navbar.show_search | default false }}
+{{ if $show_search }}
+  {{ with (resources.Get "dist/pagefind/pagefind-ui.css") }}
+    {{ $pf_css := . | resources.Fingerprint "sha256" }}
+    <link type="text/css" rel="stylesheet" href="{{ $pf_css.RelPermalink }}" integrity="{{ $pf_css.Data.Integrity }}" />
+  {{ else }}
+    {{ warnf "Pagefind CSS not found at assets/dist/pagefind/pagefind-ui.css" }}
+  {{ end }}
+  {{ with (resources.Get "dist/pagefind/pagefind-ui.js") }}
+    {{ $pf_js := . | resources.Fingerprint "sha256" }}
+    <script src="{{ $pf_js.RelPermalink }}" integrity="{{ $pf_js.Data.Integrity }}"></script>
+  {{ else }}
+    {{ warnf "Pagefind JS not found at assets/dist/pagefind/pagefind-ui.js" }}
+  {{ end }}
+
+  {{ $search_config := dict "baseUrl" (relURL "") }}
+  {{ printf "<script>window.hbb.pagefind = %s;</script>" ($search_config | jsonify) | safeHTML }}
+
+  <style>
+    html.dark {
+      --pagefind-ui-primary: #eeeeee;
+      --pagefind-ui-text: #eeeeee;
+      --pagefind-ui-background: #152028;
+      --pagefind-ui-border: #152028;
+      --pagefind-ui-tag: #152028;
+    }
+
+    /* Make search modal close button match size of search input */
+    .search-close > svg {
+      height: calc(64px * var(--pagefind-ui-scale));
+      width: calc(64px * var(--pagefind-ui-scale));
+    }
+  </style>
+
+  <script>
+    // Initialize search wrapper element globally
+    let searchWrapper = null;
+
+    window.addEventListener('DOMContentLoaded', (event) => {
+      // Initialize PagefindUI
+      if (window.PagefindUI) {
+        new PagefindUI({
+          element: "#search",
+          showSubResults: true,
+          baseUrl: window.hbb?.pagefind?.baseUrl || '',
+          bundlePath: (window.hbb?.pagefind?.baseUrl || '') + "pagefind/",
+        });
+      }
+
+      // Get search wrapper element
+      searchWrapper = document.getElementById('search-wrapper');
+
+      // Add click handlers to triggers
+      let triggers = document.querySelectorAll('[data-search-toggle]');
+      triggers.forEach(trigger =>
+        trigger.addEventListener('click', handleSearchToggle)
+      );
+    });
+
+    function handleSearchToggle(event) {
+      if (!searchWrapper) return;
+
+      const isHidden = searchWrapper.classList.contains('hidden');
+      searchWrapper.classList.toggle('hidden');
+      document.body.style.overflow = isHidden ? 'hidden' : '';
+
+      const searchInput = searchWrapper.querySelector("input");
+      if (searchInput) {
+        searchInput.value = "";
+        searchInput.focus();
+      }
+
+      if (!searchWrapper.classList.contains('hidden')) {
+        let clearTrigger = document.querySelector('.pagefind-ui__search-clear');
+
+        if (clearTrigger && !clearTrigger.hasAttribute('listenerOnClick')) {
+          clearTrigger.setAttribute('listenerOnClick', 'true');
+
+          clearTrigger.addEventListener('click', () => {
+            searchInput && searchInput.focus();
+          });
+        }
+      }
+    }
+
+    // Add keyboard shortcut to close search modal with Escape key
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && searchWrapper && !searchWrapper.classList.contains('hidden')) {
+        searchWrapper.classList.add('hidden');
+      }
+    });
+  </script>
+{{ end }}
+
+{{/* Mermaid */}}
+{{ if (.Page.Store.Get "has_mermaid") }}
+  {{ $mermaid_js := resources.Get "dist/lib/mermaid/mermaid.min.js" }}
+  {{ $mermaid_config_js := resources.Get "js/hb-mermaid-config.js" }}
+  {{ if and $mermaid_js $mermaid_config_js }}
+    {{ $mermaid_config_js = $mermaid_config_js | resources.Minify }}
+    {{ $mermaid_bundle := slice $mermaid_js $mermaid_config_js | resources.Concat "js/mermaid.bundle.js" | resources.Fingerprint "sha256" }}
+    <script defer src="{{ $mermaid_bundle.RelPermalink }}" integrity="{{ $mermaid_bundle.Data.Integrity }}"></script>
+  {{ else }}
+    {{ warnf "Mermaid assets missing (dist/lib/mermaid/mermaid.min.js or js/hb-mermaid-config.js)" }}
+  {{ end }}
+{{ end }}
+
+{{/* Markmap */}}
+{{ if (.Page.Store.Get "has_markmap") }}
+<style>
+  .markmap > svg {
+    width: 100%;
+    height: 100%;
+  }
+</style>
+<script>
+  window.markmap = {
+    autoLoader: {
+      manual: false,
+      onReady() {
+        const { autoLoader, builtInPlugins } = window.markmap;
+        // Disable Prism highlighting plugin as it conflicts and attempts to re-render code blocks outside of Markmap.
+        autoLoader.transformPlugins = builtInPlugins.filter(plugin => plugin.name !== 'prism');
+      },
+    },
+  };
+</script>
+{{ $markmap_js := resources.Get "dist/lib/markmap/index.js" }}
+{{ if $markmap_js }}
+  {{ $markmap_js = $markmap_js | resources.Minify | resources.Fingerprint "sha256" }}
+  <script defer src="{{ $markmap_js.RelPermalink }}" integrity="{{ $markmap_js.Data.Integrity }}"></script>
+{{ else }}
+  {{ warnf "Markmap JS not found at assets/dist/lib/markmap/index.js" }}
+{{ end }}
+{{ end }}
+
+{{/* Katex */}}
+{{ if (.Page.HasShortcode "math") | or .Params.math | or site.Params.features.math.enable }}
+  {{ $katex_css := resources.Get "dist/lib/katex/katex.min.css" }}
+  {{ if $katex_css }}
+    {{ $katex_css = $katex_css | resources.Fingerprint "sha256" }}
+    <link type="text/css" rel="stylesheet" href="{{ $katex_css.RelPermalink }}" integrity="{{ $katex_css.Data.Integrity }}" />
+  {{ else }}
+    {{ warnf "KaTeX CSS not found at assets/dist/lib/katex/katex.min.css" }}
+  {{ end }}
+  {{ $katex_js := resources.Get "dist/lib/katex/katex.min.js" }}
+  {{ if $katex_js }}
+    {{ $katex_js = $katex_js | resources.Fingerprint "sha256" }}
+    <script defer src="{{ $katex_js.RelPermalink }}" integrity="{{ $katex_js.Data.Integrity }}"></script>
+  {{ else }}
+    {{ warnf "KaTeX JS not found at assets/dist/lib/katex/katex.min.js" }}
+  {{ end }}
+  {{ $katex_render_js := resources.Get "dist/lib/katex/auto-render.min.js" }}
+  {{ $katex_config_js := resources.Get "js/katex-config.js" }}
+  {{ if and $katex_render_js $katex_config_js }}
+    {{ $katex_config_js = $katex_config_js | resources.Minify }}
+    {{ $katex_bundle := slice $katex_render_js $katex_config_js | resources.Concat "js/katex-renderer.js" | resources.Fingerprint "sha256" }}
+    <script defer src="{{ $katex_bundle.RelPermalink }}" integrity="{{ $katex_bundle.Data.Integrity }}"></script>
+  {{ else }}
+    {{ warnf "KaTeX render assets missing (dist/lib/katex/auto-render.min.js or js/katex-config.js)" }}
+  {{ end }}
+  {{ $katex_fonts := resources.Match "dist/lib/katex/fonts/*" }}
+  {{ range $katex_fonts }}
+    {{ .Publish }}
+  {{ end }}
+{{ end }}
+
+{{/* Plotly */}}
+{{ if .Page.HasShortcode "chart" }}
+  {{ $plotly_js := resources.Get "dist/lib/plotly/plotly.min.js" }}
+  {{ if $plotly_js }}
+    {{ $plotly_js = $plotly_js | resources.Fingerprint "sha256" }}
+    <script defer src="{{ $plotly_js.RelPermalink }}" integrity="{{ $plotly_js.Data.Integrity }}"></script>
+  {{ else }}
+    {{ warnf "Plotly JS not found at assets/dist/lib/plotly/plotly.min.js" }}
+  {{ end }}
+{{ end }}
