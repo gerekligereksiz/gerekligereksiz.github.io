@@ -3,7 +3,6 @@ name: Deploy website to GitHub Pages
 env:
   WC_HUGO_VERSION: '0.148.2'
   NODE_VERSION: '20'
-  HUGO_CACHEDIR: '/tmp/hugo_cache_runner/'
 
 on:
   # Trigger the workflow every time you push to the `main` branch
@@ -57,54 +56,11 @@ jobs:
           hugo-version: ${{ env.WC_HUGO_VERSION }}
           extended: true
 
-      - name: Setup Go (for Hugo Modules)
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.21.x'
-          cache: true
-
-      - name: Set Hugo cache dir to runner temp
-        run: echo "HUGO_CACHEDIR=$RUNNER_TEMP/hugo_cache_runner/" >> $GITHUB_ENV
-
-      # Ensure cache directory exists and is writable
-      - name: Prepare Hugo cache
-        run: |
-          mkdir -p "$HUGO_CACHEDIR"
-          chmod -R u+rwX "$HUGO_CACHEDIR" || true
-
-      # Cache Go module data only (avoid caching Hugo's module cache to prevent stale permissions)
+      # Cache dependencies (Go modules, node_modules) - stable, rarely changes
       - uses: actions/cache@v4
         with:
           path: |
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-mod-${{ hashFiles('go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-mod-
-
-      - name: Clean Hugo Module Cache
-        run: |
-          # Ensure fresh Hugo module cache each run to avoid permission issues
-          rm -rf "$HUGO_CACHEDIR" ~/.cache/hugo_mod || true
-          mkdir -p "$HUGO_CACHEDIR"
-          chmod -R u+rwX "$HUGO_CACHEDIR" || true
-          umask 022
-          hugo mod clean
-
-      - name: Fetch Hugo Modules
-        if: ${{ false }}
-        run: |
-          hugo mod get -u
-          hugo mod vendor
-
-      - name: Use vendored Hugo Modules
-        run: |
-          # Use vendored modules; skip network fetch to avoid cache permission issues
-          hugo --printI18nWarnings --panicOnWarning --gc --minify --renderToMemory --configDir config -e production --printPathWarnings | head -n 1 || true
-
-      # Cache dependencies (node_modules) - stable, rarely changes
-      - uses: actions/cache@v4
-        with:
-          path: |
+            /tmp/hugo_cache_runner/
             node_modules/
             modules/*/node_modules/
           key: ${{ runner.os }}-hugo-deps-${{ hashFiles('**/go.mod', '**/package-lock.json', '**/pnpm-lock.yaml') }}
