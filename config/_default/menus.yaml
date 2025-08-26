@@ -2,10 +2,10 @@
 #   The weight parameter defines the order that the links will appear in.
 
 main:
-  - name: Home
+  - name: Anasayfa
     url: /
     weight: 10
-  - name: Topics
+  - name: Tag
     url: tags/
     weight: 20
   - name: Uses

@@ -3,8 +3,8 @@
 # Hugo Documentation: https://gohugo.io/getting-started/configuration/#all-configuration-settings
 # This file is formatted using YAML syntax - learn more at https://learnxinyminutes.com/docs/yaml/
 
-title: "Creator's Blog (Hugo Theme)" # Website name
-baseURL: 'https://example.com/' # Website URL
+title: "Gerekli Gereksiz" # Website name
+baseURL: 'https://gerekligereksiz.github.io/' # Website URL
 
 ############################
 ## PAGE OPTIONS
@@ -16,7 +16,7 @@ cascade:
       path: /blog/**
       kind: page
     pager: true
-    editable: true
+    editable: false
     hide_date: false
     show_date_updated: true
     reading_time: true
@@ -24,7 +24,7 @@ cascade:
     show_related: true
     share: true
     # Just use Breadcrumb for navigation on blog post pages?
-    show_breadcrumb: false
+    show_breadcrumb: true
     header:
       navbar:
         enable: true
@@ -33,7 +33,7 @@ cascade:
 ## LANGUAGE
 ############################
 
-defaultContentLanguage: en
+defaultContentLanguage: tr
 hasCJKLanguage: false
 defaultContentLanguageInSubdir: false
 removePathAccents: true

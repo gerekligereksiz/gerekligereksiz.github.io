@@ -14,8 +14,8 @@ marketing:
     site_type: Person
     local_business_type: ''
     org_name: ''
-    description: 'A highly-customizable Hugo blog theme powered by Hugo Blox Builder.'
-    twitter: 'GetResearchDev'
+    description: 'Gerekli Gereksiz şeyler sitesi.'
+    twitter: 'gerekligereksiz77'
   analytics:
     google_analytics: ''
     baidu_tongji: ''
@@ -32,11 +32,12 @@ header:
     enable: true
     show_search: true
     show_theme_chooser: true
+    highlight_active_link: true
 
 # Site footer
 footer:
   copyright:
-    notice: '© {year} Me. This work is licensed under {license}'
+    notice: '© {year} Gerekli Gereksiz. Bu site içeriği {license} kapsamında lisanslanmıştır.'
     license:
       enable: true
       allow_derivatives: false
@@ -51,10 +52,8 @@ locale:
 # Site features
 features:
   math:
-    enable: false
+    enable: true
   privacy_pack:
-    enable: false
+    enable: true
   repository:
-    url: 'https://github.com/HugoBlox/hugo-blox-builder/'
-    content_dir: starters/blog/content
-    branch: main
+    enable: false
