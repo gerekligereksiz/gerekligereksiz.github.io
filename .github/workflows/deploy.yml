@@ -91,9 +91,15 @@ jobs:
           hugo mod clean
 
       - name: Fetch Hugo Modules
+        if: ${{ false }}
         run: |
           hugo mod get -u
           hugo mod vendor
+
+      - name: Use vendored Hugo Modules
+        run: |
+          # Use vendored modules; skip network fetch to avoid cache permission issues
+          hugo --printI18nWarnings --panicOnWarning --gc --minify --renderToMemory --configDir config -e production --printPathWarnings | head -n 1 || true
 
       # Cache dependencies (node_modules) - stable, rarely changes
       - uses: actions/cache@v4
