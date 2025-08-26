@@ -5,7 +5,7 @@ type: landing
 sidebar:
   title: Hızlı Menü
   text: "Kısa açıklama."
-  sticky: true
+  sticky: false
   sticky_offset: 96
   span: 4
   links:
