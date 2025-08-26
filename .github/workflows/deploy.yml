@@ -79,6 +79,19 @@ jobs:
         id: pages
         uses: actions/configure-pages@v5
 
+      - name: Show Hugo cache (before build)
+        run: |
+          echo "Hugo config cachedir:"
+          hugo config | grep -i cachedir || true
+          CACHEDIR="${HUGO_CACHEDIR:-$(hugo config 2>/dev/null | sed -n "s/.*cachedir = '\\(.*\\)'.*/\\1/p")}"
+          echo "Resolved cache dir: $CACHEDIR"
+          if [ -d "$CACHEDIR" ]; then
+            du -sh "$CACHEDIR" || true
+            ls -al "$CACHEDIR" || true
+          else
+            echo "Cache dir does not exist yet."
+          fi
+
       - name: Build with Hugo
         env:
           HUGO_ENVIRONMENT: production
