@@ -1,0 +1,48 @@
+{{- /*
+  Bülten spor sayfasında bir varlığın (sporcu/takım) bu sayıya ait
+  günlük maç haberlerini bağlar.
+
+  Kullanım:
+    {{< bulten-varlik-haberleri "/sporcular/ferdi-kadioglu" >}}
+    {{< bulten-varlik-haberleri "/sporcular/kenan-yildiz" "/sporcular/zeki-celik" >}}
+    {{< bulten-varlik-haberleri "/takimlar/galatasaray-futbol" >}}
+
+  Girişler varlığın alt sayfalarından gelir; filtre tarih aralığı değil,
+  sayının issue_number değeridir. Başlık ve sonuç rozeti günlük sayfadan
+  okunur; burada metin üretilmez. Varlık bulunamazsa build hata verir.
+*/ -}}
+{{- $issue := .Page.Params.issue_number -}}
+{{- if not $issue -}}
+  {{- errorf "bulten-varlik-haberleri: %s sayfasında issue_number yok" .Page.RelPermalink -}}
+{{- end -}}
+{{- $girisler := slice -}}
+{{- range .Params -}}
+  {{- $ref := printf "%v" . -}}
+  {{- $varlik := site.GetPage $ref -}}
+  {{- if not $varlik -}}
+    {{- errorf "bulten-varlik-haberleri: sayfa bulunamadı: %q (%s)" $ref $.Page.RelPermalink -}}
+  {{- end -}}
+  {{- range where $varlik.RegularPages "Params.issue_number" $issue -}}
+    {{- $girisler = $girisler | append . -}}
+  {{- end -}}
+{{- end -}}
+{{- with sort $girisler "Date" }}
+<p class="not-prose mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1.5 text-sm">
+  <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Haberler</span>
+  {{- range . }}
+  {{- $d := partial "gun/mac-verisi.html" . -}}
+  {{- $kod := $d.resultCode -}}
+  {{- $ad := $d.result -}}
+  {{- $sinif := cond (eq $kod "G") "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300" (cond (eq $kod "M") "bg-rose-100 text-rose-700 dark:bg-rose-900/50 dark:text-rose-300" "bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300") -}}
+  {{- with $d.outcome -}}
+    {{- $kod = cond (eq . "Şampiyon") "Ş" "★" -}}
+    {{- $ad = . -}}
+    {{- $sinif = "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200" -}}
+  {{- end -}}
+  <a href="{{ .RelPermalink }}" class="inline-flex items-baseline gap-1.5 font-medium text-accent-700 underline decoration-accent-200 underline-offset-4 hover:decoration-accent-500 dark:text-accent-300 dark:decoration-accent-900 dark:hover:decoration-accent-500">
+    {{- with $kod }}<span class="rounded px-1 text-[10px] font-bold {{ $sinif }}" aria-label="{{ $ad }}">{{ . }}</span>{{ end -}}
+    <span>{{ .Title }}</span>
+  </a>
+  {{- end }}
+</p>
+{{- end }}

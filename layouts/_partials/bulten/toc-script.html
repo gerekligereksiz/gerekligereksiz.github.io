@@ -1,0 +1,86 @@
+{{- /* İçindekiler: aktif bölüm vurgusu + kutunun kendi içinde kayması.
+       IntersectionObserver yerine hafif scroll ölçümü kullanılır. */ -}}
+<script>
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll("[data-toc-link]"));
+    if (!links.length) return;
+
+    var byId = {};
+    links.forEach(function (link) {
+      var id = decodeURIComponent(link.hash.slice(1));
+      if (!id) return;
+      (byId[id] = byId[id] || []).push(link);
+    });
+
+    var headings = Array.prototype.slice
+      .call(document.querySelectorAll(".prose h2[id], .prose h3[id], .prose h4[id]"))
+      .filter(function (heading) { return byId[heading.id]; });
+    if (!headings.length) return;
+
+    /* İçindekiler kutusu: linkin, kendi içinde kaydırılabilen ve taşan en yakın
+       atasözü. Masaüstünde sticky <aside> (max-h + overflow-y-auto); mobil
+       <details> kapalıyken taşmadığı için null döner. */
+    function scrollerFor(el) {
+      for (var p = el.parentElement; p; p = p.parentElement) {
+        var overflowY = window.getComputedStyle(p).overflowY;
+        if ((overflowY === "auto" || overflowY === "scroll") && p.scrollHeight > p.clientHeight + 1) return p;
+      }
+      return null;
+    }
+
+    /* Aktif madde kutunun dışına çıktıysa kutuyu ona doğru kaydır.
+       Madde zaten görünüyorsa hiç dokunulmaz. Yalnızca kutunun scrollTop'u
+       değişir; sayfanın kendi kaydırması etkilenmez. Hedef her zaman aynı
+       mutlak konum olduğu için art arda çağrılar animasyonu bozmaz. */
+    function reveal(link) {
+      if (!link.getClientRects().length) return; /* gizli kopya (kapalı <details>) */
+      var box = scrollerFor(link);
+      if (!box || !box.clientHeight) return;
+      var edge = box.getBoundingClientRect();
+      var rect = link.getBoundingClientRect();
+      var pad = 8;
+      var delta = 0;
+      if (rect.top < edge.top + pad) delta = rect.top - (edge.top + pad);
+      else if (rect.bottom > edge.bottom - pad) delta = rect.bottom - (edge.bottom - pad);
+      if (Math.abs(delta) < 2) return; /* zaten görünür */
+      var top = box.scrollTop + delta;
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (typeof box.scrollTo === "function") box.scrollTo({ top: top, behavior: reduce ? "auto" : "smooth" });
+      else box.scrollTop = top;
+    }
+
+    function setActive(id) {
+      links.forEach(function (link) { link.removeAttribute("aria-current"); });
+      (byId[id] || []).forEach(function (link) {
+        link.setAttribute("aria-current", "true");
+        reveal(link);
+      });
+    }
+
+    var ticking = false;
+    function update() {
+      ticking = false;
+      var threshold = Math.min(window.innerHeight * 0.3, 240);
+      var current = headings[0];
+      for (var i = 0; i < headings.length; i++) {
+        if (headings[i].getBoundingClientRect().top <= threshold) current = headings[i];
+      }
+      setActive(current.id);
+    }
+    function requestUpdate() {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(update);
+    }
+
+    update();
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+    window.addEventListener("hashchange", requestUpdate);
+
+    /* Mobil içindekiler açılıp kapandıkça görünürlük değişir; yeniden ölç. */
+    Array.prototype.forEach.call(document.querySelectorAll("details"), function (details) {
+      details.addEventListener("toggle", requestUpdate);
+    });
+  })();
+</script>

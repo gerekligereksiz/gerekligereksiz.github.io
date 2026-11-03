@@ -1,0 +1,142 @@
+{{- /*
+  Sayı geneli okuma ilerlemesi.
+
+  Her bölümün en derin scroll oranı localStorage'da saklanır:
+    localStorage["bulten:42:2026-10-18"] = {"spor":1,"teknoloji":0.62,"oyun":0,"kultur":0}
+  Anahtarın son parçası sayının lastmod tarihidir (ray: data-tarih). İçerik
+  güncellenip tarih değişince yeni anahtar açılır, eski oran taşınmaz; geride
+  kalan eski anahtarlar açılışta silinir.
+
+  Yüzde, bölüm oranlarının ortalamasıdır. Oran yalnızca artar (geri saymaz),
+  %90 ve üzeri "okundu" sayılır.
+
+  localStorage erişimi try/catch içinde: gizli sekme veya kapalı çerezde
+  gösterge %0'da kalır, sayfa çalışmaya devam eder.
+*/ -}}
+<script>
+  (function () {
+    var rail = document.querySelector("[data-bulten-ray]");
+    if (!rail) return;
+
+    /* Ray mobilde alt satira kayabiliyor; capa kaydirmasinin (scroll-padding)
+       dogru calismasi icin gercek yuksekligi CSS'e yaz. */
+    function syncRayHeight() {
+      var h = Math.round(rail.getBoundingClientRect().height);
+      if (h > 0) document.documentElement.style.setProperty("--ray-h", h + "px");
+    }
+    syncRayHeight();
+    if (window.ResizeObserver) {
+      new ResizeObserver(syncRayHeight).observe(rail);
+    } else {
+      window.addEventListener("resize", syncRayHeight);
+    }
+
+    var sections = [];
+    try { sections = JSON.parse(rail.dataset.sections || "[]"); } catch (e) { sections = []; }
+    if (!sections.length) return;
+
+    var key = "bulten:" + rail.dataset.issue + ":" + (rail.dataset.tarih || "0");
+    var current = rail.dataset.current || "";
+
+    /* Eski sürümlerin kayıtlarını temizle: içerik güncellenince anahtar
+       değişir, geride kalan oranlar birikmesin. Erişim kapalıysa sessizce geç. */
+    try {
+      var prefix = "bulten:" + rail.dataset.issue;
+      for (var i = localStorage.length - 1; i >= 0; i--) {
+        var k = localStorage.key(i);
+        if (k && (k === prefix || k.indexOf(prefix + ":") === 0) && k !== key) {
+          localStorage.removeItem(k);
+        }
+      }
+    } catch (e) {}
+
+    var state = {};
+    try { state = JSON.parse(localStorage.getItem(key)) || {}; } catch (e) { state = {}; }
+
+    var yuzdeEl = rail.querySelector("[data-bulten-yuzde]");
+    var barEl = rail.querySelector("[data-bulten-bar]");
+    var progress = rail.querySelector("[data-bulten-ilerleme]");
+
+    function save() {
+      try { localStorage.setItem(key, JSON.stringify(state)); } catch (e) {}
+    }
+
+    function render() {
+      var total = 0;
+      for (var i = 0; i < sections.length; i++) {
+        total += Math.min(1, state[sections[i]] || 0);
+      }
+      var pct = Math.round((total / sections.length) * 100);
+
+      if (yuzdeEl) yuzdeEl.textContent = "%" + pct;
+      if (barEl) barEl.style.width = pct + "%";
+      if (progress) {
+        progress.setAttribute("aria-valuenow", String(pct));
+        progress.setAttribute("aria-valuetext", "%" + pct);
+      }
+
+      var links = rail.querySelectorAll("[data-bulten-section]");
+      for (var j = 0; j < links.length; j++) {
+        var link = links[j];
+        var badge = link.querySelector("[data-bulten-durum]");
+        if (!badge) continue;
+        var tik = link.querySelector("[data-bulten-durum-tik]");
+        var yuzde = link.querySelector("[data-bulten-durum-yuzde]");
+        var value = state[link.dataset.bultenSection] || 0;
+        if (value >= 0.9) {
+          /* Caveat'ta ✓ glifi yok; tik SVG olarak basiliyor.
+             SVGElement'te .hidden IDL ozelligi yok, attribute ile acilir. */
+          if (tik) tik.toggleAttribute("hidden", false);
+          if (yuzde) yuzde.textContent = "";
+          badge.hidden = false;
+        } else if (value > 0.05) {
+          if (tik) tik.toggleAttribute("hidden", true);
+          if (yuzde) yuzde.textContent = Math.round(value * 100) + "%";
+          badge.hidden = false;
+        } else {
+          if (tik) tik.toggleAttribute("hidden", true);
+          if (yuzde) yuzde.textContent = "";
+          badge.hidden = true;
+        }
+      }
+    }
+
+    /* Sayfanın ne kadarı görüldü: makalenin alt kenarı görünüm alanına
+       girdiğinde 1.0. Kısa bölümlerde hemen 1.0 olur; bu doğru, çünkü
+       metnin tamamı ekranda. */
+    function measure() {
+      if (!current) return;
+      var article = document.querySelector("[data-bulten-icerik]");
+      if (!article) return;
+
+      var rect = article.getBoundingClientRect();
+      var top = window.scrollY + rect.top;
+      var height = article.offsetHeight;
+      if (height < 1) return;
+
+      var seen = (window.scrollY + window.innerHeight - top) / height;
+      seen = Math.max(0, Math.min(1, seen));
+
+      if (seen > (state[current] || 0)) {
+        state[current] = seen;
+        save();
+        render();
+      }
+    }
+
+    var ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(function () {
+        ticking = false;
+        measure();
+      });
+    }
+
+    render();
+    measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+  })();
+</script>

@@ -1,0 +1,20 @@
+{{- /*
+  Bölüm özeti şeridi: bir h2'nin altına dizilen çipler.
+
+  Kullanım:
+    {{< bulten-ozet "🧠 Gemini 4 Argon|#yapay-zeka" "🛡️ 1.413 yama|#guvenlik" >}}
+
+  Her parametre "etiket|çapa" biçimindedir; "|" yoksa yalnızca etiket
+  basılır. Çipler sayfa içi bağlantıdır, dış link değildir.
+*/ -}}
+{{- with .Params -}}
+<nav class="not-prose my-5 flex flex-wrap gap-2" aria-label="Bölüm özeti">
+  {{- range . }}
+    {{- $parts := split . "|" }}
+    {{- $label := index $parts 0 }}
+    {{- $href := "" }}
+    {{- if gt (len $parts) 1 }}{{ $href = index $parts 1 }}{{ end }}
+  <a href="{{ $href }}" class="rounded-full bg-neutral-100 px-3 py-1.5 text-sm font-medium text-neutral-700 hover:bg-accent-50 hover:text-accent-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-accent-900/40 dark:hover:text-accent-200">{{ $label }}</a>
+  {{- end }}
+</nav>
+{{- end -}}

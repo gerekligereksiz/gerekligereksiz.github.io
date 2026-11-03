@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="tr"{{ if or (eq .Layout "sayi") (eq .Layout "bolum") }} class="has-sayi-ray"{{ end }}>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {{- /* Tema varsayılanı: LIGHT. Otomatik koyu tema devre dışı.
+           Aşağıdaki script'ler çalışmadığı için html'e .dark sınıfı hiç
+           eklenmiyor; site her zaman açık temada açılıyor. Geri açmak için
+           iki sürümden birini yorumdan çıkar.
+
+           Sürüm A — sistem tercihini izle (düğme yokken kullanılan hâli):
+    <script>
+      (function () {
+        try {
+          if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            document.documentElement.classList.add("dark");
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+           Sürüm B — localStorage + sistem tercihi (header'daki yorumlu tema
+           düğmesiyle birlikte kullanılan eski hâli):
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("theme");
+          if (t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+            document.documentElement.classList.add("dark");
+          }
+        } catch (e) {}
+      })();
+    </script>
+    */ -}}
+    {{ partial "seo.html" . }}
+    {{ partial "favicon.html" . }}
+    {{ with (templates.Defer (dict "key" "global")) }}
+      {{ partial "css.html" . }}
+    {{ end }}
+  </head>
+  <body class="bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 antialiased font-sans">
+    {{ partial "header.html" . }}
+    {{ block "main" . }}{{ end }}
+    {{ partial "footer.html" . }}
+  </body>
+</html>

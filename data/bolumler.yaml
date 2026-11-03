@@ -1,0 +1,19 @@
+# Bölüm/menü öğesi -> atlas category_* ikonu eşleştirmesi.
+# Anahtar, hugo.yaml'daki menü öğesinin adıdır (birebir).
+# Şablonda: {{ index hugo.Data.bolumler . }}
+# Yeni menü öğesi eklerken tek satır yeterli; şablon değişmez.
+
+Yazılar:
+  icon: category_blog
+Uygulamalar:
+  icon: category_technology
+Bülten:
+  icon: category_news
+Sporcular:
+  icon: category_sports
+Takımlar:
+  icon: category_sports
+Uygulama İncelemeleri:
+  icon: category_technology
+Barajlar:
+  icon: category_science

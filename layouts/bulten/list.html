@@ -1,0 +1,76 @@
+{{ define "main" }}
+  <main>
+    <header class="mb-10 mt-8">
+      <div class="relative isolate mx-auto -mt-6 max-w-[1200px] overflow-hidden rounded-2xl border border-neutral-200 bg-gradient-to-r from-neutral-100 via-neutral-50 to-neutral-100 dark:border-neutral-800 dark:from-neutral-900 dark:via-neutral-950 dark:to-neutral-900">
+        <div class="flex min-h-[200px] items-center justify-between py-8 sm:min-h-[220px] lg:min-h-[240px]">
+          {{- with resources.Get "images/newsletter.webp" }}
+          <img src="{{ .RelPermalink }}" alt="" aria-hidden="true" loading="eager" decoding="async" width="{{ .Width }}" height="{{ .Height }}" class="hidden h-44 w-auto -rotate-3 lg:block opacity-90 dark:opacity-80">
+          {{- end }}
+          <div class="mx-auto flex max-w-2xl flex-col items-center text-center px-4">
+            {{ partial "menu-icon.html" (dict "name" .Title "class" "h-10 w-auto sm:h-12") }}
+            <h1 class="mt-2 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+              Haftalık<span class="text-accent-600 dark:text-accent-400">Bülten</span>
+            </h1>
+            {{ with .Description }}<p class="mt-3 max-w-xl text-lg text-neutral-600 sm:text-xl dark:text-neutral-400">{{ . }}</p>{{ end }}
+          </div>
+          {{- with resources.Get "images/announcement.webp" }}
+          <img src="{{ .RelPermalink }}" alt="" aria-hidden="true" loading="eager" decoding="async" width="{{ .Width }}" height="{{ .Height }}" class="hidden h-40 w-auto rotate-2 lg:block opacity-90 dark:opacity-80">
+          {{- end }}
+        </div>
+      </div>
+    </header>
+
+    <div class="mx-auto max-w-3xl px-4 pb-10">
+    {{- /* Her sayı bir branch bundle olduğu için sayılar alt bölümlerdir. */ -}}
+    {{- $pages := .Sections.ByDate.Reverse }}
+    {{- $paginator := .Paginate $pages }}
+    {{- if $paginator.Pages }}
+    {{- $latest := index $paginator.Pages 0 }}
+    <ul class="space-y-4">
+      {{- range $paginator.Pages }}
+      {{- $isLatest := and (eq $paginator.PageNumber 1) (eq . $latest) }}
+      <li class="group relative">
+        <a href="{{ .RelPermalink }}" class="flex gap-3 rounded-xl border border-neutral-200 bg-white/60 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500 sm:gap-4 sm:p-5 dark:border-neutral-800 dark:bg-neutral-900/60{{ if $isLatest }} ring-1 ring-info-500/40{{ end }}">
+          {{- with resources.Get "images/calendar-small.webp" }}
+            {{- with .Process "resize 64x64 webp q90" }}
+          <img src="{{ .RelPermalink }}" alt="" aria-hidden="true" loading="lazy" decoding="async" width="{{ .Width }}" height="{{ .Height }}" class="mt-0.5 h-7 w-7 shrink-0 self-start object-contain sm:mt-1 sm:h-8 sm:w-8 dark:invert dark:hue-rotate-180">
+            {{- end }}
+          {{- end }}
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-wrap items-center gap-2 text-sm">
+              {{- with .Params.categories }}<span class="font-medium text-accent-600 dark:text-accent-400">{{ index . 0 }}</span>{{ end }}
+              {{- with .Params.issue_number }}<span class="text-neutral-500 dark:text-neutral-400">{{ . }}. sayı</span>{{ end }}
+              {{- if $isLatest }}
+              <span class="inline-flex items-center rounded-full bg-info-50 px-2 py-0.5 text-xs font-semibold text-info-700 dark:bg-info-900/60 dark:text-info-200">Son sayı</span>
+              {{- end }}
+              <time datetime="{{ .Date.Format "2006-01-02" }}" class="text-neutral-500 dark:text-neutral-400">{{ partial "bulten/tarih-araligi.html" .Date }}</time>
+              <span class="text-neutral-300 dark:text-neutral-600" aria-hidden="true">·</span>
+              <span class="text-neutral-500 dark:text-neutral-400">{{ partial "bulten/toplam-okuma.html" . }} dk okuma</span>
+            </div>
+            <h2 class="mt-1 text-xl font-semibold tracking-tight group-hover:text-accent-600 dark:group-hover:text-accent-400{{ if $isLatest }} text-info-600 dark:text-info-400{{ end }}">
+              {{ .Title }}<span aria-hidden="true" class="ml-1 inline-block text-base text-neutral-400 transition group-hover:translate-x-0.5 group-hover:text-accent-600 dark:text-neutral-500 dark:group-hover:text-accent-400">→</span>
+            </h2>
+            {{ with .Description }}<p class="mt-2 text-xl text-neutral-600 dark:text-neutral-400">{{ . }}</p>{{ end }}
+            {{- with .Params.items }}
+            <p class="mt-2 text-sm text-neutral-500 dark:text-neutral-400">{{ len . }} başlık</p>
+            {{- end }}
+            <div class="mt-3 text-sm font-medium text-accent-600 dark:text-accent-400">Sayıyı oku <span aria-hidden="true" class="transition group-hover:translate-x-0.5">→</span></div>
+          </div>
+        </a>
+      </li>
+      {{- end }}
+    </ul>
+
+    {{- if gt $paginator.TotalPages 1 }}
+    <nav class="mt-10 flex flex-wrap items-center gap-4 text-base" aria-label="Sayfalama">
+      {{ with $paginator.Prev }}<a class="rounded-lg px-3 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800" href="{{ .URL }}">← Önceki</a>{{ end }}
+      <span class="text-sm text-neutral-500 dark:text-neutral-400">{{ $paginator.PageNumber }} / {{ $paginator.TotalPages }}</span>
+      {{ with $paginator.Next }}<a class="rounded-lg px-3 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800" href="{{ .URL }}">Sonraki →</a>{{ end }}
+    </nav>
+    {{- end }}
+    {{- else }}
+    <p class="text-base text-neutral-600 dark:text-neutral-400">Henüz bülten yok.</p>
+    {{- end }}
+    </div>
+  </main>
+{{ end }}

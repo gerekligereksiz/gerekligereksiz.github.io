@@ -1,0 +1,17 @@
+# Kategori -> atlas ikonu eşleştirmesi.
+# Anahtar, front matter'daki kategori adının birebir aynısıdır.
+# Şablonda: {{ index site.Data.kategoriler . }}   (. = kategori adı)
+# Yeni kategori eklemek için tek satır yeterli; şablon değişmez.
+
+Rehber:
+  icon: category_blog
+Duyuru:
+  icon: category_news
+Uygulama İncelemesi:
+  icon: category_technology
+Geliştirici Araçları:
+  icon: category_technology
+Felsefe:
+  icon: category_philosophy
+Spor:
+  icon: category_sports

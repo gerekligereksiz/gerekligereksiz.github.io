@@ -1,0 +1,67 @@
+{{- /*
+  Günlük maç girişi (layout: gun) — haber formatı.
+
+  Hem /sporcular/<sporcu>/<yyyy-aa-gg>-<rakip>/ hem
+  /takimlar/<takim>/<yyyy-aa-gg>-<rakip>/ sayfaları bu şablonu kullanır.
+
+  Sıra: yol izi → branş → haber başlığı → haber açıklama → maç bilgileri →
+  skor kartı → istatistik → maç özeti → kaynaklar → gezinme.
+
+  Maç kartı ve istatistik front matter'dan basılır; gövde yalnızca anlatı ve
+  videoyu taşır. Kaynaklar zorunludur ve sources alanından listelenir.
+*/ -}}
+{{ define "main" }}
+  {{- $section := site.GetPage (printf "/%s" .Section) -}}
+  {{- $sportEmoji := dict "Futbol" "⚽" "Basketbol" "🏀" "Satranç" "♟️" -}}
+  <main class="mx-auto max-w-3xl px-4 py-10">
+    <article>
+      <header>
+        <nav class="text-sm text-neutral-500 dark:text-neutral-400" aria-label="Sayfa yolu">
+          <ol class="flex flex-wrap items-center gap-1.5">
+            {{- with $section }}
+            <li><a href="{{ .RelPermalink }}" class="hover:text-accent-600 dark:hover:text-accent-400">{{ .Title }}</a></li>
+            <li aria-hidden="true">/</li>
+            {{- end }}
+            <li><a href="{{ .Parent.RelPermalink }}" class="hover:text-accent-600 dark:hover:text-accent-400">{{ .Parent.Title }}</a></li>
+          </ol>
+        </nav>
+
+        <div class="mt-3 flex flex-wrap items-center gap-2 text-sm">
+          {{- with .Params.sport }}
+          <span class="rounded-full bg-accent-50 px-3 py-1 font-medium text-accent-700 dark:bg-accent-900/50 dark:text-accent-200">{{ with index $sportEmoji . }}<span aria-hidden="true">{{ . }}</span> {{ end }}{{ . }}</span>
+          {{- end }}
+        </div>
+
+        <h1 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{{ .Title }}</h1>
+        {{ with .Description }}<p class="mt-3 text-lg text-neutral-600 dark:text-neutral-400">{{ . }}</p>{{ end }}
+      </header>
+
+      {{ partial "gun/mac-bilgileri.html" . }}
+      {{- if .Params.score }}
+        {{- if eq (.Params.sport | default "") "Satranç" }}{{ partial "gun/mac-karti-satranc.html" . }}{{ else }}{{ partial "gun/mac-karti.html" . }}{{ end }}
+      {{- end }}
+      {{ partial "gun/istatistik.html" . }}
+
+      <section class="mt-10" aria-labelledby="mac-ozeti">
+        <h2 id="mac-ozeti" class="font-hand text-2xl text-neutral-700 dark:text-neutral-200">Maç özeti</h2>
+        <div class="prose mt-3 dark:prose-invert">{{ .Content }}</div>
+      </section>
+
+      {{- with .Params.sources }}
+      <aside class="mt-8 rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900/40">
+        <h2 class="font-hand text-2xl text-neutral-700 dark:text-neutral-200">Kaynaklar</h2>
+        <ul class="mt-2 space-y-1 text-sm">
+          {{- range . }}
+          {{- $a := partial "link-attrs.html" (dict "url" .url) }}
+          <li>
+            <a href="{{ $a.href }}"{{ with $a.target }} target="{{ . }}"{{ end }}{{ with $a.rel }} rel="{{ . }}"{{ end }} class="text-accent-700 underline decoration-accent-200 underline-offset-4 hover:decoration-accent-500 dark:text-accent-300 dark:decoration-accent-900 dark:hover:decoration-accent-500">{{ .label | default .url }}</a>
+          </li>
+          {{- end }}
+        </ul>
+      </aside>
+      {{- end }}
+    </article>
+
+    {{ partial "gun/gezinme.html" . }}
+  </main>
+{{ end }}

@@ -1,0 +1,9 @@
+{{- /*
+  İnceleme kartı içindeki giriş paragrafı.
+
+  Kart iki sütunlu ızgara kurduğu için bu blok iki sütuna yayılır.
+  İçerik markdown olarak işlenir (link, vurgu serbest).
+*/ -}}
+{{- with trim .Inner " \n\r\t" }}
+<div class="text-[1em] leading-relaxed break-words sm:col-span-2 [&>p]:my-0 [&>p+p]:mt-3">{{ . | $.Page.RenderString (dict "display" "block") }}</div>
+{{- end }}

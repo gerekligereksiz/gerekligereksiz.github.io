@@ -1,0 +1,48 @@
+{{- /*
+  Günlük giriş gezinmesi.
+
+  Kullanım: {{ partial "gun/gezinme.html" . }}
+
+  Önceki/sonraki, aynı varlığın (sporcu veya takım) diğer girişleri arasında
+  tarihe göre hesaplanır. Ayrıca girişin bağlı olduğu haftalık bülten sayısına
+  (issue_number eşleşmesi) bağlantı verir.
+*/ -}}
+{{- $p := . -}}
+{{- $pages := $p.Parent.RegularPages.ByDate -}}
+{{- $idx := -1 -}}
+{{- range $i, $x := $pages }}{{ if eq $x.RelPermalink $p.RelPermalink }}{{ $idx = $i }}{{ end }}{{ end -}}
+{{- $onceki := "" -}}
+{{- $sonraki := "" -}}
+{{- if gt $idx 0 }}{{ $onceki = index $pages (sub $idx 1) }}{{ end -}}
+{{- if and (ge $idx 0) (lt (add $idx 1) (len $pages)) }}{{ $sonraki = index $pages (add $idx 1) }}{{ end -}}
+{{- $issue := "" -}}
+{{- with site.GetPage "/bulten" -}}
+  {{- range .Sections -}}
+    {{- if and $p.Params.issue_number (eq (printf "%v" .Params.issue_number) (printf "%v" $p.Params.issue_number)) }}{{ $issue = . }}{{ end -}}
+  {{- end -}}
+{{- end -}}
+{{- if or $onceki $sonraki }}
+<nav class="mt-12 grid gap-4 border-t border-neutral-200 pt-6 sm:grid-cols-2 dark:border-neutral-800" aria-label="Haber gezinmesi">
+  {{- with $onceki }}
+  <a href="{{ .RelPermalink }}" class="group rounded-xl border border-neutral-200 p-4 transition-colors hover:border-accent-300 dark:border-neutral-800 dark:hover:border-accent-700">
+    <span class="text-sm text-neutral-500 dark:text-neutral-400">← Önceki haber</span>
+    <span class="mt-1 block font-semibold group-hover:text-accent-600 dark:group-hover:text-accent-400">{{ .Title }}</span>
+    <span class="mt-0.5 block text-sm text-neutral-500 dark:text-neutral-400">{{ partial "spor/tarih.html" .Date }}{{ with .Params.competition }} · {{ . }}{{ end }}</span>
+  </a>
+  {{- end }}
+  {{- with $sonraki }}
+  <a href="{{ .RelPermalink }}" class="group rounded-xl border border-neutral-200 p-4 transition-colors hover:border-accent-300 sm:text-right dark:border-neutral-800 dark:hover:border-accent-700">
+    <span class="text-sm text-neutral-500 dark:text-neutral-400">Sonraki haber →</span>
+    <span class="mt-1 block font-semibold group-hover:text-accent-600 dark:group-hover:text-accent-400">{{ .Title }}</span>
+    <span class="mt-0.5 block text-sm text-neutral-500 dark:text-neutral-400">{{ partial "spor/tarih.html" .Date }}{{ with .Params.competition }} · {{ . }}{{ end }}</span>
+  </a>
+  {{- end }}
+</nav>
+{{- end }}
+{{- with $issue }}
+<p class="mt-6 text-sm">
+  {{- $hedef := . -}}
+  {{- with .GetPage "spor" }}{{ $hedef = . }}{{ end -}}
+  <a href="{{ $hedef.RelPermalink }}" class="text-neutral-600 underline decoration-neutral-300 underline-offset-4 hover:text-accent-600 dark:text-neutral-400 dark:decoration-neutral-700 dark:hover:text-accent-400">Haftalık bülten · {{ $.Params.issue_number }}. sayı</a>
+</p>
+{{- end }}

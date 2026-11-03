@@ -1,0 +1,37 @@
+{{ define "main" }}
+  <main>
+    <section class="relative isolate mx-auto mt-3 max-w-[1200px] overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
+      {{- with resources.Get "images/genel/hero-kolaj.webp" }}
+        {{- with .Process "resize 1200x webp q82" }}
+      <img src="{{ .RelPermalink }}" alt="" width="{{ .Width }}" height="{{ .Height }}" fetchpriority="high" class="absolute inset-0 -z-20 h-full w-full object-cover object-center">
+        {{- end }}
+      {{- end }}
+      <div class="absolute inset-0 -z-10 bg-neutral-50/15 dark:bg-neutral-950/40" aria-hidden="true"></div>
+      <div class="absolute inset-0 -z-10 bg-[linear-gradient(90deg,transparent_0%,rgba(247,245,240,0.85)_10%,rgba(247,245,240,0.98)_24%,rgba(247,245,240,0.98)_76%,rgba(247,245,240,0.85)_90%,transparent_100%)] sm:bg-[linear-gradient(90deg,transparent_0%,rgba(247,245,240,0.82)_9%,rgba(247,245,240,0.97)_22%,rgba(247,245,240,0.97)_78%,rgba(247,245,240,0.82)_91%,transparent_100%)] md:bg-[linear-gradient(90deg,transparent_0%,rgba(247,245,240,0.55)_12%,rgba(247,245,240,0.92)_30%,rgba(247,245,240,0.92)_70%,rgba(247,245,240,0.55)_88%,transparent_100%)] dark:bg-[linear-gradient(90deg,transparent_0%,rgba(10,10,10,0.85)_10%,rgba(10,10,10,0.98)_24%,rgba(10,10,10,0.98)_76%,rgba(10,10,10,0.85)_90%,transparent_100%)] dark:sm:bg-[linear-gradient(90deg,transparent_0%,rgba(10,10,10,0.82)_9%,rgba(10,10,10,0.97)_22%,rgba(10,10,10,0.97)_78%,rgba(10,10,10,0.82)_91%,transparent_100%)] dark:md:bg-[linear-gradient(90deg,transparent_0%,rgba(10,10,10,0.55)_12%,rgba(10,10,10,0.92)_30%,rgba(10,10,10,0.92)_70%,rgba(10,10,10,0.55)_88%,transparent_100%)]" aria-hidden="true"></div>
+      <div class="flex min-h-[240px] items-center justify-center md:aspect-[1200/416] md:min-h-0">
+        <div class="mx-auto max-w-5xl px-4 text-center">
+          <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">
+            Gerekli<span class="text-accent-600 dark:text-accent-400">Gereksiz</span>
+          </h1>
+          <p class="mx-auto mt-4 max-w-sm text-lg text-neutral-800 sm:max-w-xl md:max-w-2xl dark:text-neutral-200">
+            Çeşitli yazılar, haftalık bülten, uygulama incelemeleri ve Türk sporcu başarıları — hepsi bir arada.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-5xl px-4 py-12" aria-label="Son yazılar">
+      <div class="mb-6 flex items-baseline justify-between">
+        <h2 class="text-3xl font-bold tracking-tight">Son Yazılar</h2>
+        <a href="{{ site.Home.RelPermalink }}yazilar/" class="text-base font-medium text-accent-600 hover:underline dark:text-accent-400">Tümü →</a>
+      </div>
+      {{- with where site.RegularPages "Section" "yazilar" }}
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {{ range first 3 . }}{{ partial "post-card" . }}{{ end }}
+      </div>
+      {{- else }}
+      <p class="text-neutral-600 dark:text-neutral-400">Henüz yazı yok.</p>
+      {{- end }}
+    </section>
+  </main>
+{{ end }}

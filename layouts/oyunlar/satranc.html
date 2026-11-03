@@ -1,0 +1,33 @@
+{{ define "main" }}
+<article class="mx-auto max-w-6xl px-4 py-10">
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">{{ .Title }}</h1>
+    {{ with .Description }}<p class="mt-3 text-lg text-neutral-600 dark:text-neutral-400">{{ . }}</p>{{ end }}
+  </header>
+
+  <section class="rounded-xl border border-neutral-200 bg-white p-2 shadow-sm sm:p-4 dark:border-neutral-800 dark:bg-neutral-900">
+    <div class="w-full overflow-x-auto">
+      <div id="chessboard" class="mx-auto max-w-[600px]">
+        <div class="text-center text-sm text-neutral-500 dark:text-neutral-400">Satranç oyunu yükleniyor...</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="mt-6 prose max-w-none dark:prose-invert">
+    {{ .Content }}
+  </div>
+</article>
+
+<script type="module">
+  (async () => {
+    const boardEl = document.getElementById('chessboard');
+    try {
+      // Placeholder for WASM chess game - actual implementation will be added
+      boardEl.innerHTML = '<div class="p-8 text-center text-neutral-600 dark:text-neutral-400">Satranç oyunu burada yüklenecek. WASM dosyaları <code>static/oyunlar/satranc/</code> dizinine eklenebilir.</div>';
+    } catch (e) {
+      boardEl.innerHTML = '<div class="p-4 text-sm text-red-600 dark:text-red-400">Oyun yüklenirken hata oluştu.</div>';
+      console.error(e);
+    }
+  })();
+</script>
+{{ end }}

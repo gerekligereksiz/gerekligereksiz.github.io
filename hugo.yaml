@@ -1,0 +1,108 @@
+baseURL: https://gerekligereksiz.github.io/
+locale: tr
+title: Gerekli Gereksiz
+
+taxonomies:
+  category: categories
+  tag: tags
+  platform: platforms
+  developer: developers
+
+# Menü hedefleri pageRef ile verilir: URL'yi Hugo üretir (baseURL alt yolu
+# dahil) ve IsMenuCurrent/HasMenuCurrent sayfa nesnesi üzerinden çalışır, yani
+# aktif menü vurgusu doğru olur. url: ile birlikte yazma, url kazanır.
+# Hedef sayfa yoksa build hata verir (sessiz 404 yerine erken uyarı).
+menu:
+  main:
+    - name: Yazılar
+      pageRef: /yazilar
+      weight: 10
+    - name: Bülten
+      pageRef: /bulten
+      weight: 20
+    # Uygulamalar ve Oyunlar menüden gizli (bölümler yayında kalıyor, sadece
+    # navigasyonda görünmüyor). Tekrar göstermek için yorumu kaldır.
+    # - name: Uygulamalar
+    #   pageRef: /uygulamalar
+    #   weight: 30
+    # - name: Oyunlar
+    #   pageRef: /oyunlar
+    #   weight: 35
+  footer:
+    - name: Hakkımızda
+      pageRef: /hakkimizda
+      weight: 10
+    - name: Bize Ulaşın
+      pageRef: /bize-ulasin
+      weight: 20
+    # Uygulamalar menüden gizli (bölüm yayında kalıyor).
+    # - name: Uygulamalar
+    #   pageRef: /uygulamalar
+    #   weight: 30
+    - name: Veri Kaynakları
+      pageRef: /veri-kaynaklari
+      weight: 40
+  other:
+    - name: Sporcular
+      pageRef: /sporcular
+      weight: 10
+    - name: Takımlar
+      pageRef: /takimlar
+      weight: 15
+    - name: Uygulama İncelemeleri
+      pageRef: /uygulama-incelemeleri
+      weight: 20
+    # Barajlar menüden gizli (bölüm yayında kalıyor).
+    # - name: Barajlar
+    #   pageRef: /baraj
+    #   weight: 30
+  legal:
+    - name: Gizlilik Politikası
+      pageRef: /gizlilik-politikasi
+      weight: 10
+    - name: Çerez Politikası
+      pageRef: /cerez-politikasi
+      weight: 20
+    - name: KVKK Aydınlatma Metni
+      pageRef: /kvkk-aydinlatma-metni
+      weight: 30
+    - name: Kullanım Şartları
+      pageRef: /kullanim-sartlari
+      weight: 40
+
+params:
+  description: "Uygulama kataloğu, teknoloji yazıları, haftalık bülten, Türk sporcu başarıları ve baraj doluluk verileri."
+  # Harici bağlantılarda kullanılan rel değeri (tüm şablonlar buradan okur).
+  # nofollow: link değeri aktarımını keser. Tek link için ext-link 3. parametreyle override edilebilir.
+  externalLinkRel: "noopener noreferrer nofollow"
+
+privacy:
+  youtube:
+    privacyEnhanced: true
+
+build:
+  buildStats:
+    enable: true
+  cachebusters:
+    - source: 'assets/notwatching/hugo_stats\.json'
+      target: css
+    - source: '(postcss|tailwind)\.config\.js'
+      target: css
+
+module:
+  mounts:
+    - source: assets
+      target: assets
+    - disableWatch: true
+      source: hugo_stats.json
+      target: assets/notwatching/hugo_stats.json
+
+security:
+  exec:
+    allow:
+      - '^(dart-)?sass$'
+      - '^go$'
+      - '^git$'
+      - '^node$'
+      - '^postcss$'
+      - '^tailwindcss$'

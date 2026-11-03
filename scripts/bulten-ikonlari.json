@@ -1,0 +1,139 @@
+{
+  "source": "assets/images/Colorful Hand-Drawn Icon Sticker Sheet.png",
+  "grid": {
+    "rows": 3,
+    "cols": 5,
+    "cut_x": [
+      326,
+      616,
+      920,
+      1236
+    ],
+    "cut_y": [
+      335,
+      664
+    ]
+  },
+  "sprites": {
+    "avrupa": {
+      "x": 0,
+      "y": 0,
+      "width": 326,
+      "height": 335,
+      "category": "sticker",
+      "label": "Avrupa"
+    },
+    "kupa": {
+      "x": 326,
+      "y": 0,
+      "width": 290,
+      "height": 335,
+      "category": "sticker",
+      "label": "Kupa"
+    },
+    "euroleague": {
+      "x": 616,
+      "y": 0,
+      "width": 304,
+      "height": 335,
+      "category": "sticker",
+      "label": "Euroleague"
+    },
+    "nba": {
+      "x": 920,
+      "y": 0,
+      "width": 316,
+      "height": 335,
+      "category": "sticker",
+      "label": "Nba"
+    },
+    "piyon": {
+      "x": 1236,
+      "y": 0,
+      "width": 300,
+      "height": 335,
+      "category": "sticker",
+      "label": "Piyon"
+    },
+    "kultur": {
+      "x": 0,
+      "y": 335,
+      "width": 326,
+      "height": 329,
+      "category": "sticker",
+      "label": "Kültür"
+    },
+    "duyurular": {
+      "x": 326,
+      "y": 335,
+      "width": 290,
+      "height": 329,
+      "category": "sticker",
+      "label": "Duyurular"
+    },
+    "konser": {
+      "x": 616,
+      "y": 335,
+      "width": 304,
+      "height": 329,
+      "category": "sticker",
+      "label": "Konser"
+    },
+    "sinema": {
+      "x": 920,
+      "y": 335,
+      "width": 316,
+      "height": 329,
+      "category": "sticker",
+      "label": "Sinema"
+    },
+    "festival": {
+      "x": 1236,
+      "y": 335,
+      "width": 300,
+      "height": 329,
+      "category": "sticker",
+      "label": "Festival"
+    },
+    "odul": {
+      "x": 0,
+      "y": 664,
+      "width": 326,
+      "height": 360,
+      "category": "sticker",
+      "label": "Ödül"
+    },
+    "yeni-cikanlar": {
+      "x": 326,
+      "y": 664,
+      "width": 290,
+      "height": 360,
+      "category": "sticker",
+      "label": "Yeni çıkanlar"
+    },
+    "one-cikanlar": {
+      "x": 616,
+      "y": 664,
+      "width": 304,
+      "height": 360,
+      "category": "sticker",
+      "label": "Öne çıkanlar"
+    },
+    "firsatlar": {
+      "x": 920,
+      "y": 664,
+      "width": 316,
+      "height": 360,
+      "category": "sticker",
+      "label": "Fırsatlar"
+    },
+    "hediye": {
+      "x": 1236,
+      "y": 664,
+      "width": 300,
+      "height": 360,
+      "category": "sticker",
+      "label": "Hediye"
+    }
+  }
+}

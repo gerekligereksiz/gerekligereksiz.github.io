@@ -1,0 +1,12 @@
+---
+title: "Bayegan Pendik Satranç"
+description: "Bayegan Pendik'in satranç takımı; Avrupa kupalarındaki maç haberleri kaynak doğrulamasıyla eklenir."
+date: 2026-10-10T12:00:00+03:00
+draft: false
+layout: "profil"
+sport: "Satranç"
+league: "Avrupa Kulüpler Kupası"
+city: "İstanbul"
+image: ""
+image_credit: ""
+---

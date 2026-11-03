@@ -1,0 +1,10 @@
+{{- /* Menü/bölüm ikonu: context = menü öğesi adı (string) veya (dict "name" .. "class" ..). Eşleşme yoksa hiçbir şey üretmez. */ -}}
+{{- $name := . -}}
+{{- $class := "hidden h-8 w-auto shrink-0 xl:block" -}}
+{{- if reflect.IsMap . }}{{ $name = .name }}{{ with .class }}{{ $class = . }}{{ end }}{{ end -}}
+{{- with index hugo.Data.bolumler $name }}
+  {{- $icon := .icon }}
+  {{- with resources.Get (printf "images/%s.webp" $icon) }}
+  <img src="{{ .RelPermalink }}" alt="" aria-hidden="true" class="{{ $class }}" width="{{ .Width }}" height="{{ .Height }}">
+  {{- end }}
+{{- end -}}

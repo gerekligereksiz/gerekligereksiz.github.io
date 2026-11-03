@@ -1,0 +1,10 @@
+{{- /* Kategori ikonu: context = kategori adı (string) veya (dict "name" .. "height" ..) */ -}}
+{{- $name := . -}}
+{{- $height := "h-4" -}}
+{{- if reflect.IsMap . }}{{ $name = .name }}{{ with .height }}{{ $height = . }}{{ end }}{{ end -}}
+{{- with index hugo.Data.kategoriler $name }}
+  {{- $icon := .icon }}
+  {{- with resources.Get (printf "images/%s.webp" $icon) }}
+  <img src="{{ .RelPermalink }}" alt="" aria-hidden="true" loading="lazy" class="{{ $height }} w-auto shrink-0" width="{{ .Width }}" height="{{ .Height }}">
+  {{- end }}
+{{- end -}}

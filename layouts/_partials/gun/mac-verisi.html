@@ -1,0 +1,172 @@
+{{- /*
+  Günlük maç girişinden (layout: gun) kart verisini türetir.
+
+  Skor her zaman ev sahibi önce yazılır ("4-1"). Hangi tarafın "bizim"
+  varlık olduğu home_away ile belirlenir:
+    home    → varlık ev sahibi
+    away    → varlık deplasman
+    neutral → tarafsız saha; home/away alanları elle verilebilir
+
+  team alanı ZORUNLUDUR ve kartta görünen addır ("Fenerbahçe",
+  "Real Madrid"). Profil başlığından türetilmez: branş sayfalarının başlığı
+  "Fenerbahçe Basketbol" olabilir ama skor kartında kulüp adı görünmelidir.
+
+  Satrançta iki durum var:
+    - takım maçı: team + opponent + score (takım skoru, örn. "6-0")
+    - bireysel maç: board + color + opponent + score; takım yazılmaz, kartta
+      sporcunun adı profil başlığından gelir. Skor beyaz taş önce yazılır
+      ("1-0", "0-1", "½-½") ve beyaz taraf kartın solunda durur.
+
+  Dönen değer: (dict "entity" .. "opponent" .. "home" .. "away" ..
+                      "homeScore" .. "awayScore" .. "homeAway" ..
+                      "homeFlag" .. "awayFlag" .. "homeTitle" .. "awayTitle" ..
+                      "goalsHome" .. "goalsAway" ..
+                      "board" .. "color" .. "homeRating" .. "awayRating" ..
+                      "isTeam" .. "result" .. "resultCode" .. "outcome" ..
+                      "sport" .. "page" ..)
+
+  result/resultCode varlık açısından sonuçtur ("Galibiyet"/"G"); skor yoksa
+  boştur. Haftalık haber listesi ve profil listesi rozeti bundan basılır.
+  outcome, skoru olmayan başarı kayıtlarında (örn. "Şampiyon") rozet metnidir.
+
+  homeTitle/awayTitle satranç ünvanıdır (GM/IM/FM/CM) ve profildeki position
+  alanından türetilir; takım maçlarında boştur.
+
+  goalsHome/goalsAway skorla aynı yöndedir (ev sahibi önce) ve önceden
+  biçimlenmiş oyuncu satırları taşır ("Barkley 68' (pen.) ve 72'").
+  Boşsa kartta ve haftalık listede gol satırı basılmaz.
+
+  result yalnızca satrançta dolar ve varlık açısından sonucu söyler
+  (Galibiyet / Mağlubiyet / Beraberlik).
+*/ -}}
+{{- $p := . -}}
+{{- $parent := $p.Parent -}}
+{{- $sport := $p.Params.sport | default "" -}}
+{{- $satranc := eq $sport "Satranç" -}}
+{{- $entity := $p.Params.team -}}
+{{- $opponent := $p.Params.opponent | default "" -}}
+{{- /* Bireysel satranç kaydında takım yazılmaz; kartta görünen ad
+       sporcunun profil başlığıdır. */ -}}
+{{- if and $satranc (not $entity) $parent -}}
+  {{- $entity = $parent.Title -}}
+{{- end -}}
+{{- /* team yalnızca skor kartı basılacaksa zorunlu. Bireysel turnuva
+       kayıtlarında (satranç) skor ve rakip olmaz. */ -}}
+{{- if and (not $entity) $p.Params.score -}}
+  {{- errorf "gun: %s için team alanı zorunlu (skor kartında görünecek takım adı)" $p.RelPermalink -}}
+{{- end -}}
+{{- $homeAway := $p.Params.home_away | default "" -}}
+{{- $color := $p.Params.color | default "" -}}
+{{- $home := $entity -}}
+{{- $away := $opponent -}}
+{{- if $satranc -}}
+  {{- /* Beyaz taş her zaman solda. */ -}}
+  {{- if eq $color "black" -}}
+    {{- $home = $opponent -}}
+    {{- $away = $entity -}}
+  {{- end -}}
+{{- else if eq $homeAway "away" -}}
+  {{- $home = $opponent -}}
+  {{- $away = $entity -}}
+{{- end -}}
+{{- with $p.Params.home }}{{ $home = . }}{{ end -}}
+{{- with $p.Params.away }}{{ $away = . }}{{ end -}}
+{{- $parts := split ($p.Params.score | default "") "-" -}}
+{{- $homeScore := "" -}}
+{{- $awayScore := "" -}}
+{{- if eq (len $parts) 2 -}}
+  {{- $homeScore = index $parts 0 -}}
+  {{- $awayScore = index $parts 1 -}}
+{{- end -}}
+{{- /* Bayrak yalnızca Türk TAKIMININ adının yanında görünür. Sporcu Türk olsa
+       bile kulübü yabancıysa bayrak konmaz: bayrak kulübün değil ülkenin
+       işaretidir; Inter'in yanına 🇹🇷 koymak Inter'i Türk takımı gösterir. */ -}}
+{{- $flag := "" -}}
+{{- with $parent -}}
+  {{- if eq .Section "takimlar" -}}{{- $flag = "🇹🇷" -}}{{- end -}}
+{{- end -}}
+{{- $homeFlag := "" -}}
+{{- $awayFlag := "" -}}
+{{- if eq $home $entity -}}{{- $homeFlag = $flag -}}{{- else -}}{{- $awayFlag = $flag -}}{{- end -}}
+{{- /* Satranç ünvanı (GM/IM/FM/CM) profildeki position alanından türetilir;
+       ayrı bir alan yok. Takım profillerinde position olmadığı için boş kalır. */ -}}
+{{- $entityTitle := "" -}}
+{{- if and $satranc $parent -}}
+  {{- $unvanlar := dict
+        "Büyükusta" "GM"
+        "Uluslararası Usta" "IM"
+        "FIDE Ustası" "FM"
+        "Aday Usta" "CM"
+        "Kadın Büyükusta" "WGM"
+        "Kadın Uluslararası Usta" "WIM"
+        "Kadın FIDE Ustası" "WFM"
+        "Kadın Aday Usta" "WCM" -}}
+  {{- $pos := $parent.Params.position | default "" -}}
+  {{- $entityTitle = index $unvanlar $pos | default "" -}}
+  {{- if and (not $entityTitle) (in (slice "GM" "IM" "FM" "CM" "WGM" "WIM" "WFM" "WCM") $pos) -}}
+    {{- $entityTitle = $pos -}}
+  {{- end -}}
+{{- end -}}
+{{- $homeTitle := "" -}}
+{{- $awayTitle := "" -}}
+{{- if eq $home $entity -}}{{- $homeTitle = $entityTitle -}}{{- else -}}{{- $awayTitle = $entityTitle -}}{{- end -}}
+{{- /* Satranç reytingleri varlık/rakip sırasına göre verilir, kartta
+       beyaz/siyah sırasına çevrilir. */ -}}
+{{- $entityRating := $p.Params.rating -}}
+{{- $opponentRating := $p.Params.opponent_rating -}}
+{{- $homeRating := $entityRating -}}
+{{- $awayRating := $opponentRating -}}
+{{- if ne $home $entity -}}
+  {{- $homeRating = $opponentRating -}}
+  {{- $awayRating = $entityRating -}}
+{{- end -}}
+{{- /* Sonuç varlık açısından hesaplanır (skor ev sahibi önce yazılsa da):
+       Galibiyet / Mağlubiyet / Beraberlik. Hem satranç kartı hem profil ve
+       haftalık haber listeleri aynı değeri kullanır. */ -}}
+{{- $result := "" -}}
+{{- $resultCode := "" -}}
+{{- /* Skoru olmayan başarı kayıtları (turnuva şampiyonluğu gibi) için
+       isteğe bağlı `outcome` alanı rozet olarak basılır. */ -}}
+{{- $outcome := $p.Params.outcome | default "" -}}
+{{- if and $entity $opponent $homeScore $awayScore -}}
+  {{- $entityScore := $homeScore -}}
+  {{- $opponentScore := $awayScore -}}
+  {{- if ne $home $entity -}}
+    {{- $entityScore = $awayScore -}}
+    {{- $opponentScore = $homeScore -}}
+  {{- end -}}
+  {{- if eq $entityScore $opponentScore -}}
+    {{- $result = "Beraberlik" -}}
+    {{- $resultCode = "B" -}}
+  {{- else if gt (float $entityScore) (float $opponentScore) -}}
+    {{- $result = "Galibiyet" -}}
+    {{- $resultCode = "G" -}}
+  {{- else -}}
+    {{- $result = "Mağlubiyet" -}}
+    {{- $resultCode = "M" -}}
+  {{- end -}}
+{{- end -}}
+{{- return (dict
+      "entity" $entity
+      "opponent" $opponent
+      "home" $home
+      "away" $away
+      "homeScore" $homeScore
+      "awayScore" $awayScore
+      "homeAway" $homeAway
+      "homeFlag" $homeFlag
+      "awayFlag" $awayFlag
+      "homeTitle" $homeTitle
+      "awayTitle" $awayTitle
+      "goalsHome" $p.Params.goals_home
+      "goalsAway" $p.Params.goals_away
+      "board" $p.Params.board
+      "color" $color
+      "homeRating" $homeRating
+      "awayRating" $awayRating
+      "isTeam" (and $satranc (ne ($p.Params.team | default "") ""))
+      "result" $result
+      "resultCode" $resultCode
+      "outcome" $outcome
+      "sport" $sport
+      "page" $p) -}}

@@ -1,0 +1,72 @@
+{{- /*
+  Haftanın maç haberleri listesi.
+
+  Kullanım (bülten spor sayfası içinde): {{< hafta-mac-listesi >}}
+
+  Sayı tarihinden geriye altı günlük aralığa düşen günlük girişleri
+  (layout: gun) branşa göre gruplayıp bağlantı olarak listeler. Başlıklar
+  günlük haber sayfalarından gelir; burada metin üretilmez. Sonuç rozeti
+  (Galibiyet/Mağlubiyet/Beraberlik) `mac-verisi.html` içinden gelir; skor
+  olmayan girişlerde basılmaz. Gol atanlar da aynı sayfaların
+  `goals_home` / `goals_away` alanlarından basılır.
+*/ -}}
+{{- $p := .Page -}}
+{{- $son := $p.Date -}}
+{{- $bas := $son.AddDate 0 0 -6 -}}
+{{- $basS := $bas.Format "2006-01-02" -}}
+{{- $sonS := $son.Format "2006-01-02" -}}
+{{- $girisler := slice -}}
+{{- range where site.RegularPages "Layout" "gun" -}}
+  {{- $g := .Date.Format "2006-01-02" -}}
+  {{- if and (ge $g $basS) (le $g $sonS) -}}
+    {{- $girisler = $girisler | append . -}}
+  {{- end -}}
+{{- end -}}
+{{- $emoji := dict "Futbol" "⚽" "Basketbol" "🏀" "Satranç" "♟️" -}}
+<div class="not-prose my-6 space-y-6">
+  {{- range $sport := slice "Futbol" "Basketbol" "Satranç" -}}
+    {{- with where $girisler "Params.sport" $sport -}}
+    <section>
+      <h3 class="m-0 text-sm font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+        {{- with index $emoji $sport }}<span aria-hidden="true">{{ . }}</span> {{ end }}{{ $sport }}
+        <span class="ml-1 font-normal normal-case tracking-normal text-neutral-400 dark:text-neutral-500">({{ len . }})</span>
+      </h3>
+      <ul class="m-0 mt-2 list-none space-y-0 p-0">
+        {{- range .ByDate }}
+        {{- $d := partial "gun/mac-verisi.html" . -}}
+        <li class="border-b border-neutral-200 py-2.5 last:border-0 dark:border-neutral-800">
+          <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+            {{- $etiket := $d.result -}}
+            {{- $rozet := cond (eq $d.resultCode "G") "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300" (cond (eq $d.resultCode "M") "bg-rose-100 text-rose-700 dark:bg-rose-900/50 dark:text-rose-300" "bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300") -}}
+            {{- with $d.outcome -}}
+              {{- $etiket = . -}}
+              {{- $rozet = "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200" -}}
+            {{- end -}}
+            {{- with $etiket }}
+            <span class="rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider {{ $rozet }}">{{ . }}</span>
+            {{- end }}
+            <a href="{{ .RelPermalink }}" class="font-medium text-accent-700 underline decoration-accent-200 underline-offset-4 hover:decoration-accent-500 dark:text-accent-300 dark:decoration-accent-900 dark:hover:decoration-accent-500">{{ .Title }}</a>
+          </div>
+          <p class="m-0 mt-0.5 text-sm text-neutral-500 dark:text-neutral-400">
+            {{- partial "spor/tarih.html" .Date -}}
+            {{- if and $d.home $d.opponent }} · {{ with $d.homeTitle }}{{ . }} {{ end }}{{ $d.home }} {{ with $d.homeScore }}{{ . }}–{{ $d.awayScore }} {{ end }}{{ with $d.awayTitle }}{{ . }} {{ end }}{{ $d.away }}{{ end -}}
+            {{- with .Params.board }} · {{ . }}. masa{{ end -}}
+            {{- with .Params.competition }} · {{ . }}{{ end -}}
+          </p>
+          {{- if or $d.goalsHome $d.goalsAway }}
+          <p class="m-0 mt-0.5 text-xs text-neutral-500 [overflow-wrap:anywhere] dark:text-neutral-400">
+            {{- with $d.goalsHome }}<span class="font-medium">{{ $d.home }}</span>: {{ delimit . ", " }}{{ end -}}
+            {{- if and $d.goalsHome $d.goalsAway }}<br>{{ end -}}
+            {{- with $d.goalsAway }}<span class="font-medium">{{ $d.away }}</span>: {{ delimit . ", " }}{{ end -}}
+          </p>
+          {{- end }}
+        </li>
+        {{- end }}
+      </ul>
+    </section>
+    {{- end -}}
+  {{- end -}}
+  {{- if not $girisler }}
+  <p class="text-neutral-600 dark:text-neutral-400">Bu hafta için maç haberi eklenmedi.</p>
+  {{- end }}
+</div>

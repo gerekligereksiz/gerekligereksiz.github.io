@@ -1,0 +1,7 @@
+{{- /*
+  İnceleme kartı: eksiler paneli. İçerik markdown listesi olarak yazılır.
+*/ -}}
+<div class="rounded-lg border-l-2 border-accent-500/60 bg-accent-50/50 px-4 py-3 dark:border-accent-400/50 dark:bg-accent-950/25">
+  <p class="m-0 flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-wider text-accent-700 dark:text-accent-300"><span class="select-none" aria-hidden="true">✖</span>Eksiler</p>
+  <div class="mt-1.5 text-[0.98em] leading-relaxed break-words [&_ul]:my-0 [&_ul]:space-y-1 [&_ul]:pl-5 [&_li]:marker:text-accent-600 dark:[&_li]:marker:text-accent-400">{{ trim .Inner " \n\r\t" | .Page.RenderString (dict "display" "block") }}</div>
+</div>

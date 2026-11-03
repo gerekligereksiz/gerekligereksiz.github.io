@@ -1,0 +1,60 @@
+{{- /*
+  Satranç maç kartı (layout: gun, sport: Satranç).
+
+  Kullanım: {{ partial "gun/mac-karti-satranc.html" . }}
+
+  Futbol/basketbol kartından farkı: masa numarası, taş rengi, ELO reytingleri
+  ve varlık açısından sonuç rozeti taşır. Bireysel maçta beyaz taş solda durur
+  (skor beyaz önce yazılır); takım maçında iki takım adı ve takım skoru basılır.
+  Veri gun/mac-verisi.html'den gelir; gövdeye skor yazılmaz.
+*/ -}}
+{{- $d := partial "gun/mac-verisi.html" . -}}
+{{- $beyaz := eq $d.color "white" -}}
+{{- $renk := "" -}}
+{{- if $d.color -}}
+  {{- $renk = cond $beyaz "Beyaz taşlar" "Siyah taşlar" -}}
+{{- end -}}
+{{- $rozet := "bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300" -}}
+{{- if eq $d.result "Galibiyet" -}}
+  {{- $rozet = "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300" -}}
+{{- else if eq $d.result "Mağlubiyet" -}}
+  {{- $rozet = "bg-rose-100 text-rose-700 dark:bg-rose-900/50 dark:text-rose-300" -}}
+{{- end -}}
+<div class="not-prose my-6 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800" role="group" aria-label="{{ with $d.homeTitle }}{{ . }} {{ end }}{{ $d.home }} {{ $d.homeScore }}, {{ with $d.awayTitle }}{{ . }} {{ end }}{{ $d.away }} {{ $d.awayScore }}">
+  <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-neutral-200 bg-neutral-50 px-4 py-2 text-xs font-medium uppercase tracking-wider text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900/60 dark:text-neutral-400">
+    <span>{{ if $d.isTeam }}Takım maçı{{ else }}{{ with $d.board }}{{ . }}. masa{{ end }}{{ end }}</span>
+    {{- with $renk }}
+    <span class="flex items-center gap-1.5">
+      <span class="text-sm leading-none" aria-hidden="true">{{ if $beyaz }}♔{{ else }}♚{{ end }}</span>{{ . }}
+    </span>
+    {{- end }}
+  </div>
+  <div class="grid gap-y-2 px-4 py-4 text-base leading-snug sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-baseline sm:gap-x-3">
+    <div class="flex min-w-0 flex-col gap-0.5 sm:items-end sm:text-right">
+      <p class="m-0 flex w-full items-baseline justify-between gap-2 sm:justify-end">
+        <span class="min-w-0">
+          <span class="block font-semibold [overflow-wrap:anywhere]">{{ with $d.homeFlag }}<span class="mr-1 select-none" aria-hidden="true">{{ . }}</span>{{ end }}{{ with $d.homeTitle }}{{ . }} {{ end }}{{ $d.home }}</span>
+          {{- with $d.homeRating }}<span class="block text-sm font-normal tabular-nums text-neutral-500 dark:text-neutral-400">ELO {{ . }}</span>{{ end }}
+        </span>
+        <span class="text-2xl font-bold tabular-nums" aria-hidden="true">{{ $d.homeScore }}</span>
+      </p>
+    </div>
+    <div class="hidden w-5 flex-col items-center sm:flex" aria-hidden="true">
+      <span class="text-xl leading-none text-neutral-400 dark:text-neutral-500">–</span>
+    </div>
+    <div class="flex min-w-0 flex-col gap-0.5">
+      <p class="m-0 flex w-full items-baseline justify-between gap-2 sm:justify-start">
+        <span class="order-2 text-2xl font-bold tabular-nums sm:order-1" aria-hidden="true">{{ $d.awayScore }}</span>
+        <span class="order-1 min-w-0 sm:order-2">
+          <span class="block font-semibold [overflow-wrap:anywhere]">{{ with $d.awayFlag }}<span class="mr-1 select-none" aria-hidden="true">{{ . }}</span>{{ end }}{{ with $d.awayTitle }}{{ . }} {{ end }}{{ $d.away }}</span>
+          {{- with $d.awayRating }}<span class="block text-sm font-normal tabular-nums text-neutral-500 dark:text-neutral-400">ELO {{ . }}</span>{{ end }}
+        </span>
+      </p>
+    </div>
+  </div>
+  {{- with $d.result }}
+  <div class="border-t border-neutral-200 bg-neutral-50 px-4 py-2 text-center dark:border-neutral-800 dark:bg-neutral-900/60">
+    <span class="inline-block rounded-full px-3 py-0.5 text-xs font-medium uppercase tracking-wider {{ $rozet }}">{{ . }}</span>
+  </div>
+  {{- end }}
+</div>

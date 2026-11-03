@@ -1,0 +1,53 @@
+{{- /*
+  Varlık listesi (sporcular / takımlar bölüm sayfası).
+
+  Kullanım:
+    {{ partial "spor/varlik-listesi.html" (dict "page" . "bos" "Henüz sporcu eklenmedi.") }}
+
+  Profiller branşa göre Futbol → Basketbol → Satranç sırasıyla gruplanır;
+  emoji ve sayı başlıkta gösterilir, boş grup basılmaz. Branşı tanımlı
+  olmayan kayıtlar varsa "Diğer" grubunda toplanır.
+*/ -}}
+{{- $p := .page -}}
+{{- $profiles := union $p.Sections $p.RegularPages -}}
+{{- $emoji := dict "Futbol" "⚽" "Basketbol" "🏀" "Satranç" "♟️" -}}
+{{- $gruplar := slice "Futbol" "Basketbol" "Satranç" -}}
+<main class="mx-auto max-w-5xl px-4 py-10">
+  <header class="mb-8">
+    <div class="flex items-center gap-3">
+      {{ partial "menu-icon.html" (dict "name" $p.Title "class" "h-8 w-auto shrink-0 sm:h-10") }}
+      <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">{{ $p.Title }}</h1>
+    </div>
+    {{ with $p.Description }}<p class="mt-3 text-lg text-neutral-600 dark:text-neutral-400">{{ . }}</p>{{ end }}
+    {{ with $p.Content }}<div class="prose mt-4 dark:prose-invert">{{ . }}</div>{{ end }}
+  </header>
+
+  {{- range $gruplar }}
+    {{- $grup := . }}
+    {{- with where $profiles "Params.sport" $grup }}
+    {{- $adet := len . }}
+    <section class="mt-10" aria-labelledby="grup-{{ $grup | urlize }}">
+      <h2 id="grup-{{ $grup | urlize }}" class="font-hand text-3xl text-neutral-700 dark:text-neutral-200">
+        {{- with index $emoji $grup }}<span aria-hidden="true">{{ . }}</span> {{ end }}{{ $grup }}
+        <span class="ml-1 align-middle font-sans text-base font-medium text-neutral-400 dark:text-neutral-500">({{ $adet }})</span>
+      </h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {{- range .ByTitle }}{{ partial "spor/varlik-karti.html" . }}{{ end }}
+      </div>
+    </section>
+    {{- end }}
+  {{- end }}
+
+  {{- with where $profiles "Params.sport" "not in" $gruplar }}
+  <section class="mt-10" aria-labelledby="grup-diger">
+    <h2 id="grup-diger" class="font-hand text-3xl text-neutral-700 dark:text-neutral-200">Diğer</h2>
+    <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {{- range .ByTitle }}{{ partial "spor/varlik-karti.html" . }}{{ end }}
+    </div>
+  </section>
+  {{- end }}
+
+  {{- if not $profiles }}
+  <p class="text-neutral-600 dark:text-neutral-400">{{ .bos }}</p>
+  {{- end }}
+</main>

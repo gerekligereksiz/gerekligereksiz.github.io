@@ -1,0 +1,42 @@
+{{- /*
+  Basketbol maç istatistiği kartı.
+
+  Kullanım:
+    {{< bulten-basketbol-istatistik dk="24" sayi="14" isabet="7/11" ribaund="7"
+        asist="5" topcalma="1" blok="2" plusminus="+14" >}}
+
+  Üst şerit: sayı / ribaund / asist (büyük, üç sütun).
+  Alt şerit: dakika, isabet, top çalma, blok, +/- (küçük, satır kaydırmalı).
+  Verilmeyen alan hiç basılmaz; şablon varsayılan değer üretmez.
+*/ -}}
+{{- $hero := slice -}}
+{{- with .Get "sayi" }}{{ $hero = $hero | append (dict "label" "Sayı" "value" .) }}{{ end -}}
+{{- with .Get "ribaund" }}{{ $hero = $hero | append (dict "label" "Ribaund" "value" .) }}{{ end -}}
+{{- with .Get "asist" }}{{ $hero = $hero | append (dict "label" "Asist" "value" .) }}{{ end -}}
+{{- $detail := slice -}}
+{{- with .Get "dk" }}{{ $detail = $detail | append (dict "label" "dk" "value" .) }}{{ end -}}
+{{- with .Get "isabet" }}{{ $detail = $detail | append (dict "label" "isabet" "value" .) }}{{ end -}}
+{{- with .Get "topcalma" }}{{ $detail = $detail | append (dict "label" "top çalma" "value" .) }}{{ end -}}
+{{- with .Get "blok" }}{{ $detail = $detail | append (dict "label" "blok" "value" .) }}{{ end -}}
+{{- with .Get "plusminus" }}{{ $detail = $detail | append (dict "label" "+/−" "value" .) }}{{ end -}}
+{{- if or $hero $detail -}}
+<div class="not-prose my-5 overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900/40">
+  {{- with $hero }}
+  <dl class="m-0 grid grid-cols-3 divide-x divide-neutral-200 dark:divide-neutral-800">
+    {{- range . }}
+    <div class="flex flex-col-reverse items-center px-2 py-4">
+      <dt class="mt-2 text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">{{ .label }}</dt>
+      <dd class="m-0 text-3xl font-bold leading-none tabular-nums">{{ .value }}</dd>
+    </div>
+    {{- end }}
+  </dl>
+  {{- end }}
+  {{- with $detail }}
+  <ul class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 border-t border-neutral-200 px-3 py-3 text-sm text-neutral-600 dark:border-neutral-800 dark:text-neutral-300">
+    {{- range . }}
+    <li class="flex items-baseline gap-1"><span class="font-semibold tabular-nums">{{ .value }}</span>{{ .label }}</li>
+    {{- end }}
+  </ul>
+  {{- end }}
+</div>
+{{- end -}}

@@ -1,0 +1,39 @@
+{{- /*
+  İçindekiler alt listesi (özyinelemeli).
+
+  Kullanım (toc.html içinden):
+    {{ partial "bulten/toc-items.html" (dict "items" .Headings "level" 3
+        "headingIcons" $headingIcons "max" 4) }}
+
+  "level" o listenin seviyesi (3 → h3, 4 → h4). "max" üstü seviyeler
+  basılmaz; alt seviyeler de aynı sınırdan geçer.
+*/ -}}
+{{- $items := .items -}}
+{{- $level := .level -}}
+{{- $headingIcons := .headingIcons | default dict -}}
+{{- $max := .max | default 4 -}}
+{{- with $items }}
+<ol class="{{ if eq $level 3 }}mt-0.5 space-y-0.5 pl-3{{ else }}mt-0.5 space-y-0.5 pl-4{{ end }}">
+  {{- range . }}
+  {{- if le .Level $max }}
+  {{- $lvl := .Level }}
+  <li>
+    <a href="#{{ .ID }}" data-toc-link{{ with index $headingIcons .ID }} data-section="{{ . }}" data-icon="{{ . }}"{{ end }} class="-ml-px flex items-center gap-2 rounded-md px-3 {{ if eq $lvl 3 }}py-1 leading-snug text-neutral-500{{ else }}py-0.5 text-lg leading-snug text-neutral-500{{ end }} transition-colors hover:bg-neutral-100 hover:text-accent-700 aria-[current=true]:bg-accent-50 aria-[current=true]:font-medium aria-[current=true]:text-accent-700 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-accent-300 dark:aria-[current=true]:bg-neutral-800 dark:aria-[current=true]:text-accent-300">
+      {{- with index $headingIcons .ID -}}
+        {{- $img := resources.Get (printf "images/bulletin_%s.webp" .) -}}
+        {{- with $img -}}
+          {{- with .Process "resize 48x48 webp q90" -}}
+            <img src="{{ .RelPermalink }}" alt="" aria-hidden="true" width="{{ .Width }}" height="{{ .Height }}" class="{{ if eq $lvl 3 }}h-8 w-8{{ else }}h-6 w-6{{ end }} shrink-0">
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+      <span>{{ .Title | safeHTML }}</span>
+    </a>
+    {{- with .Headings }}
+      {{- partial "bulten/toc-items.html" (dict "items" . "level" (add $level 1) "headingIcons" $headingIcons "max" $max) }}
+    {{- end }}
+  </li>
+  {{- end }}
+  {{- end }}
+</ol>
+{{- end }}

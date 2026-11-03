@@ -1,0 +1,85 @@
+{{- /*
+  Sayı rayı: bülten sayısının yapışkan gezinme çubuğu.
+
+  Kullanım: {{ partial "bulten/sayi-ray.html" (dict "issue" $hub "current" .) }}
+
+  - "issue"   sayı hub'ı (branch bundle'ın _index.md sayfası)
+  - "current" o an açık olan sayfa (hub'ın kendisi de olabilir)
+
+  Bölüm çipleri weight sırasıyla dizilir; aktif olan aria-current="page" alır.
+  Yüzde göstergesi bulten/ilerleme-script.html tarafından doldurulur; JS
+  çalışmazsa yalnızca "%0" görünür, düzen kaymaz.
+*/ -}}
+{{- $issue := .issue -}}
+{{- $current := .current -}}
+{{- $sections := $issue.Pages.ByWeight -}}
+{{- $num := $issue.Params.issue_number -}}
+{{- $range := partial "bulten/tarih-araligi.html" $issue.Date -}}
+{{- $currentKey := "" -}}
+{{- if ne $current $issue -}}
+  {{- $currentKey = $current.Params.slug | default $current.File.BaseFileName -}}
+{{- end -}}
+{{- $keys := slice -}}
+{{- range $sections }}{{ $keys = $keys | append (.Params.slug | default .File.BaseFileName) }}{{ end -}}
+{{- with $sections }}
+<div class="sticky top-16 z-30 border-b border-neutral-200 bg-neutral-50/90 backdrop-blur lg:top-32 dark:border-neutral-800 dark:bg-neutral-950/85"
+     data-bulten-ray
+     data-issue="{{ $num }}"
+     data-tarih="{{ $issue.Lastmod.Format "2006-01-02" }}"
+     data-sections="{{ $keys | jsonify }}"
+     data-current="{{ $currentKey }}">
+  <div class="mx-auto flex max-w-6xl items-center gap-2 px-4 py-1.5 sm:gap-3">
+
+    {{- /* Sayı kimliği: mobilde yer kazanmak için gizli */ -}}
+    <a href="{{ $issue.RelPermalink }}" class="hidden shrink-0 items-center gap-1.5 rounded-md px-1 py-1 hover:text-accent-700 sm:flex dark:hover:text-accent-300">
+      <span class="font-hand text-[28px] leading-none">{{ $num }}. sayı</span>
+      <span class="font-hand text-[22px] leading-none text-neutral-500 dark:text-neutral-400">{{ $range }}</span>
+    </a>
+
+    {{- /* Bölümler: mobilde alt satıra kayar (hepsi görünür), sm ve üstünde
+       tek satır; sığmazsa kendi içinde yatay kayar, gövde taşmaz. */ -}}
+    <nav class="min-w-0 flex-1 sm:border-l sm:border-neutral-200 sm:pl-3 dark:sm:border-neutral-800" aria-label="Bu sayının bölümleri">
+      <ul class="flex flex-wrap items-center gap-1 sm:flex-nowrap sm:overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {{- range $sections }}
+        {{- $key := .Params.slug | default .File.BaseFileName }}
+        {{- $icon := .Params.icon | default "genel" }}
+        <li class="shrink-0">
+          <a href="{{ .RelPermalink }}"
+             data-bulten-section="{{ $key }}"
+             {{- if eq . $current }} aria-current="page"{{ end }}
+             class="inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-full py-1 pl-1 pr-2.5 font-hand text-[26px] leading-none sm:pr-3 text-neutral-600 transition hover:bg-neutral-100 hover:text-accent-700 aria-[current=page]:bg-accent-50 aria-[current=page]:text-accent-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-accent-300 dark:aria-[current=page]:bg-neutral-800 dark:aria-[current=page]:text-accent-300">
+            {{- with resources.Get (printf "images/bulletin_%s.webp" $icon) }}
+              {{- with .Process "resize 72x72 webp q85" }}
+            <img src="{{ .RelPermalink }}" alt="" aria-hidden="true" width="{{ .Width }}" height="{{ .Height }}" loading="lazy" decoding="async"
+                 class="h-7 w-7 shrink-0 rounded-full bg-white object-contain p-0.5 ring-1 ring-black/5 sm:h-8 sm:w-8 dark:ring-white/10">
+              {{- end }}
+            {{- end }}
+            {{ .Params.section_label | default .Title }}
+            <span data-bulten-durum class="hidden items-center font-hand text-xl sm:inline-flex leading-none text-accent-600 dark:text-accent-400" aria-hidden="true" hidden>
+              <svg data-bulten-durum-tik class="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" hidden aria-hidden="true"><path d="M3 8.5 6.5 12 13 4.5" /></svg>
+              <span data-bulten-durum-yuzde></span>
+            </span>
+          </a>
+        </li>
+        {{- end }}
+      </ul>
+    </nav>
+
+    {{- /* Okuma ilerlemesi: sayı geneli. Mobilde yüzde + çubuk alt alta
+       (yer kazanmak için), sm ve üstünde yan yana. */ -}}
+    <div class="flex shrink-0 flex-col items-end gap-1 sm:flex-row sm:items-center sm:gap-2"
+         role="progressbar"
+         aria-label="Bu sayının okunma oranı"
+         aria-valuemin="0"
+         aria-valuemax="100"
+         aria-valuenow="0"
+         aria-valuetext="%0"
+         data-bulten-ilerleme>
+      <span class="inline-block min-w-[3.75rem] text-right font-hand text-3xl leading-none text-neutral-600 dark:text-neutral-300" data-bulten-yuzde>%0</span>
+      <span class="block h-1.5 w-12 overflow-hidden rounded-full bg-neutral-200 sm:w-16 dark:bg-neutral-800" aria-hidden="true">
+        <span class="block h-full w-0 rounded-full bg-accent-500" data-bulten-bar></span>
+      </span>
+    </div>
+  </div>
+</div>
+{{- end }}

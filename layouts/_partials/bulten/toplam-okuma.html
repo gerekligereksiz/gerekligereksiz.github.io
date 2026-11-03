@@ -1,0 +1,14 @@
+{{- /*
+  Bir bülten sayısının toplam okuma süresi: hub + bölümler.
+
+  Kullanım: {{ partial "bulten/toplam-okuma.html" . }}
+  Hub tek başına 1 dakika göründüğü için sayı listesinde ve hub başlığında
+  bölümlerin süresi toplanır.
+*/ -}}
+{{- $rt := .ReadingTime -}}
+{{- with .Pages -}}
+  {{- $sum := 0 -}}
+  {{- range . }}{{ $sum = add $sum .ReadingTime }}{{ end -}}
+  {{- $rt = add $sum $rt -}}
+{{- end -}}
+{{- return $rt -}}

@@ -1,0 +1,54 @@
+{{- /*
+  Bölüm sayfası gezinmesi: sıralı önceki/sonraki + bu sayının diğer bölümleri.
+
+  Kullanım: {{ partial "bulten/bolum-nav.html" (dict "page" .) }}
+  Sıra, kardeş sayfaların weight değerinden gelir.
+*/ -}}
+{{- $page := .page -}}
+{{- $siblings := $page.Parent.Pages.ByWeight -}}
+{{- $index := -1 -}}
+{{- range $i, $p := $siblings -}}
+  {{- if eq $p.Permalink $page.Permalink }}{{ $index = $i }}{{ end -}}
+{{- end -}}
+{{- $prev := "" -}}
+{{- $next := "" -}}
+{{- if gt $index 0 }}{{ $prev = index $siblings (sub $index 1) }}{{ end -}}
+{{- if and (ge $index 0) (lt (add $index 1) (len $siblings)) }}{{ $next = index $siblings (add $index 1) }}{{ end -}}
+{{- $others := where $siblings "Permalink" "ne" $page.Permalink }}
+
+<nav class="mt-12 border-t border-neutral-200 pt-6 dark:border-neutral-800" aria-label="Bu sayının diğer bölümleri">
+
+  {{- /* Okuma sırası: bir önceki ve bir sonraki bölüm */ -}}
+  {{- if or $prev $next }}
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    {{- with $prev }}
+    <a href="{{ .RelPermalink }}" class="inline-flex min-h-11 items-center gap-2 rounded-lg border border-neutral-200 px-4 py-2 transition hover:border-accent-300 hover:bg-neutral-50 dark:border-neutral-800 dark:hover:border-accent-700 dark:hover:bg-neutral-900" aria-label="Önceki bölüm: {{ .Params.section_label }}">
+      <span class="text-base text-neutral-400" aria-hidden="true">←</span>
+      <span class="text-sm font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-300">{{ .Params.section_label | default .Title }}</span>
+    </a>
+    {{- else }}<span></span>{{ end }}
+    {{- with $next }}
+    <a href="{{ .RelPermalink }}" class="inline-flex min-h-11 items-center gap-2 rounded-lg border border-neutral-200 px-4 py-2 transition hover:border-accent-300 hover:bg-neutral-50 dark:border-neutral-800 dark:hover:border-accent-700 dark:hover:bg-neutral-900" aria-label="Sonraki bölüm: {{ .Params.section_label }}">
+      <span class="text-sm font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-300">{{ .Params.section_label | default .Title }}</span>
+      <span class="text-base text-neutral-400" aria-hidden="true">→</span>
+    </a>
+    {{- end }}
+  </div>
+  {{- end }}
+
+  {{- with $others }}
+  <h2 class="mt-8 font-hand text-3xl leading-none text-neutral-700 dark:text-neutral-200">{{ $page.Parent.Title }} · diğer bölümler</h2>
+  <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+    {{- range . }}
+    <li>
+      <a href="{{ .RelPermalink }}" class="flex min-h-11 flex-col rounded-lg border border-neutral-200 px-4 py-3 transition hover:border-accent-300 hover:bg-neutral-50 dark:border-neutral-800 dark:hover:border-accent-700 dark:hover:bg-neutral-900">
+        <span class="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">{{ .Params.section_label }}</span>
+        <span class="mt-0.5 text-base font-medium leading-snug">{{ .Title }}</span>
+      </a>
+    </li>
+    {{- end }}
+  </ul>
+  {{- end }}
+
+  <p class="mt-4"><a href="{{ $page.Parent.RelPermalink }}" class="text-base underline decoration-neutral-300 underline-offset-2 hover:text-accent-700 hover:decoration-accent-400 dark:decoration-neutral-600 dark:hover:text-accent-300">← {{ $page.Parent.Title }} sayısına dön</a></p>
+</nav>

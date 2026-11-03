@@ -1,0 +1,19 @@
+{{- /*
+  Sayı tarih aralığı: "12–18 Ekim 2026", ay değişirse "28 Eylül – 4 Ekim 2026",
+  yıl değişirse iki yıl da yazılır ("28 Aralık 2025 – 3 Ocak 2026").
+
+  Kullanım: {{ partial "bulten/tarih-araligi.html" .Date }}
+  Sayı tarihi haftanın bitiş günüdür (pazar); aralık 6 gün geriye gider.
+  Site dili "en" olduğu için time.Format kullanılmaz, ay adları elle eşlenir.
+*/ -}}
+{{- $end := . -}}
+{{- $start := $end.AddDate 0 0 -6 -}}
+{{- $aylar := slice "Ocak" "Şubat" "Mart" "Nisan" "Mayıs" "Haziran" "Temmuz" "Ağustos" "Eylül" "Ekim" "Kasım" "Aralık" -}}
+{{- $aySon := index $aylar (sub $end.Month 1) -}}
+{{- if eq $start.Month $end.Month -}}
+  {{- printf "%d–%d %s %d" $start.Day $end.Day $aySon $end.Year -}}
+{{- else if eq $start.Year $end.Year -}}
+  {{- printf "%d %s – %d %s %d" $start.Day (index $aylar (sub $start.Month 1)) $end.Day $aySon $end.Year -}}
+{{- else -}}
+  {{- printf "%d %s %d – %d %s %d" $start.Day (index $aylar (sub $start.Month 1)) $start.Year $end.Day $aySon $end.Year -}}
+{{- end -}}

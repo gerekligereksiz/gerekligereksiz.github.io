@@ -1,0 +1,25 @@
+{{- /*
+  Harici bağlantı: yeni sekmede açılır.
+
+  Bu shortcode yalnızca site dışı linkler için kullanılır; dahili linklerde
+  düz markdown ya da `ref`/`relref` tercih edilir. Bu yüzden akıllı host
+  kontrolü yapılmaz.
+
+  Kullanım:
+    {{< ext-link "https://ornek.com" "Etiket" >}}
+    {{< ext-link "https://ornek.com" >}}   → etiket olarak URL basılır
+    {{< ext-link "https://ornek.com" "Etiket" "noopener noreferrer" >}}
+                                           → rel değerini tek link için geçersiz kılar
+
+  rel varsayılanı hugo.yaml → params.externalLinkRel'den gelir
+  ("noopener noreferrer nofollow").
+
+  Named shortcode kullanılmaz; konumsal parametre alır. Böylece paragraf
+  içinde güvenle kullanılabilir ve iç içe shortcode/RenderString sorunları
+  yaşanmaz.
+*/ -}}
+{{- $url := .Get 0 -}}
+{{- if not $url -}}{{ errorf "ext-link: URL parametresi zorunlu (%s)" .Position }}{{- end -}}
+{{- $label := .Get 1 | default $url -}}
+{{- $rel := .Get 2 | default (site.Params.externalLinkRel | default "noopener noreferrer nofollow") -}}
+<a href="{{ $url }}" target="_blank" rel="{{ $rel }}">{{ $label }}</a>

@@ -1,0 +1,29 @@
+{{ define "main" }}
+  <main class="mx-auto max-w-5xl px-4 py-10">
+    <header class="mb-8">
+      <div class="flex items-center gap-3">
+        {{ partial "menu-icon.html" (dict "name" .Title "class" "h-8 w-auto shrink-0 sm:h-10") }}
+        <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">{{ .Title }}</h1>
+      </div>
+      {{ with .Description }}<p class="mt-2 text-neutral-600 dark:text-neutral-400">{{ . }}</p>{{ end }}
+    </header>
+
+    {{- $pages := .RegularPages.ByDate.Reverse }}
+    {{- $paginator := .Paginate $pages }}
+    {{- if $paginator.Pages }}
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {{ range $paginator.Pages }}{{ partial "post-card" . }}{{ end }}
+    </div>
+
+    {{- if gt $paginator.TotalPages 1 }}
+    <nav class="mt-10 flex items-center justify-center gap-4" aria-label="Sayfalama">
+      {{ with $paginator.Prev }}<a class="rounded-lg px-3 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800" href="{{ .URL }}">← Önceki</a>{{ end }}
+      <span class="text-sm text-neutral-500 dark:text-neutral-400">{{ $paginator.PageNumber }} / {{ $paginator.TotalPages }}</span>
+      {{ with $paginator.Next }}<a class="rounded-lg px-3 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800" href="{{ .URL }}">Sonraki →</a>{{ end }}
+    </nav>
+    {{- end }}
+    {{- else }}
+    <p class="text-neutral-600 dark:text-neutral-400">Henüz inceleme yok.</p>
+    {{- end }}
+  </main>
+{{ end }}

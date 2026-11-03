@@ -1,0 +1,32 @@
+{{- /*
+  Maç bilgileri kutusu.
+
+  Kullanım: {{ partial "gun/mac-bilgileri.html" . }}
+
+  Alanlar front matter'dan gelir; boş olan satır hiç basılmaz:
+    competition → Turnuva
+    round       → Hafta
+    date/time   → Tarih
+    venue       → Yer
+*/ -}}
+{{- $p := . -}}
+{{- $satirlar := slice -}}
+{{- with $p.Params.competition }}{{ $satirlar = $satirlar | append (dict "label" "Turnuva" "value" .) }}{{ end -}}
+{{- with $p.Params.round }}{{ $satirlar = $satirlar | append (dict "label" "Hafta" "value" .) }}{{ end -}}
+{{- $tarih := partial "spor/tarih.html" $p.Date -}}
+{{- with $p.Params.time }}{{ $tarih = printf "%s · %s" $tarih . }}{{ end -}}
+{{- $satirlar = $satirlar | append (dict "label" "Tarih" "value" $tarih) -}}
+{{- with $p.Params.venue }}{{ $satirlar = $satirlar | append (dict "label" "Yer" "value" .) }}{{ end -}}
+{{- with $satirlar }}
+<div class="not-prose my-6 overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900/40">
+  <p class="m-0 border-b border-neutral-200 px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">Maç bilgileri</p>
+  <dl class="m-0 grid gap-x-4 gap-y-2 px-4 py-3 sm:grid-cols-[5.5rem_minmax(0,1fr)]">
+    {{- range . }}
+    <div class="flex gap-3 sm:contents">
+      <dt class="m-0 w-20 shrink-0 text-sm text-neutral-500 sm:w-auto dark:text-neutral-400">{{ .label }}</dt>
+      <dd class="m-0 min-w-0 text-sm font-medium [overflow-wrap:anywhere]">{{ .value }}</dd>
+    </div>
+    {{- end }}
+  </dl>
+</div>
+{{- end }}

@@ -1,0 +1,40 @@
+{{ define "main" }}
+  <main class="mx-auto max-w-3xl px-4 py-10">
+    <header class="mb-8">
+      <div class="flex items-center gap-3">
+        {{ if eq .Kind "term" }}
+          {{ partial "category-icon.html" (dict "name" .Title "height" "h-9") }}
+        {{ else }}
+          {{ partial "menu-icon.html" (dict "name" .Title "class" "h-8 w-auto shrink-0 sm:h-10") }}
+        {{ end }}
+        <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">{{ .Title }}</h1>
+      </div>
+      {{ with .Description }}<p class="mt-3 text-lg text-neutral-600 dark:text-neutral-400">{{ . }}</p>{{ end }}
+    </header>
+
+    {{ $pages := .RegularPages }}
+    {{ $paginator := .Paginate $pages }}
+    {{ if $paginator.Pages }}
+      <ul class="space-y-6">
+        {{ range $paginator.Pages }}
+          <li>
+            <h2 class="text-xl font-semibold tracking-tight">
+              <a href="{{ .RelPermalink }}" class="hover:text-accent-600 dark:hover:text-accent-400">{{ .Title }}</a>
+            </h2>
+            {{ with .Description }}<p class="mt-2 text-base text-neutral-600 dark:text-neutral-400">{{ . }}</p>{{ end }}
+          </li>
+        {{ end }}
+      </ul>
+
+      {{ if gt $paginator.TotalPages 1 }}
+        <nav class="mt-10 flex flex-wrap items-center gap-4 text-base" aria-label="Sayfalama">
+          {{ with $paginator.Prev }}<a class="rounded-lg px-3 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800" href="{{ .URL }}">← Önceki</a>{{ end }}
+          <span class="text-sm text-neutral-500 dark:text-neutral-400">{{ $paginator.PageNumber }} / {{ $paginator.TotalPages }}</span>
+          {{ with $paginator.Next }}<a class="rounded-lg px-3 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800" href="{{ .URL }}">Sonraki →</a>{{ end }}
+        </nav>
+      {{ end }}
+    {{ else }}
+      <p class="text-base text-neutral-600 dark:text-neutral-400">Henüz içerik yok.</p>
+    {{ end }}
+  </main>
+{{ end }}

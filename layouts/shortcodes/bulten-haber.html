@@ -1,0 +1,154 @@
+{{- /*
+  Haber bloğu: solda tarih rayı, sağda mini başlık + gövde.
+
+  Kullanım:
+    {{< bulten-haber
+        tarih="2026-10-13"
+        emoji="🧠"
+        baslik="Gemini 4 Argon açıldı"
+        kaynak="Google Blog|https://…; Google Cloud|https://…" >}}
+    Gövde metni; markdown serbest.
+    {{< /bulten-haber >}}
+
+  tarih   ISO (YYYY-MM-DD) → "13 Ekim" + <time datetime>. Site dili "en"
+          olduğu için time.Format kullanılmaz, ay adı şablon içinde eşlenir.
+  emoji   Madde tipi işareti; başlığın solunda, dekoratif (aria-hidden).
+  baslik  Mini başlık. Verilmezse başlık satırı hiç basılmaz ve emoji tarih
+          rayına taşınır (ileride başlıksız bölümler için).
+  kaynak  "etiket|url" listesi; öğeler ";" ile ayrılır, tıpkı inceleme
+          kartındaki gibi. Gövdenin son paragrafına satır içi parantez
+          içinde basılır: (Etiket, Etiket). Linkler yeni sekmede açılır.
+  kisa    "true" ise tarih rayı ve ayrı başlık satırı basılmaz; tek satırlık
+          kısa haber olur (başlık kalın, gövde aynı paragrafta). Bölüm
+          sonundaki "Kısa haberler" listesi için kullanılır.
+  youtube-video
+          "<id>|<top|bottom>|<başlık>" — gömülü YouTube videosu. 1. alan
+          zorunlu (id ya da tam URL); 2. alan top/bottom, bu ikisi değilse
+          başlık sayılır; 3. alan her zaman başlık. Konum verilmezse top.
+          Başlık verilmezse "baslik", o da yoksa "YouTube video" kullanılır.
+          Video tarih rayına değil metin sütununa girer. Hugo'nun yerleşik
+          youtube shortcode'u RenderString ile çağrılır; privacy ayarı
+          (youtube-nocookie) ve lazy loading korunur.
+
+  Tüm parametreler opsiyonel.
+*/ -}}
+{{- $tarih := .Get "tarih" -}}
+{{- $emoji := .Get "emoji" -}}
+{{- $baslik := .Get "baslik" -}}
+{{- $label := "" -}}
+{{- $iso := "" -}}
+{{- with $tarih -}}
+  {{- if findRE `^\d{4}-\d{2}-\d{2}$` . -}}
+    {{- $iso = . -}}
+    {{- $t := time . -}}
+    {{- $aylar := slice "Ocak" "Şubat" "Mart" "Nisan" "Mayıs" "Haziran" "Temmuz" "Ağustos" "Eylül" "Ekim" "Kasım" "Aralık" -}}
+    {{- $label = printf "%d %s" $t.Day (index $aylar (sub $t.Month 1)) -}}
+  {{- else -}}
+    {{- $label = . -}}
+  {{- end -}}
+{{- end -}}
+{{- $cols := "sm:grid-cols-[4.5rem_minmax(0,1fr)]" -}}
+{{- if not $label }}{{ $cols = "sm:grid-cols-1" }}{{ end -}}
+
+{{- /* Kaynaklar: "etiket|url" öğeleri ";" ile ayrılır */ -}}
+{{- $kaynaklar := slice -}}
+{{- with .Get "kaynak" -}}
+  {{- range split . ";" -}}
+    {{- $item := trim . " " -}}
+    {{- if $item -}}
+      {{- $parts := split $item "|" -}}
+      {{- $label := trim (index $parts 0) " " -}}
+      {{- $url := "" -}}
+      {{- if gt (len $parts) 1 }}{{ $url = trim (index $parts 1) " " }}{{ end -}}
+      {{- $kaynaklar = $kaynaklar | append (dict "label" $label "url" $url) -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* Satır içi kaynak parantezi; son paragrafın içine eklenir */ -}}
+{{- $kaynakHTML := "" -}}
+{{- range $i, $k := $kaynaklar -}}
+  {{- if $i }}{{ $kaynakHTML = printf "%s, " $kaynakHTML }}{{ end -}}
+  {{- /* Etiket, markdown olarak işlenir: tipografi (’ gibi) gövdeyle aynı kalsın */ -}}
+  {{- $labelHTML := $k.label | $.Page.RenderString (dict "display" "inline") -}}
+  {{- with $k.url -}}
+    {{- $l := partial "link-attrs.html" (dict "url" .) -}}
+    {{- $attrs := "" -}}
+    {{- with $l.target }}{{ $attrs = printf " target=\"%s\"" . }}{{ end -}}
+    {{- with $l.rel }}{{ $attrs = printf "%s rel=\"%s\"" $attrs . }}{{ end -}}
+    {{- $kaynakHTML = printf "%s<a href=\"%s\"%s>%s</a>" $kaynakHTML ($l.href | htmlEscape) $attrs $labelHTML -}}
+  {{- else -}}
+    {{- $kaynakHTML = printf "%s%s" $kaynakHTML $labelHTML -}}
+  {{- end -}}
+{{- end -}}
+{{- /* YouTube: "id|konum|başlık"; konum verilmezse top */ -}}
+{{- $ytID := "" -}}
+{{- $ytPos := "top" -}}
+{{- $ytTitle := "" -}}
+{{- with .Get "youtube-video" -}}
+  {{- $parts := split . "|" -}}
+  {{- $ytID = trim (index $parts 0) " " -}}
+  {{- if gt (len $parts) 1 -}}
+    {{- $p := lower (trim (index $parts 1) " ") -}}
+    {{- if in (slice "top" "bottom") $p -}}
+      {{- $ytPos = $p -}}
+    {{- else if $p -}}
+      {{- $ytTitle = trim (index $parts 1) " " -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if gt (len $parts) 2 -}}
+    {{- with trim (index $parts 2) " " }}{{ $ytTitle = . }}{{ end -}}
+  {{- end -}}
+  {{- /* Tam URL verilirse video kimliğine indirge */ -}}
+  {{- $ytID = $ytID | replaceRE `^.*(?:v=|youtu\.be/|shorts/|embed/)([A-Za-z0-9_-]{11}).*$` "$1" -}}
+{{- end -}}
+{{- $ytTitle = $ytTitle | default $baslik | default "YouTube video" -}}
+{{- $ytHTML := "" -}}
+{{- with $ytID -}}
+  {{- $ytHTML = $.Page.RenderString (printf "{{< youtube id=%q title=%q loading=%q >}}" . $ytTitle "lazy") -}}
+{{- end -}}
+{{- /* Kısa haber: tarih rayı ve mini başlık olmadan tek satır */ -}}
+{{- $kisa := eq (.Get "kisa") "true" -}}
+{{- /* Gövdeyi işle ve kaynak listesini son paragrafa ekle */ -}}
+{{- $body := "" -}}
+{{- if $kisa -}}
+  {{- $body = .Inner | .Page.RenderString (dict "display" "inline") -}}
+  {{- with $kaynakHTML }}{{ $body = printf "%s (%s)" $body . }}{{ end -}}
+{{- else -}}
+  {{- $body = .Inner | .Page.RenderString (dict "display" "block") -}}
+  {{- with $kaynakHTML -}}
+    {{- $parts := split $body "</p>" -}}
+    {{- if gt (len $parts) 1 -}}
+      {{- $last := sub (len $parts) 1 -}}
+      {{- $body = printf "%s (%s)</p>%s" (delimit (first $last $parts) "</p>") . (index $parts $last) -}}
+    {{- else -}}
+      {{- $body = printf "%s (%s)" $body . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if $kisa }}
+<div class="my-2 border-t border-neutral-200/60 pt-2 dark:border-neutral-800/60">
+  <p class="m-0 leading-snug">{{ with $emoji }}<span class="mr-1 select-none" aria-hidden="true">{{ . }}</span>{{ end }}{{ with $baslik }}<strong class="font-semibold">{{ . }}</strong> {{ end }}<span class="haber-govde">{{ $body | safeHTML }}</span></p>
+</div>
+{{- else }}
+<div class="my-5 grid grid-cols-1 gap-x-4 gap-y-1 border-t border-neutral-200/70 pt-4 [h3+&]:mt-0 [h3+&]:border-t-0 [h3+&]:pt-0 {{ $cols }} dark:border-neutral-800/70">
+  {{- with $label }}
+  <div class="flex items-center gap-1.5 sm:block sm:pt-0.5">
+    {{- if not $baslik }}{{ with $emoji }}<span class="select-none leading-none" aria-hidden="true">{{ . }}</span>{{ end }}{{ end -}}
+    {{- if $iso -}}
+    <time datetime="{{ $iso }}" class="text-[11px] font-semibold uppercase tracking-wider text-accent-700 dark:text-accent-300">{{ . }}</time>
+    {{- else -}}
+    <span class="text-[11px] font-semibold uppercase tracking-wider text-accent-700 dark:text-accent-300">{{ . }}</span>
+    {{- end -}}
+  </div>
+  {{- end }}
+  <div class="min-w-0">
+    {{- with $baslik }}
+    <p class="m-0 text-[1.05em] font-semibold leading-snug">{{ with $emoji }}<span class="mr-1.5 select-none text-[0.95em]" aria-hidden="true">{{ . }}</span>{{ end }}{{ . }}</p>
+    {{- end }}
+    {{- if eq $ytPos "top" }}{{ with $ytHTML }}<div class="mt-2 mb-1 overflow-hidden rounded-lg">{{ . }}</div>{{ end }}{{ end }}
+    <div class="haber-govde [&>p]:mb-0 [&>p]:mt-1.5">{{ $body | safeHTML }}</div>
+    {{- if eq $ytPos "bottom" }}{{ with $ytHTML }}<div class="mt-3 overflow-hidden rounded-lg">{{ . }}</div>{{ end }}{{ end }}
+  </div>
+</div>
+{{- end }}

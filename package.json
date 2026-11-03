@@ -1,16 +1,12 @@
 {
-  "name": "gerekli-gereksiz",
-  "version": "1.0.0",
+  "name": "gerekligereksiz",
   "private": true,
-  "packageManager": "pnpm@10.14.0",
-  "description": "Gerekli Gereksiz Hugo Blox with Tailwind CSS v4",
   "scripts": {
-    "dev": "hugo server --disableFastRender",
-    "build": "hugo --minify"
+    "build": "hugo --gc --minify"
   },
-  "dependencies": {
-    "@tailwindcss/cli": "^4.1.12",
-    "@tailwindcss/typography": "^0.5.10",
-    "tailwindcss": "^4.1.12"
+  "devDependencies": {
+    "@tailwindcss/cli": "^4",
+    "@tailwindcss/typography": "^0.5.20",
+    "tailwindcss": "^4"
   }
 }

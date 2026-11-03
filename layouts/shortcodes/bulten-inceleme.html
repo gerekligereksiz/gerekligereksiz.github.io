@@ -1,0 +1,140 @@
+{{- /*
+  Uygulama incelemesi kartı.
+
+  Kullanım:
+    {{< bulten-inceleme
+        platform="Linux (glibc)"
+        lisans="MIT"
+        kod="github.com/lgse/strata|https://github.com/lgse/strata"
+        durum="1.0"
+        kime="Kime uygun metni"
+        degerlendirme="Hüküm metni"
+        kaynak="Sürüm notları|https://…; It's FOSS|https://…" >}}
+    {{< bulten-giris >}}
+    Giriş paragrafı; markdown serbest.
+    {{< /bulten-giris >}}
+
+    {{< bulten-artilar >}}
+    - madde
+    {{< /bulten-artilar >}}
+
+    {{< bulten-eksiler >}}
+    - madde
+    {{< /bulten-eksiler >}}
+    {{< /bulten-inceleme >}}
+
+  Parametreler (hepsi opsiyonel, boş olan basılmaz):
+    platform, lisans      Künye hücreleri; satır içi markdown destekler.
+    kod                   "etiket|url"; "|" yoksa URL'den etiket türetilir.
+    durum                 Sağ üstteki rozet (1.0 / Beta / Önizleme).
+    kime                  "Kime uygun" satırı.
+    degerlendirme         Hüküm kutusu.
+    kaynak                "etiket|url" listesi; öğeler ";" ile ayrılır.
+
+  Gövde yalnızca giris/artilar/eksiler shortcode'larından oluşur; bu yüzden
+  .Inner ham basılır (RenderString çağrılmaz, aksi halde iç shortcode HTML'i
+  güvenlik nedeniyle düşer). Markdown her çocuk shortcode'un içinde işlenir.
+*/ -}}
+{{- $page := .Page -}}
+{{- $metaLabel := "text-[12px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400" -}}
+
+{{- /* Kaynak kodu: "etiket|url" veya çıplak URL */ -}}
+{{- $kodLabel := "" -}}
+{{- $kodURL := "" -}}
+{{- with .Get "kod" -}}
+  {{- $parts := split . "|" -}}
+  {{- if gt (len $parts) 1 -}}
+    {{- $kodLabel = trim (index $parts 0) " " -}}
+    {{- $kodURL = trim (index $parts 1) " " -}}
+  {{- else -}}
+    {{- $kodURL = trim . " " -}}
+    {{- $kodLabel = $kodURL | replaceRE `^https?://` "" | replaceRE `/+$` "" -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* Kaynaklar: "etiket|url" öğeleri ";" ile ayrılır */ -}}
+{{- $kaynaklar := slice -}}
+{{- with .Get "kaynak" -}}
+  {{- range split . ";" -}}
+    {{- $item := trim . " " -}}
+    {{- if $item -}}
+      {{- $parts := split $item "|" -}}
+      {{- $label := trim (index $parts 0) " " -}}
+      {{- $url := "" -}}
+      {{- if gt (len $parts) 1 }}{{ $url = trim (index $parts 1) " " }}{{ end -}}
+      {{- $kaynaklar = $kaynaklar | append (dict "label" $label "url" $url) -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+<div class="my-6 rounded-xl border border-neutral-200/80 bg-neutral-50/60 p-5 sm:p-6 dark:border-neutral-800 dark:bg-neutral-900/40">
+  {{- with .Get "durum" }}
+  <div class="mb-3 flex justify-end">
+    <span class="rounded-full bg-accent-50 px-2.5 py-1 text-[12px] font-semibold uppercase tracking-wider text-accent-700 ring-1 ring-accent-200/70 dark:bg-accent-900/40 dark:text-accent-200 dark:ring-accent-800/60">{{ . }}</span>
+  </div>
+  {{- end }}
+
+  {{- if or (.Get "platform") (.Get "lisans") $kodURL }}
+  <dl class="grid grid-cols-1 gap-x-6 gap-y-3 border-b border-neutral-200/80 pb-4 sm:grid-cols-2 dark:border-neutral-800">
+    {{- with .Get "platform" }}
+    <div>
+      <dt class="{{ $metaLabel }}"><span class="mr-1.5 select-none" aria-hidden="true">🌐</span>Platform</dt>
+      <dd class="m-0 mt-1 pl-0 text-[0.8em] leading-relaxed break-words">{{ . | $page.RenderString (dict "display" "inline") }}</dd>
+    </div>
+    {{- end }}
+    {{- with $kodURL }}
+    {{- $l := partial "link-attrs.html" (dict "url" .) }}
+    <div>
+      <dt class="{{ $metaLabel }}"><span class="mr-1.5 select-none" aria-hidden="true">🔗</span>Kaynak kodu</dt>
+      <dd class="m-0 mt-1 pl-0 text-[0.8em] leading-relaxed break-words"><a href="{{ $l.href }}"{{ with $l.target }} target="{{ . }}"{{ end }}{{ with $l.rel }} rel="{{ . }}"{{ end }} class="break-words underline decoration-neutral-300 underline-offset-2 hover:text-accent-700 hover:decoration-accent-400 dark:decoration-neutral-600 dark:hover:text-accent-300">{{ range $i, $p := split $kodLabel "/" }}{{ if $i }}/<wbr>{{ end }}{{ $p }}{{ end }}<span class="ml-0.5 select-none text-[0.9em]" aria-hidden="true">↗</span></a></dd>
+    </div>
+    {{- end }}
+    {{- with .Get "lisans" }}
+    <div class="sm:col-span-2">
+      <dt class="{{ $metaLabel }}"><span class="mr-1.5 select-none" aria-hidden="true">📜</span>Lisans</dt>
+      <dd class="m-0 mt-1 pl-0 text-[0.8em] leading-relaxed break-words">{{ . | $page.RenderString (dict "display" "inline") }}</dd>
+    </div>
+    {{- end }}
+  </dl>
+  {{- end }}
+
+  {{- /* trim sonucu string olduğu için yalnızca boş kontrolünde kullanılır;
+         basılan değer .Inner'ın kendisidir (template.HTML, kaçış yapılmaz). */ -}}
+  {{- if trim .Inner " \n\r\t" }}
+  <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">{{ .Inner }}</div>
+  {{- end }}
+
+  {{- with .Get "kime" }}
+  <div class="mt-4 flex gap-2">
+    <span class="select-none text-sm leading-6 mt-3" aria-hidden="true">🎯</span>
+    <div class="min-w-0">
+      <p class="m-0 {{ $metaLabel }}">Kime uygun</p>
+      <p class="m-0 mt-1 text-[0.98em] leading-relaxed break-words">{{ . | $page.RenderString (dict "display" "inline") }}</p>
+    </div>
+  </div>
+  {{- end }}
+
+  {{- with .Get "degerlendirme" }}
+  <div class="mt-4 rounded-lg border-l-2 border-accent-500/70 bg-white/70 px-4 py-3 dark:bg-neutral-900/50">
+    <p class="m-0 {{ $metaLabel }}"><span class="mr-1.5 select-none" aria-hidden="true">🧭</span>Değerlendirme</p>
+    <p class="m-0 mt-1 text-[0.98em] leading-relaxed break-words">{{ . | $page.RenderString (dict "display" "inline") }}</p>
+  </div>
+  {{- end }}
+
+  {{- with $kaynaklar }}
+  <div class="mt-5 flex flex-wrap items-baseline gap-x-2 gap-y-1 border-t border-neutral-200/80 pt-3 dark:border-neutral-800">
+    <span class="{{ $metaLabel }}"><span class="mr-1.5 select-none" aria-hidden="true">📚</span>Kaynak</span>
+    {{- range $i, $k := . }}
+      {{- with $k.url }}
+      {{- $l := partial "link-attrs.html" (dict "url" .) }}
+      <a href="{{ $l.href }}"{{ with $l.target }} target="{{ . }}"{{ end }}{{ with $l.rel }} rel="{{ . }}"{{ end }} class="text-[0.8em] text-neutral-600 underline decoration-neutral-300 underline-offset-2 hover:text-accent-700 hover:decoration-accent-400 dark:text-neutral-300 dark:decoration-neutral-600 dark:hover:text-accent-300">{{ $k.label }}<span class="ml-0.5 select-none text-[0.9em]" aria-hidden="true">↗</span></a>
+      {{- else }}
+      <span class="text-[0.8em] text-neutral-600 dark:text-neutral-300">{{ $k.label }}</span>
+      {{- end }}
+      {{- if lt $i (sub (len $kaynaklar) 1) }}
+      <span class="select-none text-neutral-400 dark:text-neutral-600" aria-hidden="true">·</span>
+      {{- end }}
+    {{- end }}
+  </div>
+  {{- end }}
+</div>

@@ -1,0 +1,90 @@
+<header class="sticky top-0 z-40 border-b border-neutral-200 bg-neutral-50/85 backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/80">
+  <div class="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-4 lg:h-32">
+    <a href="{{ site.Home.RelPermalink }}" class="flex h-full shrink-0 items-center overflow-hidden" aria-label="{{ site.Title }} ana sayfa">
+      {{- $logo := resources.Get "images/logo_primary.webp" }}
+      {{- with $logo }}
+      <img src="{{ .RelPermalink }}" alt="{{ site.Title }}" class="h-full w-auto object-contain" width="{{ .Width }}" height="{{ .Height }}">
+      {{- else }}
+      <span class="text-lg font-bold tracking-tight">Gerekli<span class="text-accent-600 dark:text-accent-400">Gereksiz</span></span>
+      {{- end }}
+    </a>
+
+    <div class="flex items-center gap-1">
+      {{- /* Masaüstü menüsü: md ve üstünde görünür */ -}}
+      <nav class="hidden lg:block" aria-label="Ana menü">
+        <ul class="flex items-center gap-1 font-hand text-xl font-medium lg:text-2xl">
+          {{ $current := . }}
+          {{ range site.Menus.main }}
+            <li>
+              <a href="{{ .URL }}" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 hover:bg-neutral-100 hover:text-accent-600 dark:hover:bg-neutral-800 dark:hover:text-accent-400 xl:gap-2{{ if or ($current.IsMenuCurrent "main" .) ($current.HasMenuCurrent "main" .) }} text-accent-600 dark:text-accent-400{{ end }}">{{ partial "menu-icon.html" .Name }}{{ .Name }}</a>
+            </li>
+          {{ end }}
+        </ul>
+      </nav>
+
+      {{- /* Tema düğmesi kaldırıldı: tema artık yalnızca sistem tercihini
+             izliyor (baseof.html içindeki başlangıç script'i).
+             Eski kod, geri açmak için yorumda saklanıyor:
+
+      <button id="theme-toggle" type="button" class="rounded-lg p-2.5 hover:bg-neutral-100 dark:hover:bg-neutral-800" aria-label="Tema değiştir">
+        <svg class="hidden size-6 dark:block" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1.5M12 19.5V21M4.5 12H3m18 0h-1.5M5.64 5.64 4.58 4.58m14.84 14.84-1.06-1.06M5.64 18.36l-1.06 1.06M19.42 4.58l-1.06 1.06M8.25 12a3.75 3.75 0 1 0 7.5 0 3.75 3.75 0 0 0-7.5 0Z" />
+        </svg>
+        <svg class="size-6 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 15.5A9.72 9.72 0 0 1 12 21.75 9.75 9.75 0 0 1 8.25 3.74a9.72 9.72 0 0 0-.5.26 8.25 8.25 0 1 0 14 11.5Z" />
+        </svg>
+      </button>
+
+      */ -}}
+
+      {{- /* Hamburger: yalnızca md altında görünür */ -}}
+      <button id="menu-toggle" type="button" class="rounded-lg p-2.5 hover:bg-neutral-100 dark:hover:bg-neutral-800 lg:hidden" aria-label="Menüyü aç" aria-expanded="false" aria-controls="mobile-menu">
+        <svg id="menu-icon-open" class="size-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+        </svg>
+        <svg id="menu-icon-close" class="hidden size-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  {{- /* Mobil menü paneli: md ve üstünde gizli */ -}}
+  <nav id="mobile-menu" class="hidden border-t border-neutral-200 dark:border-neutral-800 lg:hidden" aria-label="Ana menü (mobil)">
+    <ul class="mx-auto flex max-w-5xl flex-col px-2 py-2 font-hand text-2xl font-medium">
+      {{ $current := . }}
+      {{ range site.Menus.main }}
+        {{ $active := or ($current.IsMenuCurrent "main" .) ($current.HasMenuCurrent "main" .) }}
+        <li>
+          <a href="{{ .URL }}" class="flex items-center gap-3 rounded-lg px-3 py-3 hover:bg-neutral-100 hover:text-accent-600 dark:hover:bg-neutral-800 dark:hover:text-accent-400{{ if $active }} text-accent-600 dark:text-accent-400{{ end }}">{{ partial "menu-icon.html" (dict "name" .Name "class" "h-8 w-auto shrink-0") }}{{ .Name }}</a>
+        </li>
+      {{ end }}
+    </ul>
+  </nav>
+</header>
+<script>
+  (function () {
+    {{- /* Tema düğmesi dinleyicisi kaldırıldı; eski kod yorumda:
+    var themeBtn = document.getElementById("theme-toggle");
+    if (themeBtn) {
+      themeBtn.addEventListener("click", function () {
+        var dark = document.documentElement.classList.toggle("dark");
+        try { localStorage.setItem("theme", dark ? "dark" : "light"); } catch (e) {}
+      });
+    }
+    */ -}}
+    var menuBtn = document.getElementById("menu-toggle");
+    var menu = document.getElementById("mobile-menu");
+    var iconOpen = document.getElementById("menu-icon-open");
+    var iconClose = document.getElementById("menu-icon-close");
+    if (menuBtn && menu) {
+      menuBtn.addEventListener("click", function () {
+        var nowHidden = menu.classList.toggle("hidden");
+        menuBtn.setAttribute("aria-expanded", String(!nowHidden));
+        menuBtn.setAttribute("aria-label", nowHidden ? "Menüyü aç" : "Menüyü kapat");
+        if (iconOpen) iconOpen.classList.toggle("hidden", !nowHidden);
+        if (iconClose) iconClose.classList.toggle("hidden", nowHidden);
+      });
+    }
+  })();
+</script>

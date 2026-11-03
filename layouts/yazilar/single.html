@@ -1,0 +1,67 @@
+{{ define "main" }}
+  {{- /* Break-out düzeni: görsel viewport ile orantılı büyür (fluid),
+         metin okunabilir kolonda (736px) ortada kalır. */ -}}
+  <main class="mx-auto w-full max-w-[min(98vw,1632px)] px-4 py-10">
+    <article>
+      <header class="mx-auto max-w-3xl">
+        <div class="flex flex-wrap items-center gap-2 text-sm">
+          {{- with index (.Params.categories | default slice) 0 }}
+          <a href="{{ printf "/categories/%s/" (. | urlize) }}" class="inline-flex items-center gap-1.5 rounded-full bg-accent-50 py-1 pl-1.5 pr-3 font-medium text-accent-700 dark:bg-accent-900/50 dark:text-accent-200">{{ partial "category-icon.html" (dict "name" . "height" "h-5") }}{{ . }}</a>
+          {{- end }}
+          <time datetime="{{ .Date.Format "2006-01-02" }}" class="text-neutral-500 dark:text-neutral-400">{{ .Date.Format "2 January 2006" }}</time>
+          <span class="text-neutral-300 dark:text-neutral-600" aria-hidden="true">·</span>
+          <span class="text-neutral-500 dark:text-neutral-400">{{ .ReadingTime }} dk okuma</span>
+        </div>
+        <h1 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{{ .Title }}</h1>
+        {{ with .Description }}<p class="mt-3 text-lg text-neutral-600 dark:text-neutral-400">{{ . }}</p>{{ end }}
+      </header>
+
+      {{- with .Params.image }}
+        {{- $img := resources.Get . }}
+        {{- with $img }}
+      <figure class="mb-8 overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
+        {{- with ($img.Process "resize 1600x webp") }}
+        <img src="{{ .RelPermalink }}" alt="" class="aspect-video w-full object-cover">
+        {{- end }}
+        {{- with $.Params.image_credit }}
+        <figcaption class="font-hand px-4 py-2 text-xl text-neutral-500 dark:text-neutral-400">{{ . }}</figcaption>
+        {{- end }}
+      </figure>
+        {{- end }}
+      {{- end }}
+
+      <div class="prose prose-neutral mx-auto max-w-3xl dark:prose-invert prose-a:text-accent-600 dark:prose-a:text-accent-400">
+        {{ .Content }}
+      </div>
+
+      {{- with .Params.tags }}
+      <footer class="mx-auto mt-10 flex max-w-3xl flex-wrap gap-2">
+        {{ range . }}
+        <a href="{{ printf "/tags/%s/" (. | urlize) }}" class="rounded-full border border-neutral-200 px-3 py-1 text-sm text-neutral-600 hover:border-accent-300 hover:text-accent-600 dark:border-neutral-700 dark:text-neutral-400 dark:hover:border-accent-700 dark:hover:text-accent-400">#{{ . }}</a>
+        {{ end }}
+      </footer>
+      {{- end }}
+
+      {{- with .Params.related_apps }}
+      <aside class="mx-auto mt-8 max-w-3xl rounded-2xl border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">İlgili Uygulamalar</h2>
+        <ul class="mt-3 flex flex-wrap gap-2">
+          {{ range . }}
+          <li><a href="{{ printf "/uygulamalar/%s/" (. | urlize) }}" class="rounded-lg bg-neutral-50 px-3 py-1.5 text-sm font-medium border border-neutral-200 hover:border-accent-300 hover:text-accent-600 dark:bg-neutral-800 dark:border-neutral-700 dark:hover:border-accent-700 dark:hover:text-accent-400">{{ . }}</a></li>
+          {{ end }}
+        </ul>
+      </aside>
+      {{- end }}
+
+      {{- /* Önceki / sonraki */ -}}
+      {{- with .NextInSection }}
+      <nav class="mx-auto mt-10 max-w-3xl border-t border-neutral-200 pt-6 dark:border-neutral-800" aria-label="Sonraki yazı">
+        <a href="{{ .RelPermalink }}" class="group block">
+          <span class="text-sm text-neutral-500 dark:text-neutral-400">Sonraki →</span>
+          <span class="mt-1 block font-medium group-hover:text-accent-600 dark:group-hover:text-accent-400">{{ .Title }}</span>
+        </a>
+      </nav>
+      {{- end }}
+    </article>
+  </main>
+{{ end }}

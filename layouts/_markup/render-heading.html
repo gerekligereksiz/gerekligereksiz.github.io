@@ -1,0 +1,29 @@
+{{- /*
+  Başlık render hook'u.
+
+  icon="ad"   → assets/images/bulletin_<ad>.webp illüstrasyonu (64px) başlığın solunda.
+  emoji="🏆"  → aynı yerde emoji; görsel asset gerektirmez, TOC'a yansımaz
+                (TOC yalnızca icon sistemini kullanır, h2/h3/h4).
+  İkisi birlikte verilirse önce emoji, sonra illüstrasyon basılır.
+*/ -}}
+{{- $anchor := .Anchor -}}
+{{- $icon := .Attributes.icon -}}
+{{- $emoji := .Attributes.emoji -}}
+{{- with $icon }}{{ $.Page.Store.SetInMap "headingIcons" $anchor . }}{{ end -}}
+{{- if or $icon $emoji -}}
+
+<h{{ .Level }} id="{{ $anchor }}"{{- range $k, $v := .Attributes -}}{{- if and (ne $k "icon") (ne $k "id") (ne $k "emoji") }} {{ $k | safeHTMLAttr }}="{{ $v | safeHTMLAttr }}"{{- end -}}{{- end }} class="mt-4 mb-4 flex items-center gap-2 leading-tight">
+  {{- with $emoji -}}
+    <span class="shrink-0 text-[1.15em] leading-none" aria-hidden="true">{{ . }}</span>
+  {{- end -}}
+  {{- $img := resources.Get (printf "images/bulletin_%s.webp" $icon) -}}
+  {{- with $img -}}
+    {{- with .Process "resize 64x64 webp q90" -}}
+      <img src="{{ .RelPermalink }}" alt="" aria-hidden="true" width="{{ .Width }}" height="{{ .Height }}" class="h-12 w-12 shrink-0 mt-2 mb-4">
+    {{- end -}}
+  {{- end -}}
+  <span>{{ .Text | safeHTML }}</span>
+</h{{ .Level }}>
+{{- else -}}
+<h{{ .Level }} id="{{ .Anchor }}"{{- range $k, $v := .Attributes }}{{- if ne $k "id" }} {{ $k | safeHTMLAttr }}="{{ $v | safeHTMLAttr }}"{{- end }}{{- end }}>{{ .Text | safeHTML }}</h{{ .Level }}>
+{{- end -}}

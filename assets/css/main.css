@@ -1,0 +1,173 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@source "../../hugo_stats.json";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Marka primitifleri. Sablonlarda ham hex yazilmaz:
+     accent-* vurgu (turuncu), neutral-* notr (krem-murekkep) skalasi,
+     info-* mavi bilgi rengi. */
+
+  --color-ink: #1e1e1e;
+  --color-orange: #ff6b35;
+  --color-cream: #f7f5f0;
+  --color-blue: #3382f6;
+  --color-stone: #a1a1aa;
+  --color-border: #e5e2dc;
+
+  /* Vurgu (turuncu). accent-500 = marka turuncusu */
+  --color-accent-50: #fff3ee;
+  --color-accent-100: #ffe3d6;
+  --color-accent-200: #ffc9b0;
+  --color-accent-300: #ffa983;
+  --color-accent-400: #ff8a5c;
+  --color-accent-500: #ff6b35;
+  --color-accent-600: #e5541f;
+  --color-accent-700: #b8431a;
+  --color-accent-800: #8f3413;
+  --color-accent-900: #5c2410;
+  --color-accent-950: #33130a;
+
+  /* Notr (sicak krem - murekkep siyah). neutral-50 krem zemin,
+     neutral-900 ana siyah */
+  --color-neutral-50: #f7f5f0;
+  --color-neutral-100: #f1eee7;
+  --color-neutral-200: #e5e2dc;
+  --color-neutral-300: #d6d2ca;
+  --color-neutral-400: #a1a1aa;
+  --color-neutral-500: #8a8890;
+  --color-neutral-600: #666666;
+  --color-neutral-700: #4a4a4a;
+  --color-neutral-800: #2e2e2e;
+  --color-neutral-900: #1e1e1e;
+  --color-neutral-950: #141414;
+
+  /* Bilgi (mavi) */
+  --color-info-50: #eef5ff;
+  --color-info-100: #d9e9ff;
+  --color-info-200: #b8d6ff;
+  --color-info-400: #5fa1f8;
+  --color-info-500: #3382f6;
+  --color-info-600: #1f66d6;
+  --color-info-700: #1a4fa3;
+  --color-info-900: #122e5c;
+
+  /* Tipografi. Fontlar self-host (static/fonts/), OFL 1.1 lisansli.
+     sans = basliklar ve govde (Inter), hand = vurgu/not (Caveat, el yazisi). */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-hand: "Caveat", ui-serif, cursive;
+
+  /* Makale govdesi. Medium seviyesi okunurluk: 20px / 1.65.
+     Sadece .prose'a uygulanir; menu, kart, footer etkilenmez. */
+  --text-article: 1.25rem;
+  --text-article--line-height: 1.65;
+}
+
+/* Fontlar (self-host, static/fonts/ -> /fonts/). OFL 1.1 lisansli.
+   Uc font da VARIABLE: tek dosya tum agirliklari kapsar (font-weight araligi).
+   latin-ext subseti Turkce karakterleri (i, s, g, I ...) kapsar. */
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/inter-400-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/inter-400-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Caveat";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/caveat-400-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Caveat";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/caveat-400-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* Alintilar el yazisi (Caveat). Tailwind Typography'nin --tw-prose-quotes
+   degiskeni yerine dogrudan blok alintiyi hedefler; prose icinde de gecerli. */
+@layer components {
+  .prose blockquote {
+    font-family: var(--font-hand);
+    font-weight: 500;
+    font-style: normal;
+    quotes: none;
+  }
+  .prose blockquote p:first-of-type::before,
+  .prose blockquote p:last-of-type::after {
+    content: none;
+  }
+  /* El yazisi kucuk puntoda zayif kaldigi icin taban boyutu buyutulur. */
+  .prose blockquote p {
+    font-size: 1.5em;
+    line-height: 1.6;
+  }
+  /* Bultenlerde alt gruplar h5 ile isaretlenir (orn. futbol > Avrupa
+     kupalari > Sampiyonlar Ligi). Tailwind Typography h5'i stillendirmedigi
+     icin varsayilan tarayici boyutu govde metninden kucuk kaliyordu. */
+  .prose h5 {
+    font-size: 1.05em;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-top: 1.6em;
+    margin-bottom: 0.5em;
+  }
+}
+
+/* Makale govdesi 20px (Medium seviyesi okunurluk). Kolon genisligi degismez.
+   Basliklar em tabanli oldugu icin orantili buyur.
+   DIKKAT: utilities katmani sart; @plugin typography .prose'a font-size:1rem
+   yaziyor ve components katmaninda kalirsak o kural kazanir. */
+@layer utilities {
+  .prose {
+    font-size: var(--text-article);
+    line-height: var(--text-article--line-height);
+  }
+}
+
+/* Sayfa ici capa baglantilari: yapiskan header (mobil 64px, masaustu 128px)
+   hedef basligi ortmesin. Bulten sayilarinda altinda sayi rayi var; ray
+   mobilde birden fazla satira kayabildigi icin gercek yuksekligi JS olcup
+   --ray-h degiskenine yazar (bulten/ilerleme-script.html). JS yoksa
+   varsayilan 3.5rem kullanilir. */
+html {
+  scroll-padding-top: 5.5rem;
+}
+@media (min-width: 1024px) {
+  html {
+    scroll-padding-top: 9rem;
+  }
+}
+html.has-sayi-ray {
+  scroll-padding-top: calc(4rem + var(--ray-h, 6.5rem) + 0.5rem);
+}
+@media (min-width: 1024px) {
+  html.has-sayi-ray {
+    scroll-padding-top: calc(8rem + var(--ray-h, 3.5rem) + 0.5rem);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}

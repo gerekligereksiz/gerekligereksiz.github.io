@@ -1,0 +1,14 @@
+{{- /*
+  Satır içi dekoratif emoji.
+
+  Kullanım:
+    {{< emoji "🇹🇷" >}} **Arda Güler:** ...
+    {{< emoji "⚽" class="text-lg" >}}
+
+  Emoji aria-hidden olduğu için ekran okuyucu yalnızca metni okur.
+  Başlıklarda bunun yerine render-heading'in emoji="..." özniteliğini kullan.
+*/ -}}
+{{- $e := .Get "emoji" | default (.Get 0) -}}
+{{- with $e -}}
+<span class="{{ with $.Get "class" }}{{ . }} {{ end }}select-none" aria-hidden="true">{{ . }}</span>
+{{- end -}}

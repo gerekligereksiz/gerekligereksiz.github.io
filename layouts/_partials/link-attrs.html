@@ -1,0 +1,34 @@
+{{- /* Bağlantı nitelikleri: context = (dict "url" ".." "rel" "..") — "rel" opsiyonel.
+       Dönen değer: (dict "href" ".." "external" bool "target" ".." "rel" "..")
+
+       - site.BaseURL ile aynı host (www. yok sayılır) dahili sayılır: target/rel
+         yok, mutlak URL yol göreli hâle getirilir (hugo server altında da çalışır).
+       - http(s) dışı şemalar (mailto:, #çapa) target/rel almaz; tel:, sms: gibi
+         şemalar html/template tarafından engellendiği için safeURL ile işaretlenir.
+       - kalan web URL'leri target="_blank" + params.externalLinkRel alır
+         (varsayılan "noopener noreferrer nofollow"). */ -}}
+{{- $url := .url -}}
+{{- $rel := .rel | default (site.Params.externalLinkRel | default "noopener noreferrer nofollow") -}}
+{{- $target := urls.Parse $url -}}
+{{- $self := urls.Parse site.BaseURL -}}
+{{- $host := lower (strings.TrimPrefix "www." $target.Hostname) -}}
+{{- $selfHost := lower (strings.TrimPrefix "www." $self.Hostname) -}}
+{{- $scheme := lower $target.Scheme -}}
+{{- $isHTTP := in (slice "http" "https") $scheme -}}
+{{- /* şemasız ama host'lu (//cdn.ornek.com/x) de web bağlantısıdır */ -}}
+{{- $isWeb := or $isHTTP (and (eq $scheme "") (ne $target.Host "")) -}}
+{{- $external := and $isWeb (ne $host $selfHost) -}}
+
+{{- $href := $url -}}
+{{- if and $isHTTP (not $external) -}}
+  {{- $href = $target.RequestURI -}}
+  {{- with $target.Fragment }}{{ $href = printf "%s#%s" $href . }}{{ end -}}
+{{- else if in (slice "tel" "sms" "geo" "matrix" "xmpp" "magnet") $scheme -}}
+  {{- $href = $href | safeURL -}}
+{{- end -}}
+
+{{- return (dict
+  "href" $href
+  "external" $external
+  "target" (cond $external "_blank" "")
+  "rel" (cond $external $rel "")) -}}

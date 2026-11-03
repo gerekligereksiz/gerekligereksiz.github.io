@@ -1,0 +1,52 @@
+{{- /*
+  Bülten içindekiler haritası (h2 + h3 + h4).
+
+  Kullanım:
+    {{ partial "bulten/toc.html" (dict "page" . "id" "toc-desktop" "title" "İçindekiler") }}
+
+  "title" verilmezse görünür başlık basılmaz (mobil <summary> kendi başlığını taşır).
+  Başlıklar Hugo'nun .Fragments yapısından gelir; elle liste bakımı gerekmez.
+  .Fragments.Headings, seviye 0'da sanal bir kök düğüm döndürebilir; bu yüzden
+  kökün çocuklarına (h2) inilir.
+
+  Alt seviyeler bulten/toc-items.html ile özyinelemeli basılır; sınır "max"
+  ile verilir (şu an 4 → h4'e kadar).
+*/ -}}
+{{- $page := .page -}}
+{{- $id := .id | default "toc" -}}
+{{- $title := .title -}}
+{{- $max := .max | default 4 -}}
+{{- $headings := slice -}}
+{{- with $page.Fragments.Headings -}}
+  {{- $first := index . 0 -}}
+  {{- $headings = cond (eq $first.Level 0) $first.Headings . -}}
+{{- end -}}
+{{- $headingIcons := $page.Store.Get "headingIcons" | default dict -}}
+{{- with $headings }}
+<nav class="text-xl" {{ if $title }}aria-labelledby="{{ $id }}-title"{{ else }}aria-label="İçindekiler"{{ end }}>
+  {{- with $title }}
+  {{- $cal := resources.Get "images/bulletin_icindekiler.webp" }}
+  <h2 id="{{ $id }}-title" class="flex items-center gap-2 font-hand text-3xl leading-none text-neutral-700 dark:text-neutral-200">{{- with $cal }}{{- with .Process "resize 56x56 webp q90" }}<img src="{{ .RelPermalink }}" alt="" aria-hidden="true" loading="eager" decoding="async" width="{{ .Width }}" height="{{ .Height }}" class="h-7 w-7 shrink-0">{{- end }}{{- end }}{{ . }}</h2>
+  {{- end }}
+  <ol class="mt-4 space-y-0.5 font-hand">
+    {{- range . }}
+    <li>
+      <a href="#{{ .ID }}" data-toc-link{{ with index $headingIcons .ID }} data-section="{{ . }}" data-icon="{{ . }}"{{ end }} class="-ml-px flex items-center gap-2 rounded-md px-3 py-1.5 font-medium leading-snug text-neutral-700 transition-colors hover:bg-neutral-100 hover:text-accent-700 aria-[current=true]:bg-accent-50 aria-[current=true]:text-accent-700 dark:text-neutral-200 dark:hover:bg-neutral-800 dark:hover:text-accent-300 dark:aria-[current=true]:bg-neutral-800 dark:aria-[current=true]:text-accent-300">
+        {{- with index $headingIcons .ID -}}
+          {{- $img := resources.Get (printf "images/bulletin_%s.webp" .) -}}
+          {{- with $img -}}
+            {{- with .Process "resize 48x48 webp q90" -}}
+              <img src="{{ .RelPermalink }}" alt="" aria-hidden="true" width="{{ .Width }}" height="{{ .Height }}" class="h-8 w-8 shrink-0">
+            {{- end -}}
+          {{- end -}}
+        {{- end -}}
+        <span>{{ .Title | safeHTML }}</span>
+      </a>
+      {{- with .Headings }}
+        {{- partial "bulten/toc-items.html" (dict "items" . "level" 3 "headingIcons" $headingIcons "max" $max) }}
+      {{- end }}
+    </li>
+    {{- end }}
+  </ol>
+</nav>
+{{- end }}

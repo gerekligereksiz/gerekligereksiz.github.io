@@ -1,0 +1,64 @@
+{{- /*
+  Günlük girişin istatistik kartı (front matter → stats).
+
+  Kullanım: {{ partial "gun/istatistik.html" . }}
+
+  Futbol: gol / asist / şut / dakika (4 sütun).
+  Basketbol: sayı / ribaund / asist büyük şerit + dakika, isabet, top çalma,
+  blok, +/- küçük şerit.
+
+  Değer 0 olsa da basılır; alan hiç verilmemişse basılmaz. Bu yüzden
+  truthiness yerine isset kullanılır (YAML'da 0 falsy'dir).
+*/ -}}
+{{- $stats := .Params.stats -}}
+{{- with $stats -}}
+  {{- $sport := $.Params.sport | default "" -}}
+  {{- if eq $sport "Basketbol" -}}
+    {{- $hero := slice -}}
+    {{- range slice (slice "sayi" "Sayı") (slice "ribaund" "Ribaund") (slice "asist" "Asist") -}}
+      {{- if isset $stats (index . 0) }}{{ $hero = $hero | append (dict "label" (index . 1) "value" (index $stats (index . 0))) }}{{ end -}}
+    {{- end -}}
+    {{- $detay := slice -}}
+    {{- range slice (slice "dk" "dk") (slice "isabet" "isabet") (slice "topcalma" "top çalma") (slice "blok" "blok") (slice "plusminus" "+/−") -}}
+      {{- if isset $stats (index . 0) }}{{ $detay = $detay | append (dict "label" (index . 1) "value" (index $stats (index . 0))) }}{{ end -}}
+    {{- end -}}
+    {{- if or $hero $detay }}
+<div class="not-prose my-5 overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900/40">
+      {{- with $hero }}
+  <dl class="m-0 grid grid-cols-3 divide-x divide-neutral-200 dark:divide-neutral-800">
+        {{- range . }}
+    <div class="flex flex-col-reverse items-center px-2 py-4">
+      <dt class="mt-2 text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">{{ .label }}</dt>
+      <dd class="m-0 text-3xl font-bold leading-none tabular-nums">{{ .value }}</dd>
+    </div>
+        {{- end }}
+  </dl>
+      {{- end }}
+      {{- with $detay }}
+  <ul class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 border-t border-neutral-200 px-3 py-3 text-sm text-neutral-600 dark:border-neutral-800 dark:text-neutral-300">
+        {{- range . }}
+    <li class="flex items-baseline gap-1"><span class="font-semibold tabular-nums">{{ .value }}</span>{{ .label }}</li>
+        {{- end }}
+  </ul>
+      {{- end }}
+</div>
+    {{- end -}}
+  {{- else -}}
+    {{- $items := slice -}}
+    {{- range slice (slice "gol" "Gol") (slice "asist" "Asist") (slice "sut" "Şut") (slice "dk" "Dakika") -}}
+      {{- if isset $stats (index . 0) }}{{ $items = $items | append (dict "label" (index . 1) "value" (index $stats (index . 0))) }}{{ end -}}
+    {{- end -}}
+    {{- with $items }}
+<div class="not-prose my-5 overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900/40">
+  <dl class="m-0 grid grid-cols-4 divide-x divide-neutral-200 dark:divide-neutral-800">
+      {{- range . }}
+    <div class="flex flex-col-reverse items-center px-1 py-3">
+      <dt class="mt-2 text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">{{ .label }}</dt>
+      <dd class="m-0 text-3xl font-bold leading-none tabular-nums">{{ .value }}</dd>
+    </div>
+      {{- end }}
+  </dl>
+</div>
+    {{- end -}}
+  {{- end -}}
+{{- end -}}

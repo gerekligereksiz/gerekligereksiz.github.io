@@ -1,0 +1,9 @@
+{{- /*
+  Türkçe tarih: "18 Ekim 2026".
+
+  Kullanım: {{ partial "spor/tarih.html" .Date }}
+  Site dili "tr" olsa da time.Format yerel ay adlarını İngilizce basıyor;
+  ay adları elle eşlenir (bulten/tarih-araligi.html ile aynı desen).
+*/ -}}
+{{- $aylar := slice "Ocak" "Şubat" "Mart" "Nisan" "Mayıs" "Haziran" "Temmuz" "Ağustos" "Eylül" "Ekim" "Kasım" "Aralık" -}}
+{{- printf "%d %s %d" .Day (index $aylar (sub .Month 1)) .Year -}}

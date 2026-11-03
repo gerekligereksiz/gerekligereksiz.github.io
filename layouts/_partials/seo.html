@@ -1,0 +1,79 @@
+{{- /*
+  SEO: title, description, canonical, OG ve JSON-LD.
+
+  Not: <script> içeriği html/template tarafından JS bağlamı sayılır ve
+  jsonify çıktısını yeniden kaçırır (çift tırnak -> \"...\"). Bu yüzden her
+  jsonify çıktısı safeJS ile işaretlenir; aksi halde JSON-LD geçersiz olur.
+*/ -}}
+{{- $title := cond .IsHome site.Title (printf "%s · %s" .Title site.Title) -}}
+{{- $desc := .Description | default site.Params.description -}}
+<title>{{ $title }}</title>
+{{ with $desc }}<meta name="description" content="{{ . }}">{{ end }}
+<link rel="canonical" href="{{ .Permalink }}">
+<meta property="og:title" content="{{ $title }}">
+{{ with $desc }}<meta property="og:description" content="{{ . }}">{{ end }}
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+<meta property="og:url" content="{{ .Permalink }}">
+{{ with .Params.image }}
+  {{- $img := resources.Get . -}}
+  {{- with $img }}<meta property="og:image" content="{{ .Permalink }}">{{ end }}
+{{ end }}
+<meta property="og:site_name" content="{{ site.Title }}">
+<meta name="twitter:card" content="summary_large_image">
+{{- /* Bülten sayısı: bölümlerin toplandığı hub */ -}}
+{{- if eq .Layout "sayi" }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": {{ .Title | jsonify | safeJS }},
+  "description": {{ $desc | jsonify | safeJS }},
+  "url": {{ .Permalink | jsonify | safeJS }},
+  "datePublished": {{ .Date.Format "2006-01-02T15:04:05Z07:00" | jsonify | safeJS }},
+  "dateModified": {{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" | jsonify | safeJS }},
+  "isPartOf": { "@type": "WebSite", "name": {{ site.Title | jsonify | safeJS }}, "url": {{ site.Home.Permalink | jsonify | safeJS }} },
+  "publisher": { "@type": "Organization", "name": {{ site.Title | jsonify | safeJS }} },
+  "hasPart": [
+    {{- range $i, $p := .Pages.ByWeight }}
+    {{- if $i }},{{ end }}
+    { "@type": "Article", "name": {{ $p.Title | jsonify | safeJS }}, "url": {{ $p.Permalink | jsonify | safeJS }} }
+    {{- end }}
+  ]
+}
+</script>
+{{- /* Yazı, bülten bölümü, uygulama incelemesi ve günlük maç girişi: tek konulu sayfa */ -}}
+{{- else if and .IsPage (or (eq .Section "yazilar") (eq .Section "uygulama-incelemeleri") (eq .Layout "bolum") (eq .Layout "gun")) }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": {{ .Title | jsonify | safeJS }},
+  "description": {{ $desc | jsonify | safeJS }},
+  "datePublished": {{ .Date.Format "2006-01-02T15:04:05Z07:00" | jsonify | safeJS }},
+  "dateModified": {{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" | jsonify | safeJS }},
+  {{- with .Params.section_label }}
+  "articleSection": {{ . | jsonify | safeJS }},
+  {{- end }}
+  "inLanguage": "tr",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": {{ .Permalink | jsonify | safeJS }} },
+  "author": { "@type": "Organization", "name": {{ site.Title | jsonify | safeJS }} },
+  "publisher": { "@type": "Organization", "name": {{ site.Title | jsonify | safeJS }} }
+}
+</script>
+{{- /* Sporcu / takım profili */ -}}
+{{- else if eq .Layout "profil" }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": {{ if eq .Section "takimlar" }}"SportsTeam"{{ else }}"Person"{{ end }},
+  "name": {{ .Title | jsonify | safeJS }},
+  "description": {{ $desc | jsonify | safeJS }},
+  "url": {{ .Permalink | jsonify | safeJS }},
+  {{- with .Params.sport }}
+  "sport": {{ . | jsonify | safeJS }},
+  {{- end }}
+  "inLanguage": "tr",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": {{ .Permalink | jsonify | safeJS }} }
+}
+</script>
+{{- end }}

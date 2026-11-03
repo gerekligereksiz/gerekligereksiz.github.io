@@ -1,0 +1,42 @@
+{{- /*
+  Futbolcu maç istatistiği kartı.
+
+  Kullanım:
+    {{< bulten-oyuncu-mac tarih="14 Ekim 2026" turnuva="Şampiyonlar Ligi"
+        mac="Roma 3-4 Real Madrid" gol="0" asist="2" sut="0" dk="31"
+        not="59'de oyuna girdi; 85' ve 90' asist." >}}
+
+  Yalnızca verilen alanlar basılır; şablon varsayılan değer üretmez.
+  Kaynak linkleri kartın altındaki markdown satırında kalır.
+*/ -}}
+{{- $stats := slice -}}
+{{- with .Get "gol" }}{{ $stats = $stats | append (dict "label" "Gol" "value" .) }}{{ end -}}
+{{- with .Get "asist" }}{{ $stats = $stats | append (dict "label" "Asist" "value" .) }}{{ end -}}
+{{- with .Get "sut" }}{{ $stats = $stats | append (dict "label" "Şut" "value" .) }}{{ end -}}
+{{- with .Get "dk" }}{{ $stats = $stats | append (dict "label" "Dakika" "value" .) }}{{ end -}}
+{{- $meta := slice -}}
+{{- with .Get "tarih" }}{{ $meta = $meta | append . }}{{ end -}}
+{{- with .Get "turnuva" }}{{ $meta = $meta | append . }}{{ end -}}
+<div class="not-prose my-4 overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900/40">
+  <div class="px-3 pt-3">
+    {{- with $meta }}
+    <p class="m-0 text-xs font-medium text-neutral-500 dark:text-neutral-400">{{ delimit . " · " }}</p>
+    {{- end }}
+    {{- with .Get "mac" }}
+    <p class="m-0 mt-0.5 font-semibold leading-snug">{{ . }}</p>
+    {{- end }}
+  </div>
+  {{- with $stats }}
+  <dl class="m-0 mt-2 grid grid-cols-4 divide-x divide-neutral-200 dark:divide-neutral-800">
+    {{- range . }}
+    <div class="flex flex-col-reverse items-center px-1 py-3">
+      <dt class="mt-2 text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">{{ .label }}</dt>
+      <dd class="m-0 text-3xl font-bold leading-none tabular-nums">{{ .value }}</dd>
+    </div>
+    {{- end }}
+  </dl>
+  {{- end }}
+  {{- with .Get "not" }}
+  <p class="m-0 border-t border-neutral-200 px-3 py-2.5 text-sm text-neutral-600 dark:border-neutral-800 dark:text-neutral-300">{{ . }}</p>
+  {{- end }}
+</div>
