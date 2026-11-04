@@ -1,4 +1,4 @@
-baseURL: https://gerekligereksiz.github.io/
+baseURL: https://gerekli-gereksiz.com/
 locale: tr
 title: Gerekli Gereksiz
 
@@ -75,6 +75,63 @@ params:
   # Harici bağlantılarda kullanılan rel değeri (tüm şablonlar buradan okur).
   # nofollow: link değeri aktarımını keser. Tek link için ext-link 3. parametreyle override edilebilir.
   externalLinkRel: "noopener noreferrer nofollow"
+  # İçerik lisansı. Footer ve Kullanım Şartları buradan okur.
+  license: "CC BY-NC-ND 4.0"
+  licenseUrl: "https://creativecommons.org/licenses/by-nc-nd/4.0/deed.tr"
+  # Tek iletişim kanalı. Adres değişince yalnızca burayı güncelle
+  # (bize-ulasin.md ve kvkk-aydinlatma-metni.md iletisim-eposta shortcode'unu kullanır).
+  contactEmail: "iletisim@gerekligereksiz.example"
+
+  # Çerez onayı. Kategoriler buradan yönetilir, kod değişikliği gerekmez.
+  # Bakım:
+  #   kategori kapat    -> enabled: false
+  #   alt kategori ekle -> grubun categories listesine kayıt
+  #   yeni grup ekle    -> categories içeren üst seviye kayıt
+  #   izin kapatılamaz  -> required: true (yalnızca izin biriminde)
+  #   şema değişti      -> version'ı 1 artır (eski kayıtlar tarayıcıda silinir)
+  # id = kayıttaki alan adı; kayıt yolu id'lerden türetilir:
+  #   analytics           -> preferences.analytics
+  #   thirdParty.youtube  -> preferences.thirdParty.youtube
+  # id değiştirirsen kayıt anahtarı değişir: version'ı da artır.
+  # En fazla 2 seviye: grup (categories taşır, switch'i yoktur) + alt kategori.
+  consent:
+    version: 1
+    banner:
+      title: "Gizliliğinize önem veriyoruz"
+      text: "Deneyiminizi iyileştirmek ve trafiği analiz etmek için çerez kullanıyoruz. \"Tümünü kabul et\" seçeneğine tıklayarak çerez kullanımımıza izin vermiş olursunuz."
+      links:
+        - label: "Gizlilik politikası"
+          href: "/gizlilik-politikasi/"
+        - label: "Çerez politikası"
+          href: "/cerez-politikasi/"
+    categories:
+      - id: necessary
+        label: Gerekli
+        enabled: true
+        required: true
+        description: "Tercihinizi ve bülten okuma ilerlemenizi hatırlar; kapatılamaz. Çerez kullanmaz."
+        cookies: []
+      - id: analytics
+        label: Analitik
+        enabled: true
+        description: "Google Analytics 4 ile site kullanımını ölçer. IP adresiniz iletilir, kalıcı olarak saklanmaz."
+        cookies: ["_ga", "_ga_*"]
+      - id: thirdParty
+        label: Üçüncü taraf
+        enabled: true
+        categories:
+          - id: youtube
+            label: YouTube
+            enabled: true
+            description: "YouTube embed video. İzin verdiğinizde video gizlilik geliştirilmiş modda (youtube-nocookie.com) yüklenir; sadece IP adresiniz iletilir."
+            cookies: []
+
+# Google Analytics 4. ID boşken analitik yüklenmez; "Analitik" kategorisi
+# yine görünür ve seçim kaydedilir, ancak hiçbir istek gönderilmez.
+# ID doldurulduğunda GA yalnızca "Tümünü kabul et" / Analitik izni sonrası çalışır.
+services:
+  googleAnalytics:
+    ID: "TEST"
 
 privacy:
   youtube:

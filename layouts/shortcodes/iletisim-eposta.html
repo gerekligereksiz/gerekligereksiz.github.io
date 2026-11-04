@@ -1,0 +1,6 @@
+{{- /* İletişim e-postasını tek kaynaktan basar.
+       Kaynak: hugo.yaml -> params.contactEmail
+       Kullanım: {{< iletisim-eposta >}} */ -}}
+{{- with site.Params.contactEmail -}}
+<a href="mailto:{{ . }}">{{ . }}</a>
+{{- end -}}

@@ -1,0 +1,99 @@
+{{- /* Kategori ağacını doğrular ve modal için düzleştirir.
+
+       hugo.yaml -> params.consent.categories en fazla 2 seviyedir:
+         - categories içeren düğüm : grup (yalnızca başlık + açıklama, switch yok)
+         - categories içermeyen    : izin birimi (switch)
+
+       Kayıttaki yol id'lerden türetilir (id = kayıttaki alan adı):
+         analytics           -> preferences.analytics
+         thirdParty.youtube  -> preferences.thirdParty.youtube
+
+       Dönen değer: (dict "items" $items "leaves" $leaves)
+         items  : modal sırası; grup düğümleri children taşır
+         leaves : etkin tüm izin birimleri (id, label, description, cookies, path, required)
+
+       required: true yalnızca izin biriminde kullanılır; anahtar açık ve
+       kilitli render edilir, kayda her zaman true yazılır.
+
+       Eksik ya da geçersiz alanlar warnf ile bildirilir; o düğüm atlanır. */ -}}
+
+{{- $all := slice -}}
+{{- with site.Params.consent }}{{ with .categories }}{{ $all = . }}{{ end }}{{ end -}}
+
+{{- $items := slice -}}
+{{- $leaves := slice -}}
+{{- $ids := slice -}}
+
+{{- range $node := $all -}}
+  {{- if not (isset $node "enabled") -}}
+    {{- warnf "consent: %q için enabled zorunlu; kapalı sayıldı" $node.id -}}
+  {{- end -}}
+  {{- if and $node.required (not $node.enabled) -}}
+    {{- warnf "consent: %q required:true iken enabled:false olamaz; kapalı sayıldı" $node.id -}}
+  {{- end -}}
+  {{- if $node.enabled -}}
+    {{- if or (not $node.id) (not $node.label) -}}
+      {{- warnf "consent: kategoride id ve label zorunlu: %v" $node -}}
+    {{- else if not (findRE `^[A-Za-z][A-Za-z0-9]*$` $node.id 1) -}}
+      {{- warnf "consent: geçersiz id %q (harf/rakam, harfle başlar)" $node.id -}}
+    {{- else if in $ids $node.id -}}
+      {{- warnf "consent: kategori id tekrarlı: %q" $node.id -}}
+    {{- else -}}
+      {{- $ids = $ids | append $node.id -}}
+      {{- if and $node.required $node.categories -}}
+        {{- warnf "consent: required yalnızca izin biriminde kullanılır; %q grubunda yok sayıldı" $node.id -}}
+      {{- end -}}
+      {{- if $node.categories -}}
+        {{- $children := slice -}}
+        {{- range $child := $node.categories -}}
+          {{- if and $child.required (not $child.enabled) -}}
+            {{- warnf "consent: %s.%s required:true iken enabled:false olamaz; kapalı sayıldı" $node.id $child.id -}}
+          {{- end -}}
+          {{- if $child.categories -}}
+            {{- warnf "consent: en fazla 2 seviye desteklenir; %s.%s alt dalları yok sayıldı" $node.id $child.id -}}
+          {{- else if not (isset $child "enabled") -}}
+            {{- warnf "consent: %s.%s için enabled zorunlu; kapalı sayıldı" $node.id $child.id -}}
+          {{- else if $child.enabled -}}
+            {{- if or (not $child.id) (not $child.label) -}}
+              {{- warnf "consent: alt kategoride id ve label zorunlu: %v" $child -}}
+            {{- else if not (findRE `^[A-Za-z][A-Za-z0-9]*$` $child.id 1) -}}
+              {{- warnf "consent: geçersiz id %q (harf/rakam, harfle başlar)" $child.id -}}
+            {{- else if in $ids $child.id -}}
+              {{- warnf "consent: kategori id tekrarlı: %q" $child.id -}}
+            {{- else -}}
+              {{- $ids = $ids | append $child.id -}}
+              {{- $leaf := dict
+                    "id" $child.id
+                    "label" $child.label
+                    "description" $child.description
+                    "cookies" $child.cookies
+                    "path" (printf "%s.%s" $node.id $child.id)
+                    "required" (default false $child.required) -}}
+              {{- $children = $children | append $leaf -}}
+              {{- $leaves = $leaves | append $leaf -}}
+            {{- end -}}
+          {{- end -}}
+        {{- end -}}
+        {{- if $children -}}
+          {{- $items = $items | append (dict
+                "id" $node.id
+                "label" $node.label
+                "description" $node.description
+                "children" $children) -}}
+        {{- end -}}
+      {{- else -}}
+        {{- $leaf := dict
+              "id" $node.id
+              "label" $node.label
+              "description" $node.description
+              "cookies" $node.cookies
+              "path" $node.id
+              "required" (default false $node.required) -}}
+        {{- $leaves = $leaves | append $leaf -}}
+        {{- $items = $items | append $leaf -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- return (dict "items" $items "leaves" $leaves) -}}

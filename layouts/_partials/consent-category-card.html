@@ -1,0 +1,26 @@
+{{- /* Tek izin birimi kartı. Bağlam: consent-categories.html içindeki leaf
+       (id, label, description, cookies, path, required).
+
+       required: true -> anahtar açık ve kilitli gelir; kullanıcı kapatamaz,
+       kayda her zaman true yazılır (bkz. consent-banner.html REQUIRED_PATHS). */ -}}
+<label for="cerez-{{ .id }}" class="flex {{ if .required }}cursor-default{{ else }}cursor-pointer{{ end }} items-start justify-between gap-4 rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-950">
+  <span class="min-w-0">
+    <span class="flex flex-wrap items-center gap-2">
+      <span class="block text-base font-medium text-neutral-900 dark:text-neutral-100">{{ .label }}</span>
+      {{- if .required }}
+      <span class="rounded-full bg-neutral-200 px-2 py-0.5 text-xs font-medium text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">Zorunlu</span>
+      {{- end }}
+    </span>
+    {{- with .description }}
+    <span class="mt-1 block break-words text-sm text-neutral-600 dark:text-neutral-400">{{ . }}</span>
+    {{- end }}
+    {{- with .cookies }}
+    <span class="mt-1 block text-sm text-neutral-600 dark:text-neutral-400">Çerezler:
+      {{- range $index, $cookie := . }}{{ if $index }},{{ end }}
+      <code class="rounded bg-neutral-200 px-1 py-0.5 text-xs dark:bg-neutral-800">{{ $cookie }}</code>
+      {{- end }}
+    </span>
+    {{- end }}
+  </span>
+  <input type="checkbox" id="cerez-{{ .id }}" role="switch" data-consent-category="{{ .id }}" data-consent-path="{{ .path }}"{{ if .required }} checked disabled{{ end }} class="mt-1 h-5 w-5 shrink-0 accent-accent-600{{ if .required }} cursor-not-allowed opacity-70{{ end }}">
+</label>

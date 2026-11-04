@@ -6,17 +6,19 @@ date: 2026-10-21T12:00:00+03:00
 
 Bu portalı kullanarak aşağıdaki koşulları kabul etmiş sayılırsınız.
 
-**Son güncelleme:** 21 Ekim 2026
+**Son güncelleme:** 3 Kasım 2026
 
-## Telif hakkı
+## Lisans: CC BY-NC-ND 4.0
 
-Portalda yayımlanan yazılar, derlemeler ve özgün görseller Gerekli Gereksiz'e aittir.
+Portalda üretilen özgün içerikler (yazılar, derlemeler ve özgün görseller) [Creative Commons Atıf-GayriTicari-Türetilemez 4.0 Uluslararası](https://creativecommons.org/licenses/by-nc-nd/4.0/deed.tr) lisansı ile sunulur.
 
-**Alıntı yapabilirsiniz:** Kaynağı belirtmek ve orijinal sayfaya bağlantı vermek koşuluyla, makul uzunlukta alıntı serbesttir.
+**Serbest:** Atıf vermek, ticari olmayan amaçla ve içeriği değiştirmeden paylaşmak — tam metin dahil.
 
-**Kopyalayamazsınız:** Yazıların bütününü izinsiz çoğaltmak, başka bir yerde yayımlamak ya da ticari amaçla kullanmak için önceden izin gerekir.
+**Yasak:** Ticari kullanım; çeviri, uyarlama, remix gibi türev eser üretimi.
 
-*TODO: kaynak — içeriğin lisansı (örneğin CC BY-NC 4.0) netleştirilip buraya yazılmalıdır.*
+**Atıf biçimi:** "Kaynak: Gerekli Gereksiz — gerekli-gereksiz.com" + ilgili sayfaya bağlantı + lisans bağlantısı.
+
+**Kapsam dışı:** Üçüncü taraflara ait görsel ve metinler, gömülü içerikler ve site logosu bu lisans kapsamında değildir. FSEK m.35 uyarınca kaynak gösterilerek yapılan kısa alıntılar lisanstan bağımsız olarak serbesttir.
 
 ## Üçüncü taraf içerik
 
@@ -32,7 +34,7 @@ Bu portaldeki bilgiler **olabildiğince doğru** olacak şekilde hazırlanır; k
 
 Ancak:
 
-- Baraj doluluk verileri gibi otomatik güncellenen bilgiler, kaynak kurumun açıkladığı andaki değerleri yansıtır. Arada gecikme olabilir.
+- Otomatik güncellenen bilgiler, kaynak kurumun açıkladığı andaki değerleri yansıtır. Arada gecikme olabilir.
 - Sporcu başarıları ve istatistikler zaman içinde değişebilir.
 - Yazıların yazıldığı tarihteki bilgiler, sonradan güncelliğini yitirebilir.
 
@@ -45,3 +47,13 @@ Otomatik güncellenen verilerin kaynağı ve güncellenme sıklığı [Veri Kayn
 ## Dış bağlantılar
 
 Yazılarda verilen dış bağlantıların içeriğinden ilgili siteler sorumludur.
+
+## Değişiklikler
+
+Bu şartlar güncellenebilir. Önemli bir değişiklik olduğunda sayfanın başındaki tarih yenilenir.
+
+## İlgili sayfalar
+
+- [Gizlilik Politikası](/gizlilik-politikasi/)
+- [Çerez Politikası](/cerez-politikasi/)
+- [KVKK Aydınlatma Metni](/kvkk-aydinlatma-metni/)

@@ -6,23 +6,25 @@ date: 2026-10-21T12:00:00+03:00
 
 İşbu aydınlatma metni, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") m.10 uyarınca hazırlanmıştır.
 
-**Son güncelleme:** 21 Ekim 2026
+**Son güncelleme:** 4 Kasım 2026
 
 ## Veri sorumlusu
 
-Bu portal **Gerekli Gereksiz** adıyla yayımlanmaktadır.
-
-*TODO: kaynak — veri sorumlusunun tam kimlik ve iletişim bilgileri (gerçek/tüzel kişi adı, adres) eklenmelidir.*
+Bu portal **Gerekli Gereksiz** adıyla yayımlanmaktadır. İletişim: {{< iletisim-eposta >}}
 
 ## İşlenen kişisel veriler
 
 Portal **statik** bir site olarak yayımlanır. Üyelik, giriş, form, yorum ya da e-ticaret işlevi bulunmaz. Bu nedenle portal tarafından **doğrudan** toplanan ve işlenen bir kişisel veri kümesi bulunmamaktadır.
 
-Yalnızca barındırma sağlayıcısı tarafından, teknik zorunluluk gereği erişim kayıtları tutulabilir:
+Aşağıdaki kayıtlar istisnadır:
 
-| Veri | Amaç | Hukuki sebep |
-|---|---|---|
-| IP adresi, tarayıcı bilgisi, istek zamanı | Sitenin çalışırlığı ve güvenliği | KVKK m.5/2-f (meşru menfaat) |
+| Veri | Kaynak | Amaç | Hukuki sebep | Saklama |
+|---|---|---|---|---|
+| IP adresi, tarayıcı bilgisi, istek zamanı | Barındırma sağlayıcısı | Sitenin çalışırlığı ve güvenliği | KVKK m.5/2-f (meşru menfaat) | Sağlayıcının saklama politikası |
+| Sayfa görüntüleme, oturum süresi, yaklaşık konum, cihaz bilgisi | Google Analytics 4 | Kullanım ölçümü ve site iyileştirme | KVKK m.5/1 (açık rıza) | En fazla 14 ay |
+| IP adresi, tarayıcı bilgisi, izlenen video | YouTube (Google) | Video oynatma | KVKK m.5/1 (açık rıza) | Google/YouTube saklama politikası |
+
+Google Analytics ve YouTube gömülü videoları yalnızca çerez ayarlarında ilgili kategoriye izin verdiğinizde çalışır. İzin vermezseniz Google'a ya da YouTube'a istek gönderilmez; analitik veri işlenmez ve video yüklenmez.
 
 ## Toplanmayan veriler
 
@@ -41,11 +43,15 @@ Portal üzerinden aşağıdaki veriler **toplanmaz**:
 
 ## Aktarım
 
-Portal, kişisel verilerinizi yurt içinde ya da yurt dışında üçüncü kişilere **aktarmaz**.
+Portal, kişisel verilerinizi pazarlama amacıyla üçüncü kişilerle paylaşmaz. Yalnızca şu aktarımlar söz konusudur:
+
+- **Barındırma sağlayıcısı** — sitenin yayımlanması için teknik zorunluluk.
+- **Google LLC (ABD)** — yalnızca çerez ayarlarında analitik izni verdiyseniz, Google Analytics 4 kapsamında kullanım verisi. Bu bir **yurt dışı aktarımdır** ve KVKK m.9 kapsamında açık rızanıza dayanır. İzin vermezseniz aktarım gerçekleşmez.
+- **Google LLC / Google Ireland** — yalnızca bir YouTube videosunu oynattıysanız veya YouTube izni verdiyseniz, video oynatma kapsamında IP adresi ve tarayıcı bilgisi. Bu da **yurt dışı aktarımdır** ve KVKK m.9 kapsamında açık rızanıza dayanır. Video oynatmazsanız aktarım gerçekleşmez.
 
 ## Saklama süresi
 
-Doğrudan toplanan veri bulunmadığı için portal tarafında bir saklama süresi işletilmez. Barındırma sağlayıcısının tuttuğu erişim kayıtları için sağlayıcının saklama politikası geçerlidir.
+Doğrudan toplanan veri bulunmadığı için portal tarafında bir saklama süresi işletilmez. Barındırma sağlayıcısının tuttuğu erişim kayıtları için sağlayıcının saklama politikası geçerlidir. Google Analytics verileri en fazla **14 ay** saklanır; YouTube videosu oynatıldığında Google'ın saklama politikası geçerlidir.
 
 ## KVKK m.11 kapsamındaki haklarınız
 
@@ -65,11 +71,10 @@ haklarına sahipsiniz.
 
 ## Başvuru
 
-Haklarınıza ilişkin taleplerinizi [Bize Ulaşın](/bize-ulasin/) sayfasındaki iletişim kanalı üzerinden iletebilirsiniz.
-
-*TODO: kaynak — KVKK başvuruları için KEP adresi, tebligat adresi veya başvuru formu eklenmelidir.*
+Haklarınıza ilişkin taleplerinizi {{< iletisim-eposta >}} adresine iletebilirsiniz. Talepler en geç **30 gün** içinde yanıtlanır.
 
 ## İlgili sayfalar
 
 - [Gizlilik Politikası](/gizlilik-politikasi/)
 - [Çerez Politikası](/cerez-politikasi/)
+- [Kullanım Şartları](/kullanim-sartlari/)

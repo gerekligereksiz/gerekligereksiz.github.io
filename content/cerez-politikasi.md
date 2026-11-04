@@ -1,51 +1,90 @@
 ---
 title: "Çerez Politikası"
-description: "Bu portalde çerez kullanılıp kullanılmadığı ve tarayıcıda saklanan veriler."
+description: "Bu portalde hangi çerezler kullanılır, ne için kullanılır ve onayınızı nasıl geri alırsınız?"
 date: 2026-10-21T12:00:00+03:00
 ---
 
-**Son güncelleme:** 31 Ekim 2026
+**Son güncelleme:** 4 Kasım 2026
 
-## Kısaca: takip çerezi kullanılmıyor
+## Kısaca: izin vermediğiniz sürece üçüncü taraf isteği yok
 
-Bu portal **reklam, analitik ya da profilleme amacıyla çerez kullanmaz**. Sizi siteler arasında izleyen bir mekanizma bulunmaz.
+Bu portal **reklam ya da profilleme amacıyla çerez kullanmaz**. Ziyaret ölçümü için Google Analytics 4, bazı sayfalarda video için YouTube gömülü içeriği kullanılır. Analitik ve YouTube içeriği yalnızca çerez bandında ya da video yer tutucusunda izin verdiğinizde yüklenir. **İzin vermezseniz Google'a ya da YouTube'a hiçbir istek gönderilmez**; YouTube video kapağı dahi yüklenmez.
 
 ## Çerez nedir?
 
 Çerez, bir sitenin tarayıcınıza bıraktığı küçük bir veri dosyasıdır. Siteler bunu genellikle oturum yönetimi, tercih hatırlama ya da kullanıcı takibi için kullanır.
 
-## Bu portalde durum
+## Kategoriler
+
+| Kategori | Alt kategori | Ne yapar | Varsayılan |
+|---|---|---|---|
+| Gerekli | — | Tercihinizi (`cerez-onay`) ve haftalık bültendeki okuma ilerlemenizi (`bulten:*`) hatırlamak için tarayıcıda yerel kayıt tutulur. Çerez kullanmaz; sunucuya gönderilmez. | Açık (kapatılamaz) |
+| Analitik | — | Google Analytics 4 ile sayfa görüntüleme ve oturum ölçümü. `_ga`, `_ga_*` çerezlerini kullanır. | Kapalı |
+| Üçüncü taraf | YouTube | YouTube videoları. İzin verene kadar yalnızca yer tutucu gösterilir. | Kapalı |
+
+Ayarlar penceresinde **Üçüncü taraf** yalnızca bir grup başlığıdır; kendisine ait bir anahtar yoktur. İzin her zaman alt kategoride (örneğin YouTube) verilir.
+
+**Gerekli** kategorisi açık gelir ve kapatılamaz. Çerez kullanmaz: yalnızca tercihinizi (`cerez-onay`) ve haftalık bültendeki okuma ilerlemenizi (`bulten:*`) hatırlamak için tarayıcınızda yerel kayıt tutulur; bu kayıtlar sunucuya gönderilmez. Video yer tutucusundaki **"YouTube'a izin ver"** düğmesi de aynı `cerez-onay` kaydına yazar: analitik tercihinize dokunmaz, yalnızca YouTube iznini işaretler.
+
+## Bu portalde kullanılan çerezler
 
 | Tür | Kullanılıyor mu? |
 |---|---|
 | Zorunlu çerezler | ❌ Hayır |
-| Analitik çerezler | ❌ Hayır |
+| Zorunlu yerel kayıtlar (`cerez-onay`, `bulten:*`) | ✅ Evet (çerez değil, `localStorage`) |
+| Analitik çerezler | ✅ Yalnızca onay verirseniz (Google Analytics 4) |
 | Reklam / pazarlama çerezleri | ❌ Hayır |
-| Üçüncü taraf çerezleri | ❌ Hayır |
+| YouTube çerezleri | ✅ Yalnızca onay verirseniz (YouTube) |
 
 Site **statiktir** — sunucu tarafında oturum tutan bir sistem yoktur, dolayısıyla oturum çerezi üretilmez.
 
-*TODO: kaynak — siteye analitik eklenirse bu tablo ve metin güncellenmelidir.*
+### Analitik çerezler (onay sonrası)
+
+| Çerez | Sağlayıcı | Amaç | Süre |
+|---|---|---|---|
+| `_ga` | google-analytics.com | Ziyaretçileri birbirinden ayırt etmek | 2 yıl |
+| `_ga_<container-id>` | google-analytics.com | Oturum durumunu tutmak | 2 yıl |
+
+Bu çerezler reklam amacıyla kullanılmaz, başka sitelerdeki ziyaretlerinizle ilişkilendirilmez.
+
+### YouTube videoları (onay sonrası)
+
+Yazılarda YouTube videosu gömülü olabilir. Onay vermediğiniz sürece video kapağı yüklenmez; yerel bir oynatıcı yüzeyi çizilir ve **"YouTube'a izin ver"** paneli gösterilir; YouTube'a istek gitmez.
+
+- **Yer tutucudaki play:** Kutudaki play düğmesi videoyu değil, aynı kutudaki izin panelini açar.
+- **"YouTube'a izin ver":** Yalnızca YouTube izni verilir; **analitik ve genel çerez tercihleriniz değişmez**. Tercih, siz değiştirene kadar tarayıcınızda saklanır; tıkladığınız video `youtube-nocookie.com` (gizlilik geliştirilmiş mod) üzerinden hemen oynar ve sayfadaki diğer videolar da yüklenir.
+- **Çerez seçenekleri:** Paneldeki bağlantı ya da banttaki **Özelleştir** genel ayarları açar. Orada **YouTube** kategorisini açıp **Seçimi kaydet** ile kaydedebilir, **Tümünü reddet** ile hepsini tek seferde kapatabilirsiniz. Bu yolla verilen izin aynı `cerez-onay` kaydına yazılır; ayrı bir YouTube kaydı tutulmaz.
+
+`youtube-nocookie.com` modu, video oynatılmadan önce YouTube çerezi bırakılmasını engeller; ancak anonimlik sağlamaz. **Embed yüklendiğinde IP adresiniz ve tarayıcı bilgileriniz Google/YouTube'a iletilir.** Oynatma sırasında YouTube/Google kendi çerezlerini ve yerel kayıtlarını kullanabilir; bu veriler Google'ın gizlilik politikasına tabidir. Bu çerezler sitenin reklam amacıyla kullandığı çerezler değildir, ancak YouTube'un kendi reklam ve ölçüm uygulamaları geçerli olabilir.
 
 ## Tarayıcıda saklanan veri
 
-Çerezden farklı olarak, sitenin görünümünü ve bülten okuma durumunuzu hatırlamak için tarayıcınızın `localStorage` alanında kayıt tutulur:
+Çerezden farklı olarak, **Gerekli** kategorisindeki işlevsel veriler tarayıcınızın `localStorage` alanında tutulur:
 
 | Anahtar | Değer | Amaç |
 |---|---|---|
-| `theme` | `dark` veya `light` | Seçtiğiniz açık/koyu temayı hatırlamak |
 | `bulten:<sayı>:<tarih>` | Bölüm başına okuma oranı, ör. `{"spor":1,"teknoloji":0.62}` | Haftalık bültende kaldığınız yeri ve üstteki okuma yüzdesini hatırlamak |
+| `cerez-onay` | Ör. `{"version":1,"status":"completed","date":1793807905945,"preferences":{"necessary":true,"analytics":true,"thirdParty":{"youtube":false}}}` | Kategorilere verdiğiniz izni, izin tarihini ve kaydın şema sürümünü hatırlamak |
+
+`status` alanı kararın nerede verildiğini tutar: `completed` bant ya da ayar penceresinden verilen karar, `partial` ise yalnızca video panelindeki **"YouTube'a izin ver"** düğmesiyle verilen izindir (bu durumda bant görünür kalır). `version` alanı kayıt şemasının sürümüdür; site şeması güncellendiğinde eski sürümlü kayıt silinir ve onay yeniden istenir.
 
 Bülten kaydı, sayı güncellendiğinde (tarih değiştiğinde) yeni bir anahtarla başlar; eski kayıt tarayıcınızdan silinir. Kayıtlar:
 
 - Sunucuya **gönderilmez**
-- Sizi tanımlamaz (yalnızca "hangi bölüm ne kadar okundu" bilgisini tutar)
+- Sizi tanımlamaz (bülten kaydı yalnızca "hangi bölüm ne kadar okundu" bilgisini tutar)
 - Başka sitelerle **paylaşılmaz**
 
-## Nasıl silerim?
+Bülten okuma ilerlemesi yalnızca cihazınızda kalan bir işlev kaydıdır; bu nedenle rıza gerektirmez ve ayarlarda ayrı bir anahtarı yoktur.
 
-Tarayıcı ayarlarınızdan site verilerini temizleyerek bu kayıtları silebilirsiniz. Silindikten sonra site, işletim sisteminizin açık/koyu tema tercihine göre görünür ve bülten okuma yüzdesi sıfırdan başlar.
+## Onayımı nasıl geri alırım?
+
+Daha önce izin verdiyseniz sayfa altındaki **Çerez tercihleri** bağlantısıyla ayarları açabilirsiniz. Açılan pencerede kategorileri kapatıp **Seçimi kaydet**'e basın:
+
+- **Analitik** iznini kaldırırsanız `_ga`, `_gid` ve `_ga_*` çerezleri silinir.
+- **YouTube** iznini kaldırırsanız yüklenmiş videolar kaldırılır ve yer tutucuya döner.
+
+Tercihiniz **siz değiştirene kadar** geçerlidir; bant yalnızca tarayıcınızda kayıt yoksa, kayıt şema sürümü eskiyse ya da site verilerini temizlediyseniz yeniden gösterilir. Tarayıcı ayarlarınızdan site verilerini temizlemek de aynı sonucu verir. Silindikten sonra bülten okuma yüzdesi sıfırdan başlar.
 
 ## Sorular
 
-Çerezlerle ilgili sorularınız için [Bize Ulaşın](/bize-ulasin/) sayfasından iletişime geçebilirsiniz. Ayrıntılı bilgi için [Gizlilik Politikası](/gizlilik-politikasi/) sayfasına bakabilirsiniz.
+Çerezlerle ilgili sorularınız için [Bize Ulaşın](/bize-ulasin/) sayfasından iletişime geçebilirsiniz. Ayrıntılı bilgi için [Gizlilik Politikası](/gizlilik-politikasi/) ve [KVKK Aydınlatma Metni](/kvkk-aydinlatma-metni/) sayfalarına bakabilirsiniz.

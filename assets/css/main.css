@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 @source "../../hugo_stats.json";
+/* Çerez bandı/modalı koşullu render edildiği için sınıfları hugo_stats.json'a
+   girmeyebilir; kaynaktan doğrudan taranıyor. */
+@source "../../layouts/_partials/consent-banner.html";
+/* YouTube yer tutucusu da yalnızca ilgili sayfalarda görünür; sınıfları
+   koşullu render nedeniyle stats'a girmeyebilir. */
+@source "../../layouts/shortcodes/youtube.html";
 
 @custom-variant dark (&:where(.dark, .dark *));
 

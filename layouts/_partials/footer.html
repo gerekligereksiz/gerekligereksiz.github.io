@@ -37,6 +37,15 @@
             <a href="{{ .URL }}" class="inline-flex min-h-11 items-center text-base text-neutral-600 hover:text-accent-600 dark:text-neutral-300 dark:hover:text-accent-400">{{ .Name }}</a>
           </li>
           {{- end }}
+          {{- $consentVar := false -}}
+          {{- with partial "consent-categories.html" . -}}
+            {{- range .leaves }}{{ if not .required }}{{ $consentVar = true }}{{ end }}{{ end -}}
+          {{- end -}}
+          {{- if $consentVar }}
+          <li>
+            <button type="button" data-cerez-tercihleri class="inline-flex min-h-11 cursor-pointer items-center text-base text-neutral-600 hover:text-accent-600 dark:text-neutral-300 dark:hover:text-accent-400">Çerez tercihleri</button>
+          </li>
+          {{- end }}
         </ul>
       </nav>
       {{- end }}
@@ -65,6 +74,11 @@
         <img src="{{ .RelPermalink }}" alt="{{ site.Title }}" class="h-8 w-auto" width="{{ .Width }}" height="{{ .Height }}" loading="lazy">
         {{- end }}
         <p class="text-sm text-neutral-500 dark:text-neutral-400">© {{ now.Year }} {{ site.Title }}</p>
+        {{- with site.Params.license }}
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">
+          İçerik <a href="{{ site.Params.licenseUrl }}" class="underline underline-offset-2 hover:text-accent-600 dark:hover:text-accent-400" rel="license noopener noreferrer">{{ . }}</a> ile lisanslıdır
+        </p>
+        {{- end }}
       </div>
       <div class="flex flex-col items-start gap-2 sm:items-end">
         {{- with resources.Get "images/footer_tagline.webp" }}

@@ -17,15 +17,13 @@ Bu portaldeki her şey elle hazırlanıyor. Bir yanlış gördüyseniz, eksik bi
 
 En doğrudan yol:
 
-> **iletisim@gerekligereksiz.example**
-
-*TODO: kaynak — gerçek e-posta adresi belirlenip buraya yazılmalı.*
+> **{{< iletisim-eposta >}}**
 
 Yazarken konu satırına kısaca neyle ilgili olduğunu yazarsanız (örneğin "Uygulama önerisi" ya da "Düzeltme") daha hızlı dönüş yapılabilir.
 
 ## Veri kaynağı düzeltmeleri
 
-Baraj doluluk verileri otomatik olarak çekilir ve kaynağından geldiği gibi yayımlanır. Verinin kendisinde bir hata varsa, kaynağında düzeltilmesi gerekir — bunu [Veri Kaynakları](/veri-kaynaklari/) sayfasından inceleyebilirsiniz.
+Bazı veriler otomatik olarak çekilir ve kaynağından geldiği gibi yayımlanır. Verinin kendisinde bir hata varsa, kaynağında düzeltilmesi gerekir — bunu [Veri Kaynakları](/veri-kaynaklari/) sayfasından inceleyebilirsiniz.
 
 ## Yanıt süresi
 

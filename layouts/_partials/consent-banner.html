@@ -1,0 +1,553 @@
+{{- /* Çerez bandı + ayar modalı — basic consent mode.
+
+       Davranış:
+       - Onay yokken hiçbir üçüncü taraf isteği gitmez: gtag.js yüklenmez,
+         YouTube iframe'i yüklenmez. Yalnızca yerel yer tutucular görünür.
+       - Bant ve footer düğmesi, kapatılabilir (required olmayan) en az bir
+         kategori varsa bulunur. Kategoriler hugo.yaml ->
+         params.consent.categories listesinden gelir; kod değişikliği
+         gerekmez. En fazla 2 seviye: grup + alt kategori.
+         Grup yalnızca başlık/açıklamadır; izin birimi alt kategoridir.
+       - Bantta "Tümünü reddet" / "Özelleştir" / "Tümünü kabul et" sağa yaslı;
+         özelleştir modalı açar. Bant metni params.consent.banner'dan gelir.
+       - Modalda yalnızca "Tümünü reddet" ve "Seçimi kaydet" vardır;
+         "Seçimi kaydet" birincil eylemdir.
+       - Tercih tek kayıtta tutulur:
+           {version, status, date, preferences:{necessary, analytics, thirdParty:{youtube}}}
+         status "completed" -> bant/modal kararı verildi, bant gizlenir.
+         status "partial"   -> yalnızca video panelinden izin verildi,
+                               bant görünür kalır.
+       - required:true kategoriler açık ve kilitlidir; "Tümünü reddet" bile
+         onları kayda true yazar.
+       - Şema sürümü params.consent.version ile artırılır. Sürümü uyuşmayan
+         kayıt silinir; bant yeniden görünür ve onay yeniden istenir.
+       - Analitik izni kaldırılınca _ga/_gid/_ga_* çerezleri silinir.
+       - YouTube izni kaldırılınca yüklenmiş videolar yer tutucuya döner.
+       - Video panelindeki "YouTube'a izin ver" analitik tercihine dokunmaz;
+         aynı kayda yalnızca thirdParty.youtube=true yazar.
+       - İşlevsel kayıtlar (bulten:* okuma ilerlemesi) rıza gerektirmez.
+
+       Vanilla JS, ES5 stili (var/IIFE), yeni bağımlılık yok. */ -}}
+{{- $gaID := site.Config.Services.GoogleAnalytics.ID -}}
+{{- $consent := site.Params.consent -}}
+
+{{- $version := 1 -}}
+{{- with $consent }}{{ with .version }}{{ $version = . }}{{ end }}{{ end -}}
+
+{{- /* Kategoriler: hugo.yaml -> params.consent.categories (en fazla 2 seviye).
+       Doğrulama ve düzleştirme consent-categories.html içinde. */ -}}
+{{- $catalog := partial "consent-categories.html" . -}}
+{{- $leaves := $catalog.leaves -}}
+{{- $items := $catalog.items -}}
+
+{{- /* Kapatılamayan kategorilerin yolları; JS her kayıtta bunları true yazar. */ -}}
+{{- $requiredPaths := slice -}}
+{{- range $leaves }}{{ if .required }}{{ $requiredPaths = $requiredPaths | append .path }}{{ end }}{{ end -}}
+
+{{- /* Yalnızca kilitli kategori kaldıysa sorulacak bir şey yok: bant çizilmez. */ -}}
+{{- $optionalLeaves := slice -}}
+{{- range $leaves }}{{ if not .required }}{{ $optionalLeaves = $optionalLeaves | append . }}{{ end }}{{ end -}}
+
+{{- $banner := dict -}}
+{{- with $consent }}{{ with .banner }}{{ $banner = . }}{{ end }}{{ end -}}
+{{- if not $banner.title }}{{ warnf "consent: params.consent.banner.title zorunlu" }}{{ end -}}
+{{- if not $banner.text }}{{ warnf "consent: params.consent.banner.text zorunlu" }}{{ end -}}
+
+{{- if $optionalLeaves }}
+<div id="cerez-bandi" hidden role="region" aria-labelledby="cerez-bandi-baslik" class="fixed inset-x-0 bottom-0 z-50 border-t border-neutral-300 bg-neutral-50/95 backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/95">
+  <div class="mx-auto max-h-[85vh] max-w-5xl overflow-y-auto px-4 py-4">
+    <h2 id="cerez-bandi-baslik" class="font-hand text-2xl text-neutral-800 dark:text-neutral-100">{{ $banner.title }}</h2>
+    <p class="mt-1 text-sm text-neutral-700 dark:text-neutral-300">{{ $banner.text }}</p>
+    {{- with $banner.links }}
+    <p class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+      {{- range . }}
+      <a href="{{ .href | relURL }}" class="underline underline-offset-2 hover:text-accent-600 dark:hover:text-accent-400">{{ .label }}</a>
+      {{- end }}
+    </p>
+    {{- end }}
+    <div class="mt-3 flex flex-col gap-2 sm:flex-row sm:justify-end">
+      <button type="button" id="cerez-ret" class="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-lg border border-neutral-300 bg-white px-4 text-sm font-medium text-neutral-700 hover:bg-neutral-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800">Tümünü reddet</button>
+      <button type="button" data-cerez-tercihleri class="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-lg border border-neutral-300 bg-neutral-200 px-4 text-sm font-medium text-neutral-800 hover:bg-neutral-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700">Özelleştir</button>
+      <button type="button" id="cerez-kabul" class="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-lg bg-accent-600 px-4 text-sm font-medium text-white hover:bg-accent-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600">Tümünü kabul et</button>
+    </div>
+  </div>
+</div>
+
+<dialog id="cerez-ayarlar" aria-labelledby="cerez-ayarlar-baslik" aria-describedby="cerez-ayarlar-aciklama" class="m-auto w-[calc(100%-2rem)] max-w-lg rounded-xl border border-neutral-200 bg-neutral-50 p-0 text-neutral-900 shadow-xl backdrop:bg-neutral-950/50 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-100">
+  <div class="max-h-[85vh] overflow-y-auto p-3 sm:p-4">
+    <div class="flex items-start justify-between gap-2">
+      <h2 id="cerez-ayarlar-baslik" class="font-hand text-3xl text-neutral-800 dark:text-neutral-100">Çerez tercihleri</h2>
+      <button type="button" id="cerez-ayarlar-kapat" aria-label="Ayarları kapat" class="inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-lg text-2xl leading-none text-neutral-500 hover:bg-neutral-200 hover:text-neutral-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100">&times;</button>
+    </div>
+    <p id="cerez-ayarlar-aciklama" class="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+      İzin vereceğiniz kategorileri seçin. <strong>Dilediğiniz zaman</strong> sayfa altındaki "Çerez tercihleri" bağlantısından değiştirebilirsiniz.
+    </p>
+    <div class="mt-4 space-y-2">
+      {{- range $items }}
+      {{- if .children }}
+      <div role="group" aria-labelledby="cerez-grup-{{ .id }}" class="rounded-xl border border-neutral-200 bg-neutral-100/60 p-3 dark:border-neutral-800 dark:bg-neutral-900/50">
+        <h3 id="cerez-grup-{{ .id }}" class="text-base font-medium text-neutral-900 dark:text-neutral-100">{{ .label }}</h3>
+        {{- with .description }}
+        <p class="mt-1 break-words text-sm text-neutral-600 dark:text-neutral-400">{{ . }}</p>
+        {{- end }}
+        <div class="mt-3 space-y-2">
+          {{- range .children }}
+          {{ partial "consent-category-card.html" . }}
+          {{- end }}
+        </div>
+      </div>
+      {{- else }}
+      {{ partial "consent-category-card.html" . }}
+      {{- end }}
+      {{- end }}
+    </div>
+    <div class="mt-3 flex flex-col gap-2 sm:flex-row">
+      <button type="button" id="cerez-hepsini-reddet" class="inline-flex min-h-11 flex-1 cursor-pointer items-center justify-center rounded-lg border border-neutral-300 px-4 text-sm font-medium text-neutral-700 hover:bg-neutral-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 dark:border-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-800">Tümünü reddet</button>
+      <button type="button" id="cerez-ayarlar-kaydet" class="inline-flex min-h-11 flex-1 cursor-pointer items-center justify-center rounded-lg bg-accent-600 px-4 text-sm font-medium text-white hover:bg-accent-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600">Seçimi kaydet</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  (function () {
+    var GA_ID = {{ $gaID | jsonify | safeJS }};
+    var CONSENT_VERSION = {{ $version | jsonify | safeJS }};
+    /* Kapatılamayan kategoriler; kayda her zaman true yazılır. */
+    var REQUIRED_PATHS = {{ $requiredPaths | jsonify | safeJS }};
+    var STORAGE_KEY = "cerez-onay";
+    var LEGACY_KEY = "youtube-izin";
+
+    var banner = document.getElementById("cerez-bandi");
+    var dialog = document.getElementById("cerez-ayarlar");
+    var acceptButton = document.getElementById("cerez-kabul");
+    var rejectButton = document.getElementById("cerez-ret");
+    var saveButton = document.getElementById("cerez-ayarlar-kaydet");
+    var rejectAllButton = document.getElementById("cerez-hepsini-reddet");
+    var closeButton = document.getElementById("cerez-ayarlar-kapat");
+    var categoryInputs = document.querySelectorAll("[data-consent-category]");
+    var lastFocused = null;
+    var youtubePreviouslyEnabled = false;
+    var currentConsent = null;
+
+    /* --- Tercih yolları: "thirdParty.youtube" -> { thirdParty: { youtube: true } } --- */
+
+    function readPath(source, path) {
+      var parts = path.split(".");
+      var current = source;
+      var i;
+      for (i = 0; i < parts.length; i++) {
+        if (!current || typeof current !== "object") return false;
+        current = current[parts[i]];
+      }
+      return current === true;
+    }
+
+    function writePath(target, path, value) {
+      var parts = path.split(".");
+      var current = target;
+      var i;
+      for (i = 0; i < parts.length - 1; i++) {
+        if (!current[parts[i]] || typeof current[parts[i]] !== "object") current[parts[i]] = {};
+        current = current[parts[i]];
+      }
+      current[parts[parts.length - 1]] = !!value;
+    }
+
+    function normalizePreferences(source) {
+      var preferences = {};
+      var i;
+      for (i = 0; i < categoryInputs.length; i++) {
+        var path = categoryInputs[i].getAttribute("data-consent-path");
+        writePath(preferences, path, readPath(source, path));
+      }
+      /* required kategoriler kullanıcı seçiminden bağımsız olarak açık kalır. */
+      for (i = 0; i < REQUIRED_PATHS.length; i++) {
+        writePath(preferences, REQUIRED_PATHS[i], true);
+      }
+      return preferences;
+    }
+
+    function allPreferences(value) {
+      var preferences = {};
+      var i;
+      for (i = 0; i < categoryInputs.length; i++) {
+        writePath(preferences, categoryInputs[i].getAttribute("data-consent-path"), value);
+      }
+      return preferences;
+    }
+
+    function formPreferences() {
+      var preferences = {};
+      var i;
+      for (i = 0; i < categoryInputs.length; i++) {
+        writePath(preferences, categoryInputs[i].getAttribute("data-consent-path"), categoryInputs[i].checked);
+      }
+      return preferences;
+    }
+
+    function syncCategories(preferences) {
+      var i;
+      for (i = 0; i < categoryInputs.length; i++) {
+        categoryInputs[i].checked = readPath(preferences, categoryInputs[i].getAttribute("data-consent-path"));
+      }
+    }
+
+    /* --- Kayıt: { version, status, date, preferences } --- */
+
+    function clearStoredConsent() {
+      try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    }
+
+    function readConsent() {
+      var raw;
+      try { raw = localStorage.getItem(STORAGE_KEY); } catch (e) { return null; }
+      /* Tek kayda geçildi; eski ayrı YouTube kaydı bir kez temizlenir. */
+      try { localStorage.removeItem(LEGACY_KEY); } catch (e) {}
+      if (!raw) return null;
+
+      var data;
+      try { data = JSON.parse(raw); } catch (e) { clearStoredConsent(); return null; }
+      if (!data || data.version !== CONSENT_VERSION) { clearStoredConsent(); return null; }
+      if (data.status !== "completed" && data.status !== "partial") { clearStoredConsent(); return null; }
+      if (typeof data.date !== "number") { clearStoredConsent(); return null; }
+
+      return {
+        status: data.status,
+        date: data.date,
+        preferences: normalizePreferences(data.preferences)
+      };
+    }
+
+    function writeConsent(status, preferences) {
+      var record = {
+        version: CONSENT_VERSION,
+        status: status,
+        date: new Date().getTime(),
+        preferences: normalizePreferences(preferences)
+      };
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(record)); } catch (e) {}
+      return record;
+    }
+
+    /* --- Çerez temizliği: host ve üst alan adı varyantları --- */
+
+    function deleteCookie(name) {
+      var host = window.location.hostname;
+      var parts = host.split(".");
+      var domains = [""];
+      var i;
+      for (i = 1; i < parts.length - 1; i++) {
+        var domain = parts.slice(i).join(".");
+        domains.push(domain);
+        domains.push("." + domain);
+      }
+      for (i = 0; i < domains.length; i++) {
+        var suffix = domains[i] ? "; domain=" + domains[i] : "";
+        document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0; path=/" + suffix;
+      }
+    }
+
+    function clearAnalyticsCookies() {
+      var names = ["_ga", "_gid"];
+      if (GA_ID) names.push("_ga_" + GA_ID.replace(/^G-/, ""));
+      var raw = document.cookie ? document.cookie.split(";") : [];
+      var i;
+      for (i = 0; i < raw.length; i++) {
+        var name = raw[i].split("=")[0].replace(/^\s+|\s+$/g, "");
+        if (name === "_ga" || name === "_gid" || name.indexOf("_ga_") === 0) {
+          names.push(name);
+        }
+      }
+      for (i = 0; i < names.length; i++) {
+        deleteCookie(names[i]);
+      }
+    }
+
+    /* --- Google Analytics: yalnızca analitik izni verilince yüklenir --- */
+
+    function enableAnalytics() {
+      if (!GA_ID) return;
+      window["ga-disable-" + GA_ID] = false;
+
+      if (!window.__gaBaslatildi) {
+        window.__gaBaslatildi = true;
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+        /* Reklam yok; ad_* alanları ileride eklenecek reklam için hazır. */
+        gtag("consent", "default", {
+          analytics_storage: "granted",
+          ad_storage: "denied",
+          ad_user_data: "denied",
+          ad_personalization: "denied"
+        });
+        gtag("js", new Date());
+        gtag("config", GA_ID);
+
+        var script = document.createElement("script");
+        script.async = true;
+        script.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(GA_ID);
+        document.head.appendChild(script);
+      } else if (window.gtag) {
+        gtag("consent", "update", {
+          analytics_storage: "granted",
+          ad_storage: "denied",
+          ad_user_data: "denied",
+          ad_personalization: "denied"
+        });
+      }
+    }
+
+    function disableAnalytics() {
+      if (GA_ID) {
+        window["ga-disable-" + GA_ID] = true;
+        if (window.gtag) {
+          gtag("consent", "update", {
+            analytics_storage: "denied",
+            ad_storage: "denied",
+            ad_user_data: "denied",
+            ad_personalization: "denied"
+          });
+        }
+      }
+      clearAnalyticsCookies();
+    }
+
+    /* --- YouTube: onay yoksa yalnızca yer tutucu --- */
+
+    function resetPlaceholder(container) {
+      if (!container) return;
+      container.removeAttribute("data-yt-oynat");
+      container.classList.add("aspect-video");
+      var facade = container.querySelector("[data-yt-facade]");
+      var panel = container.querySelector("[data-yt-panel]");
+      if (facade) facade.hidden = false;
+      if (panel) panel.hidden = true;
+    }
+
+    function openPanel(container) {
+      if (!container) return;
+      var facade = container.querySelector("[data-yt-facade]");
+      var panel = container.querySelector("[data-yt-panel]");
+      if (!facade || !panel) return;
+      facade.hidden = true;
+      panel.hidden = false;
+      container.classList.remove("aspect-video");
+      var grantButton = panel.querySelector("[data-yt-izin]");
+      if (grantButton) grantButton.focus();
+    }
+
+    function closePanel(container) {
+      if (!container) return;
+      var facade = container.querySelector("[data-yt-facade]");
+      resetPlaceholder(container);
+      if (facade) facade.focus();
+    }
+
+    function loadVideo(container) {
+      if (!container || container.querySelector("iframe[data-yt-iframe]")) return;
+      var id = container.getAttribute("data-yt-id");
+      if (!id || !/^[A-Za-z0-9_-]{11}$/.test(id)) return;
+      var title = container.getAttribute("data-yt-baslik") || "YouTube video";
+      var autoplay = container.getAttribute("data-yt-oynat") === "1";
+
+      container.removeAttribute("data-yt-oynat");
+      container.classList.add("aspect-video");
+
+      var facade = container.querySelector("[data-yt-facade]");
+      var panel = container.querySelector("[data-yt-panel]");
+      if (facade) facade.hidden = true;
+      if (panel) panel.hidden = true;
+
+      var iframe = document.createElement("iframe");
+      iframe.src = "https://www.youtube-nocookie.com/embed/" + id + (autoplay ? "?autoplay=1" : "");
+      iframe.title = title;
+      iframe.loading = "lazy";
+      iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share");
+      iframe.setAttribute("allowfullscreen", "");
+      iframe.setAttribute("data-yt-iframe", "1");
+      iframe.className = "absolute inset-0 h-full w-full";
+
+      container.appendChild(iframe);
+    }
+
+    function loadVideos() {
+      var placeholders = document.querySelectorAll("[data-yt-yer]");
+      for (var i = 0; i < placeholders.length; i++) {
+        loadVideo(placeholders[i]);
+      }
+    }
+
+    function unloadVideos() {
+      var frames = document.querySelectorAll("iframe[data-yt-iframe]");
+      for (var i = 0; i < frames.length; i++) {
+        var frame = frames[i];
+        var container = frame.parentNode;
+        if (container) {
+          container.removeChild(frame);
+          resetPlaceholder(container);
+        }
+      }
+    }
+
+    /* "YouTube'a izin ver": analitik tercihine dokunmaz; aynı kayda yalnızca
+       thirdParty.youtube=true yazar, tıklanan videoyu başlatır, diğer
+       videoları da yükler. Kullanıcı bantı yanıtlamadıysa kayıt "partial"
+       olur ve bant görünür kalır. */
+    function grantYoutube(container) {
+      if (!container) return;
+      container.setAttribute("data-yt-oynat", "1");
+      var merged = normalizePreferences(currentConsent ? currentConsent.preferences : null);
+      writePath(merged, "thirdParty.youtube", true);
+      var status = currentConsent && currentConsent.status === "completed" ? "completed" : "partial";
+      currentConsent = writeConsent(status, merged);
+      applyConsent(currentConsent.preferences);
+    }
+
+    /* --- Bant / modal --- */
+
+    function hideBanner() {
+      if (banner) banner.hidden = true;
+    }
+
+    function showBanner() {
+      if (banner) banner.hidden = false;
+    }
+
+    function applyConsent(preferences, forceUnload) {
+      var analytics = readPath(preferences, "analytics");
+      var youtube = readPath(preferences, "thirdParty.youtube");
+      if (analytics) enableAnalytics(); else disableAnalytics();
+      if (youtube) {
+        loadVideos();
+      } else if (forceUnload || youtubePreviouslyEnabled) {
+        unloadVideos();
+      }
+      youtubePreviouslyEnabled = youtube;
+      syncCategories(preferences);
+    }
+
+    function restoreFocus() {
+      if (lastFocused && document.documentElement.contains(lastFocused) && lastFocused.getClientRects().length) {
+        lastFocused.focus();
+        return;
+      }
+      var footerButton = document.querySelector("footer [data-cerez-tercihleri]");
+      if (footerButton) footerButton.focus();
+    }
+
+    function closeDialog() {
+      if (!dialog) return;
+      if (typeof dialog.close === "function") {
+        if (dialog.open) dialog.close();
+      } else {
+        dialog.removeAttribute("open");
+        restoreFocus();
+      }
+    }
+
+    function openDialog() {
+      syncCategories(currentConsent ? currentConsent.preferences : normalizePreferences(null));
+      lastFocused = document.activeElement;
+      if (!dialog) return;
+      if (typeof dialog.showModal === "function") {
+        if (!dialog.open) dialog.showModal();
+      } else {
+        dialog.setAttribute("open", "");
+      }
+    }
+
+    function saveConsent(preferences, status, forceUnload) {
+      currentConsent = writeConsent(status, preferences);
+      applyConsent(currentConsent.preferences, forceUnload);
+      hideBanner();
+      closeDialog();
+    }
+
+    /* --- Başlangıç --- */
+
+    currentConsent = readConsent();
+    if (currentConsent && currentConsent.status === "completed") hideBanner();
+    else showBanner();
+    applyConsent(currentConsent ? currentConsent.preferences : normalizePreferences(null));
+
+    /* --- Kullanıcı eylemleri --- */
+
+    if (acceptButton) {
+      acceptButton.addEventListener("click", function () {
+        saveConsent(allPreferences(true), "completed");
+      });
+    }
+
+    if (rejectButton) {
+      rejectButton.addEventListener("click", function () {
+        saveConsent(allPreferences(false), "completed", true);
+      });
+    }
+
+    if (saveButton) {
+      saveButton.addEventListener("click", function () {
+        saveConsent(formPreferences(), "completed");
+      });
+    }
+
+    if (rejectAllButton) {
+      rejectAllButton.addEventListener("click", function () {
+        saveConsent(allPreferences(false), "completed", true);
+      });
+    }
+
+    if (closeButton) closeButton.addEventListener("click", closeDialog);
+    if (dialog) dialog.addEventListener("close", restoreFocus);
+
+    var settingsTriggers = document.querySelectorAll("[data-cerez-tercihleri]");
+    Array.prototype.forEach.call(settingsTriggers, function (element) {
+      element.addEventListener("click", function (event) {
+        event.preventDefault();
+        openDialog();
+      });
+    });
+
+    /* Yer tutucu: play -> izin paneli; "YouTube'a izin ver" -> yalnızca
+       YouTube izni; "Vazgeç" -> panele geri dön. */
+    function closestWithAttr(element, attribute) {
+      while (element && element !== document) {
+        if (element.hasAttribute && element.hasAttribute(attribute)) return element;
+        element = element.parentNode;
+      }
+      return null;
+    }
+
+    document.addEventListener("click", function (event) {
+      var element = closestWithAttr(event.target, "data-yt-facade");
+      if (element) {
+        event.preventDefault();
+        openPanel(closestWithAttr(element, "data-yt-yer"));
+        return;
+      }
+      element = closestWithAttr(event.target, "data-yt-izin");
+      if (element) {
+        event.preventDefault();
+        grantYoutube(closestWithAttr(element, "data-yt-yer"));
+        return;
+      }
+      element = closestWithAttr(event.target, "data-yt-vazgec");
+      if (element) {
+        event.preventDefault();
+        closePanel(closestWithAttr(element, "data-yt-yer"));
+        return;
+      }
+    }, false);
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key !== "Escape" && event.keyCode !== 27) return;
+      if (dialog && dialog.open) return;
+      var activePanel = document.querySelector("[data-yt-panel]:not([hidden])");
+      if (activePanel) {
+        event.preventDefault();
+        closePanel(activePanel.parentNode);
+      }
+    }, false);
+  })();
+</script>
+{{- end }}

@@ -1,0 +1,3 @@
+# Tüm arama motoru botlarına kapalı.
+User-agent: *
+Disallow: /
