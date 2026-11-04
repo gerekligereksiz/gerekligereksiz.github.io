@@ -131,7 +131,7 @@ params:
 # ID doldurulduğunda GA yalnızca "Tümünü kabul et" / Analitik izni sonrası çalışır.
 services:
   googleAnalytics:
-    ID: "TEST"
+    ID: "GTM-PGT9R4V6"
 
 privacy:
   youtube:
