@@ -80,7 +80,7 @@ params:
   licenseUrl: "https://creativecommons.org/licenses/by-nc-nd/4.0/deed.tr"
   # Tek iletişim kanalı. Adres değişince yalnızca burayı güncelle
   # (bize-ulasin.md ve kvkk-aydinlatma-metni.md iletisim-eposta shortcode'unu kullanır).
-  contactEmail: "iletisim@gerekligereksiz.example"
+  contactEmail: "iletisim@gerekli-gereksiz.com"
 
   # Çerez onayı. Kategoriler buradan yönetilir, kod değişikliği gerekmez.
   # Bakım:
