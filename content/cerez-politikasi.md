@@ -14,6 +14,10 @@ Bu portal **reklam ya da profilleme amacıyla çerez kullanmaz**. Ziyaret ölç�
 
 Çerez, bir sitenin tarayıcınıza bıraktığı küçük bir veri dosyasıdır. Siteler bunu genellikle oturum yönetimi, tercih hatırlama ya da kullanıcı takibi için kullanır.
 
+Çerezler **oturum çerezi** (tarayıcı kapanınca silinir) veya **kalıcı çerez** (süresi dolana ya da siz silene kadar saklanır) olabilir. Çerezi yerleştiren tarafa göre de **birinci taraf** (site tarafından) veya **üçüncü taraf** (Google/YouTube gibi başka bir etki alanı tarafından) çerezi olarak adlandırılır.
+
+Bu portalda zorunlu veya oturum çerezi kullanılmaz. Onay verirseniz yalnızca analitik çerezler (`_ga`, `_ga_*`) ve YouTube videoları için üçüncü taraf çerezleri devreye girebilir.
+
 ## Kategoriler
 
 | Kategori | Alt kategori | Ne yapar | Varsayılan |
@@ -50,6 +54,8 @@ Bu çerezler reklam amacıyla kullanılmaz, başka sitelerdeki ziyaretlerinizle 
 ### YouTube videoları (onay sonrası)
 
 Yazılarda YouTube videosu gömülü olabilir. Onay vermediğiniz sürece video kapağı yüklenmez; yerel bir oynatıcı yüzeyi çizilir ve **"YouTube'a izin ver"** paneli gösterilir; YouTube'a istek gitmez.
+
+YouTube çerezleri **üçüncü taraf** çerezleridir; doğrudan bu portal tarafından değil, YouTube/Google tarafından yerleştirilir.
 
 - **Yer tutucudaki play:** Kutudaki play düğmesi videoyu değil, aynı kutudaki izin panelini açar.
 - **"YouTube'a izin ver":** Yalnızca YouTube izni verilir; **analitik ve genel çerez tercihleriniz değişmez**. Tercih, siz değiştirene kadar tarayıcınızda saklanır; tıkladığınız video `youtube-nocookie.com` (gizlilik geliştirilmiş mod) üzerinden hemen oynar ve sayfadaki diğer videolar da yüklenir.
@@ -101,6 +107,12 @@ Aşağıdaki yöntemleri kullanarak da çerez tercihlerinizi yönetebilirsiniz:
 | **Opera** | **Tercihler** → **Gelişmiş** → **Çerezler** bölümünden yönetilebilir. |
 | **Safari** | Cihazınızın **Ayarlar** → **Safari** → **Gizlilik ve Güvenlik** bölümünden tüm çerez yönetimi yapılabilir. |
 
+## Politika değişiklikleri
+
+Bu politikayı zaman zaman güncelleyebiliriz. Önemli değişikliklerde bu sayfadaki **Son güncelleme** tarihini günceller ve güncel metni bu sayfada yayımlarız. Geçerli sürüm, bu sayfada yayımlanan en son metindir.
+
 ## Sorular
 
-Çerezlerle ilgili sorularınız için [Bize Ulaşın](/bize-ulasin/) sayfasından iletişime geçebilirsiniz. Ayrıntılı bilgi için [Gizlilik Politikası](/gizlilik-politikasi/) ve [KVKK Aydınlatma Metni](/kvkk-aydinlatma-metni/) sayfalarına bakabilirsiniz.
+Çerezlerle ilgili sorularınız için [Bize Ulaşın](/bize-ulasin/) sayfasından iletişime geçebilirsiniz. Bize {{< iletisim-eposta >}} adresinden de ulaşabilirsiniz.
+
+Çerezler hakkında genel bilgi için {{< ext-link "https://www.allaboutcookies.org/" "AllAboutCookies" >}} sitesine bakabilirsiniz. Ayrıntılı bilgi için [Gizlilik Politikası](/gizlilik-politikasi/) ve [KVKK Aydınlatma Metni](/kvkk-aydinlatma-metni/) sayfalarına bakabilirsiniz.
