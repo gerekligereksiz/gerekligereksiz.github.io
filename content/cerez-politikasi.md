@@ -4,7 +4,7 @@ description: "Bu portalde hangi çerezler kullanılır, ne için kullanılır ve
 date: 2026-10-21T12:00:00+03:00
 ---
 
-**Son güncelleme:** 4 Kasım 2026
+**Son güncelleme:** 6 Kasım 2026
 
 ## Kısaca: izin vermediğiniz sürece üçüncü taraf isteği yok
 
@@ -61,10 +61,10 @@ Yazılarda YouTube videosu gömülü olabilir. Onay vermediğiniz sürece video 
 
 Çerezden farklı olarak, **Gerekli** kategorisindeki işlevsel veriler tarayıcınızın `localStorage` alanında tutulur:
 
-| Anahtar | Değer | Amaç |
+| Anahtar | Amaç |
 |---|---|---|
-| `bulten:<sayı>:<tarih>` | Bölüm başına okuma oranı, ör. `{"spor":1,"teknoloji":0.62}` | Haftalık bültende kaldığınız yeri ve üstteki okuma yüzdesini hatırlamak |
-| `cerez-onay` | Ör. `{"version":1,"status":"completed","date":1793807905945,"preferences":{"necessary":true,"analytics":true,"thirdParty":{"youtube":false}}}` | Kategorilere verdiğiniz izni, izin tarihini ve kaydın şema sürümünü hatırlamak |
+| `bulten:<sayı>:<tarih>` | Haftalık bültende kaldığınız yeri ve üstteki okuma yüzdesini hatırlamak |
+| `cerez-onay` | Kategorilere verdiğiniz izni, izin tarihini ve kaydın şema sürümünü hatırlamak |
 
 `status` alanı kararın nerede verildiğini tutar: `completed` bant ya da ayar penceresinden verilen karar, `partial` ise yalnızca video panelindeki **"YouTube'a izin ver"** düğmesiyle verilen izindir (bu durumda bant görünür kalır). `version` alanı kayıt şemasının sürümüdür; site şeması güncellendiğinde eski sürümlü kayıt silinir ve onay yeniden istenir.
 
@@ -78,12 +78,28 @@ Bülten okuma ilerlemesi yalnızca cihazınızda kalan bir işlev kaydıdır; bu
 
 ## Onayımı nasıl geri alırım?
 
-Daha önce izin verdiyseniz sayfa altındaki **Çerez tercihleri** bağlantısıyla ayarları açabilirsiniz. Açılan pencerede kategorileri kapatıp **Seçimi kaydet**'e basın:
+Daha önce izin verdiyseniz aşağıdaki **Çerez tercihleri** düğmesiyle ayarları açabilirsiniz. Açılan pencerede kategorileri kapatıp **Seçimi kaydet**'e basın:
+
+{{< cerez-tercihleri >}}
 
 - **Analitik** iznini kaldırırsanız `_ga`, `_gid` ve `_ga_*` çerezleri silinir.
 - **YouTube** iznini kaldırırsanız yüklenmiş videolar kaldırılır ve yer tutucuya döner.
 
 Tercihiniz **siz değiştirene kadar** geçerlidir; bant yalnızca tarayıcınızda kayıt yoksa, kayıt şema sürümü eskiyse ya da site verilerini temizlediyseniz yeniden gösterilir. Tarayıcı ayarlarınızdan site verilerini temizlemek de aynı sonucu verir. Silindikten sonra bülten okuma yüzdesi sıfırdan başlar.
+
+## Tarayıcı ayarlarından çerezleri yönetme
+
+Alternatif olarak, tarayıcınızda tüm veya bazı çerezlerin ayarını reddetmenize izin veren ayarı etkinleştirerek tüm çerezleri engelleyebilirsiniz. Bu portalda zorunlu çerez kullanılmadığı için tüm çerezleri engellemek sitenin temel işlevlerini etkilemez; ancak bazı tarayıcılar bu ayarı site verilerini de kapsayacak şekilde uygularsa çerez tercihiniz ve bülten okuma ilerlemeniz hatırlanmayabilir.
+
+Aşağıdaki yöntemleri kullanarak da çerez tercihlerinizi yönetebilirsiniz:
+
+| Tarayıcı | Çerez yönetim adımları |
+|---|---|
+| **Google Chrome** | Adres çubuğundaki **kilit işareti** → **Çerezler** sekmesinden izin verilebilir veya engellenebilir. |
+| **Microsoft Edge** | Sağ üstteki **Ayarlar ve diğer** → **Ayarlar** → **Çerezler ve site izinleri** bölümünden izin verilebilir veya engellenebilir. |
+| **Mozilla Firefox** | Sağ üstteki **Menüyü Aç** → **Seçenekler** → **Gizlilik ve Güvenlik** butonundan yönetilebilir. |
+| **Opera** | **Tercihler** → **Gelişmiş** → **Çerezler** bölümünden yönetilebilir. |
+| **Safari** | Cihazınızın **Ayarlar** → **Safari** → **Gizlilik ve Güvenlik** bölümünden tüm çerez yönetimi yapılabilir. |
 
 ## Sorular
 

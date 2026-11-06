@@ -7,6 +7,9 @@
 /* YouTube yer tutucusu da yalnızca ilgili sayfalarda görünür; sınıfları
    koşullu render nedeniyle stats'a girmeyebilir. */
 @source "../../layouts/shortcodes/youtube.html";
+/* Çerez tercihleri düğmesi yalnızca kullanıldığı sayfada görünür; sınıfları
+   koşullu render nedeniyle stats'a girmeyebilir. */
+@source "../../layouts/shortcodes/cerez-tercihleri.html";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
