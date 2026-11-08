@@ -16,10 +16,11 @@
 {{ with $desc }}<meta property="og:description" content="{{ . }}">{{ end }}
 <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
 <meta property="og:url" content="{{ .Permalink }}">
-{{ with .Params.image }}
-  {{- $img := resources.Get . -}}
-  {{- with $img }}<meta property="og:image" content="{{ .Permalink }}">{{ end }}
-{{ end }}
+{{- $shareImg := partial "seo-image.html" . }}
+{{ with $shareImg.url }}<meta property="og:image" content="{{ . }}">
+<meta property="og:image:width" content="{{ $shareImg.width }}">
+<meta property="og:image:height" content="{{ $shareImg.height }}">
+<meta name="twitter:image" content="{{ . }}">{{ end }}
 <meta property="og:site_name" content="{{ site.Title }}">
 <meta name="twitter:card" content="summary_large_image">
 {{- /* Bülten sayısı: bölümlerin toplandığı hub */ -}}
@@ -34,7 +35,7 @@
   "datePublished": {{ .Date.Format "2006-01-02T15:04:05Z07:00" | jsonify | safeJS }},
   "dateModified": {{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" | jsonify | safeJS }},
   "isPartOf": { "@type": "WebSite", "name": {{ site.Title | jsonify | safeJS }}, "url": {{ site.Home.Permalink | jsonify | safeJS }} },
-  "publisher": { "@type": "Organization", "name": {{ site.Title | jsonify | safeJS }} },
+  "publisher": { "@type": "Organization", "name": {{ site.Title | jsonify | safeJS }}, "logo": { "@type": "ImageObject", "url": {{ (printf "%sandroid-chrome-512x512.png" site.Home.Permalink) | jsonify | safeJS }} } },
   "hasPart": [
     {{- range $i, $p := .Pages.ByWeight }}
     {{- if $i }},{{ end }}
@@ -57,9 +58,12 @@
   "articleSection": {{ . | jsonify | safeJS }},
   {{- end }}
   "inLanguage": "tr",
+  {{- with $shareImg.url }}
+  "image": [ {{ . | jsonify | safeJS }} ],
+  {{- end }}
   "mainEntityOfPage": { "@type": "WebPage", "@id": {{ .Permalink | jsonify | safeJS }} },
   "author": { "@type": "Organization", "name": {{ site.Title | jsonify | safeJS }} },
-  "publisher": { "@type": "Organization", "name": {{ site.Title | jsonify | safeJS }} }
+  "publisher": { "@type": "Organization", "name": {{ site.Title | jsonify | safeJS }}, "logo": { "@type": "ImageObject", "url": {{ (printf "%sandroid-chrome-512x512.png" site.Home.Permalink) | jsonify | safeJS }} } }
 }
 </script>
 {{- /* Sporcu / takım profili */ -}}
@@ -73,6 +77,9 @@
   "url": {{ .Permalink | jsonify | safeJS }},
   {{- with .Params.sport }}
   "sport": {{ . | jsonify | safeJS }},
+  {{- end }}
+  {{- if $shareImg.own }}
+  "image": {{ $shareImg.url | jsonify | safeJS }},
   {{- end }}
   "inLanguage": "tr",
   "mainEntityOfPage": { "@type": "WebPage", "@id": {{ .Permalink | jsonify | safeJS }} }

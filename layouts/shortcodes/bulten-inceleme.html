@@ -36,7 +36,7 @@
   güvenlik nedeniyle düşer). Markdown her çocuk shortcode'un içinde işlenir.
 */ -}}
 {{- $page := .Page -}}
-{{- $metaLabel := "text-[12px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400" -}}
+{{- $metaLabel := "text-[12px] font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400" -}}
 
 {{- /* Kaynak kodu: "etiket|url" veya çıplak URL */ -}}
 {{- $kodLabel := "" -}}
@@ -132,7 +132,7 @@
       <span class="text-[0.8em] text-neutral-600 dark:text-neutral-300">{{ $k.label }}</span>
       {{- end }}
       {{- if lt $i (sub (len $kaynaklar) 1) }}
-      <span class="select-none text-neutral-400 dark:text-neutral-600" aria-hidden="true">·</span>
+      <span class="select-none text-neutral-600 dark:text-neutral-600" aria-hidden="true">·</span>
       {{- end }}
     {{- end }}
   </div>

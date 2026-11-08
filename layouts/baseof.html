@@ -34,11 +34,19 @@
     */ -}}
     {{ partial "seo.html" . }}
     {{ partial "favicon.html" . }}
+    {{- /* Kritik font zincirini kısalt: CSS ayrıştırılmadan Inter (latin + latin-ext)
+           inmeye başlar. Caveat preload edilmez (mobilde menüde görünmez). */ -}}
+    <link rel="preload" href="{{ "fonts/inter-400-latin.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ "fonts/inter-400-latin-ext.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
     {{ with (templates.Defer (dict "key" "global")) }}
       {{ partial "css.html" . }}
     {{ end }}
   </head>
   <body class="bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 antialiased font-sans">
+    {{- /* Klavye/ekran okuyucu kullanıcıları için: menüyü atlayıp ana içeriğe geç.
+           Yalnızca odak alınca görünür; hedef her şablondaki <main id="icerik">.
+           Başlık altı kaydırma payı html scroll-padding-top ile zaten verilir. */ -}}
+    <a href="#icerik" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:inline-flex focus:min-h-11 focus:items-center focus:rounded-lg focus:bg-accent-700 focus:px-4 focus:text-base focus:font-medium focus:text-white focus:shadow-lg">İçeriğe geç</a>
     {{ partial "header.html" . }}
     {{ block "main" . }}{{ end }}
     {{ partial "footer.html" . }}

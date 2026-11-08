@@ -1,14 +1,14 @@
 {{- /* Varlık kartı: sporcu veya takım profili. Kullanım: {{ partial "spor/varlik-karti.html" . }} */ -}}
 {{- $n := len .RegularPages -}}
 <a href="{{ .RelPermalink }}" class="group flex flex-col rounded-2xl border border-neutral-200 bg-white p-5 transition-colors hover:border-accent-300 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-accent-700">
-  <h3 class="text-lg font-semibold tracking-tight group-hover:text-accent-600 dark:group-hover:text-accent-400">{{ .Title }}</h3>
+  <h3 class="text-lg font-semibold tracking-tight group-hover:text-accent-700 dark:group-hover:text-accent-400">{{ .Title }}</h3>
   {{- with .Params.league }}
-  <p class="mt-1 text-sm font-medium text-neutral-500 dark:text-neutral-400">{{ . }}</p>
+  <p class="mt-1 text-sm font-medium text-neutral-600 dark:text-neutral-400">{{ . }}</p>
   {{- end }}
   {{- with .Description }}
   <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400">{{ . | truncate 130 }}</p>
   {{- end }}
-  <p class="mt-auto pt-4 text-xs font-semibold uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
+  <p class="mt-auto pt-4 text-xs font-semibold uppercase tracking-wide text-neutral-600 dark:text-neutral-500">
     {{- if $n }}{{ $n }} haber{{ else }}Henüz haber yok{{ end -}}
   </p>
 </a>

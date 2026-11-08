@@ -12,7 +12,7 @@
 {{- $profiles := union $p.Sections $p.RegularPages -}}
 {{- $emoji := dict "Futbol" "⚽" "Basketbol" "🏀" "Satranç" "♟️" -}}
 {{- $gruplar := slice "Futbol" "Basketbol" "Satranç" -}}
-<main class="mx-auto max-w-5xl px-4 py-10">
+<main id="icerik" tabindex="-1" class="mx-auto max-w-5xl px-4 py-10 focus:outline-none">
   <header class="mb-8">
     <div class="flex items-center gap-3">
       {{ partial "menu-icon.html" (dict "name" $p.Title "class" "h-8 w-auto shrink-0 sm:h-10") }}
@@ -29,7 +29,7 @@
     <section class="mt-10" aria-labelledby="grup-{{ $grup | urlize }}">
       <h2 id="grup-{{ $grup | urlize }}" class="font-hand text-3xl text-neutral-700 dark:text-neutral-200">
         {{- with index $emoji $grup }}<span aria-hidden="true">{{ . }}</span> {{ end }}{{ $grup }}
-        <span class="ml-1 align-middle font-sans text-base font-medium text-neutral-400 dark:text-neutral-500">({{ $adet }})</span>
+        <span class="ml-1 align-middle font-sans text-base font-medium text-neutral-600 dark:text-neutral-500">({{ $adet }})</span>
       </h2>
       <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {{- range .ByTitle }}{{ partial "spor/varlik-karti.html" . }}{{ end }}

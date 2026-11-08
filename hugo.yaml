@@ -81,6 +81,9 @@ params:
   # Tek iletişim kanalı. Adres değişince yalnızca burayı güncelle
   # (bize-ulasin.md ve kvkk-aydinlatma-metni.md iletisim-eposta shortcode'unu kullanır).
   contactEmail: "iletisim@gerekli-gereksiz.com"
+  # Sayfada kendi `image` front matter'ı yoksa og:image / twitter:image ve Article JSON-LD'de
+  # kullanılan varsayılan paylaşım görseli (assets/ altı, seo-image.html işler).
+  defaultImage: "images/genel/hero-kolaj.webp"
 
   # Çerez onayı. Kategoriler buradan yönetilir, kod değişikliği gerekmez.
   # Bakım:

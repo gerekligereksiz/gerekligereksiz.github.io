@@ -1,17 +1,25 @@
 {{- /* Blog kartı: post-card partial — context: sayfa */ -}}
 {{- $p := . -}}
 <article class="group relative flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white transition hover:-translate-y-0.5 hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
+  {{- /* Görsel/yedek yüzey bağlantısı başlık bağlantısının kopyası: erişilebilirlik ağacından ve sekme sırasından çıkarılır. */ -}}
   {{- with .Params.image }}
     {{- $img := resources.Get . }}
     {{- with $img }}
-  <a href="{{ $p.RelPermalink }}" class="block aspect-video w-full overflow-hidden bg-neutral-100 dark:bg-neutral-800">
-    {{- with ($img.Process "resize 640x webp") }}
-    <img src="{{ .RelPermalink }}" alt="" loading="lazy" class="h-full w-full object-cover transition group-hover:scale-105">
+  <a href="{{ $p.RelPermalink }}" aria-hidden="true" tabindex="-1" class="block aspect-video w-full overflow-hidden bg-neutral-100 dark:bg-neutral-800">
+    {{- /* 320/480/640 genişlik; kart ~315px (lg), ~45vw (sm), tam genişlik (mobil). */ -}}
+    {{- $srcset := slice }}
+    {{- range slice 320 480 640 }}
+      {{- with $img.Process (printf "resize %dx webp q70 photo" .) }}
+        {{- $srcset = $srcset | append (printf "%s %dw" .RelPermalink .Width) }}
+      {{- end }}
+    {{- end }}
+    {{- with ($img.Process "resize 640x webp q70 photo") }}
+    <img src="{{ .RelPermalink }}" srcset="{{ delimit $srcset ", " }}" sizes="(min-width: 1024px) 315px, (min-width: 640px) 45vw, calc(100vw - 2rem)" width="{{ .Width }}" height="{{ .Height }}" alt="" loading="lazy" class="h-full w-full object-cover transition group-hover:scale-105">
     {{- end }}
   </a>
     {{- end }}
   {{- else }}
-  <a href="{{ $p.RelPermalink }}" class="flex aspect-video items-center justify-center bg-linear-to-br from-accent-100 to-accent-50 dark:from-accent-900/40 dark:to-neutral-900" aria-hidden="true">
+  <a href="{{ $p.RelPermalink }}" aria-hidden="true" tabindex="-1" class="flex aspect-video items-center justify-center bg-linear-to-br from-accent-100 to-accent-50 dark:from-accent-900/40 dark:to-neutral-900" aria-hidden="true">
     {{- with resources.Get "images/logo_monogram_circle.webp" }}
     <img src="{{ .RelPermalink }}" alt="" class="h-20 w-auto opacity-70" width="{{ .Width }}" height="{{ .Height }}" loading="lazy">
     {{- else }}
@@ -24,10 +32,10 @@
       {{- with index (.Params.categories | default slice) 0 }}
       <a href="{{ printf "/categories/%s/" (. | urlize) }}" class="inline-flex items-center gap-1.5 rounded-full bg-accent-50 py-0.5 pl-1 pr-2.5 font-medium text-accent-700 dark:bg-accent-900/50 dark:text-accent-200">{{ partial "category-icon.html" . }}{{ . }}</a>
       {{- end }}
-      <time datetime="{{ $p.Date.Format "2006-01-02" }}" class="text-neutral-500 dark:text-neutral-400">{{ $p.Date.Format "2 January 2006" }}</time>
+      <time datetime="{{ $p.Date.Format "2006-01-02" }}" class="text-neutral-600 dark:text-neutral-400">{{ $p.Date.Format "2 January 2006" }}</time>
     </div>
     <h3 class="text-xl font-semibold leading-snug">
-      <a href="{{ $p.RelPermalink }}" class="after:absolute after:inset-0 hover:text-accent-600 dark:hover:text-accent-400">{{ $p.Title }}</a>
+      <a href="{{ $p.RelPermalink }}" class="after:absolute after:inset-0 hover:text-accent-700 dark:hover:text-accent-400">{{ $p.Title }}</a>
     </h3>
     {{ with $p.Description }}<p class="text-base text-neutral-600 dark:text-neutral-400">{{ . }}</p>{{ end }}
   </div>

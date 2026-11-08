@@ -1,5 +1,5 @@
 {{ define "main" }}
-  <main>
+  <main id="icerik" tabindex="-1" class="focus:outline-none">
     <section class="relative isolate mx-auto mt-3 max-w-[1200px] overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
       {{- with resources.Get "images/genel/hero-kolaj.webp" }}
         {{- with .Process "resize 1200x webp q82" }}
@@ -11,7 +11,7 @@
       <div class="flex min-h-[240px] items-center justify-center md:aspect-[1200/416] md:min-h-0">
         <div class="mx-auto max-w-5xl px-4 text-center">
           <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">
-            Gerekli<span class="text-accent-600 dark:text-accent-400">Gereksiz</span>
+            Gerekli<span class="text-accent-700 dark:text-accent-400">Gereksiz</span>
           </h1>
           <p class="mx-auto mt-4 max-w-sm text-lg text-neutral-800 sm:max-w-xl md:max-w-2xl dark:text-neutral-200">
             Çeşitli yazılar, haftalık bülten, uygulama incelemeleri ve Türk sporcu başarıları — hepsi bir arada.
@@ -23,7 +23,7 @@
     <section class="mx-auto max-w-5xl px-4 py-12" aria-label="Son yazılar">
       <div class="mb-6 flex items-baseline justify-between">
         <h2 class="text-3xl font-bold tracking-tight">Son Yazılar</h2>
-        <a href="{{ site.Home.RelPermalink }}yazilar/" class="text-base font-medium text-accent-600 hover:underline dark:text-accent-400">Tümü →</a>
+        <a href="{{ site.Home.RelPermalink }}yazilar/" class="text-base font-medium text-accent-700 hover:underline dark:text-accent-400">Tümü →</a>
       </div>
       {{- with where site.RegularPages "Section" "yazilar" }}
       <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

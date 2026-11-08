@@ -27,14 +27,14 @@
   {{- warnf "youtube shortcode: geçersiz video kimliği: %q" $id -}}
   <p class="my-4 text-sm text-neutral-600 dark:text-neutral-400">
     Video yüklenemedi.
-    <a href="https://www.youtube.com/results?search_query={{ $title | urlquery }}" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2 hover:text-accent-600 dark:hover:text-accent-400">YouTube'da ara</a>.
+    <a href="https://www.youtube.com/results?search_query={{ $title | urlquery }}" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2 hover:text-accent-700 dark:hover:text-accent-400">YouTube'da ara</a>.
   </p>
 {{- else -}}
 <figure class="not-prose my-6 overflow-hidden rounded-xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
   <div class="relative aspect-video bg-neutral-900" data-yt-yer data-yt-id="{{ $id }}" data-yt-baslik="{{ $title }}">
     <button type="button" data-yt-facade aria-label="Videoyu oynat: {{ $title }}" class="group absolute inset-0 h-full w-full focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-accent-600">
       <span aria-hidden="true" class="absolute inset-0 flex items-center justify-center">
-        <span class="flex h-16 w-16 items-center justify-center rounded-full bg-accent-600 text-white shadow-lg shadow-black/30 transition group-hover:scale-105 group-hover:bg-accent-700 motion-reduce:transition-none motion-reduce:group-hover:scale-100">
+        <span class="flex h-16 w-16 items-center justify-center rounded-full bg-accent-700 text-white shadow-lg shadow-black/30 transition group-hover:scale-105 group-hover:bg-accent-800 motion-reduce:transition-none motion-reduce:group-hover:scale-100">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="ml-1 h-7 w-7 fill-current"><path d="M8 5v14l11-7z"/></svg>
         </span>
       </span>
@@ -46,19 +46,19 @@
     <div data-yt-panel hidden role="group" aria-label="YouTube izni" class="flex flex-col items-center justify-center gap-3 px-5 py-6 text-center">
       <p class="max-w-sm text-sm text-neutral-200">Bu video YouTube'dan yüklenecek. İzin verirsen YouTube çerez kullanabilir.</p>
       <div class="flex flex-col items-center gap-1">
-        <button type="button" data-yt-izin class="inline-flex min-h-11 items-center justify-center rounded-lg bg-accent-600 px-5 text-sm font-medium text-white hover:bg-accent-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600">YouTube'a izin ver</button>
+        <button type="button" data-yt-izin class="inline-flex min-h-11 items-center justify-center rounded-lg bg-accent-700 px-5 text-sm font-medium text-white hover:bg-accent-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600">YouTube'a izin ver</button>
         <button type="button" data-cerez-tercihleri class="inline-flex min-h-11 items-center text-sm text-neutral-300 underline underline-offset-2 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600">Çerez seçenekleri</button>
         <button type="button" data-yt-vazgec class="inline-flex min-h-11 items-center text-xs text-neutral-400 underline underline-offset-2 hover:text-neutral-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600">Vazgeç</button>
       </div>
     </div>
   </div>
   <figcaption class="flex items-center gap-3 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
-    <span aria-hidden="true" class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent-600 font-hand text-lg text-white">G</span>
+    <span aria-hidden="true" class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent-700 font-hand text-lg text-white">G</span>
     <span class="min-w-0 flex-1">
       <span class="block truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">{{ $title }}</span>
-      <span class="block text-xs text-neutral-500 dark:text-neutral-400">YouTube</span>
+      <span class="block text-xs text-neutral-600 dark:text-neutral-400">YouTube</span>
     </span>
-    <a href="https://www.youtube.com/watch?v={{ $id }}" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 shrink-0 items-center text-sm underline underline-offset-2 hover:text-accent-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 dark:hover:text-accent-400">YouTube'da aç</a>
+    <a href="https://www.youtube.com/watch?v={{ $id }}" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 shrink-0 items-center text-sm underline underline-offset-2 hover:text-accent-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 dark:hover:text-accent-400">YouTube'da aç</a>
   </figcaption>
 </figure>
 {{- end -}}

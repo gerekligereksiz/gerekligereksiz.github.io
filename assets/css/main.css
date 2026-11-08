@@ -92,7 +92,9 @@
   font-weight: 400 700;
   font-display: swap;
   src: url("/fonts/inter-400-latin-ext.woff2") format("woff2");
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  /* Alt kume (Google Fonts text= ile uretildi): yalnizca Latin Extended-A
+     (Turkce g/s/I + yabanci adlar: c, s, z, u...), Rumence ve Turk lirasi (U+20BA). */
+  unicode-range: U+0100-017F, U+0218-021B, U+1E9E, U+20BA;
 }
 
 @font-face {
@@ -110,7 +112,11 @@
   font-weight: 400 700;
   font-display: swap;
   src: url("/fonts/caveat-400-latin-ext.woff2") format("woff2");
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  /* Alt kume (Google Fonts text= ile uretildi): Turkce g/s/I + sitede gecen
+     c, s, u, z harfleri + Turk lirasi. Latin-ext-A'nin tamami 47 KiB, bu 12 KiB;
+     baska yabanci harf el yazisi metinde gecerse sistem fontuna duser.
+     Yeni harf gerekirse unicode-range'e ekleyip dosyayi yeniden uret. */
+  unicode-range: U+0107, U+010D, U+011E-011F, U+0130-0131, U+015E-015F, U+016B, U+017D, U+20BA;
 }
 
 /* Alintilar el yazisi (Caveat). Tailwind Typography'nin --tw-prose-quotes

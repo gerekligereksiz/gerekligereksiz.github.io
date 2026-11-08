@@ -3,9 +3,12 @@
     <a href="{{ site.Home.RelPermalink }}" class="flex h-full shrink-0 items-center overflow-hidden" aria-label="{{ site.Title }} ana sayfa">
       {{- $logo := resources.Get "images/logo_primary.webp" }}
       {{- with $logo }}
-      <img src="{{ .RelPermalink }}" alt="{{ site.Title }}" class="h-full w-auto object-contain" width="{{ .Width }}" height="{{ .Height }}">
+        {{- /* Gösterilen yükseklik 64px (mobil) / 128px (lg): 1x = x128, 2x = x256. */ -}}
+        {{- $l1 := .Process "resize x128 webp q80" }}
+        {{- $l2 := .Process "resize x256 webp q80" }}
+      <img src="{{ $l1.RelPermalink }}" srcset="{{ $l1.RelPermalink }} 1x, {{ $l2.RelPermalink }} 2x" alt="{{ site.Title }}" class="h-full w-auto object-contain" width="{{ $l1.Width }}" height="{{ $l1.Height }}">
       {{- else }}
-      <span class="text-lg font-bold tracking-tight">Gerekli<span class="text-accent-600 dark:text-accent-400">Gereksiz</span></span>
+      <span class="text-lg font-bold tracking-tight">Gerekli<span class="text-accent-700 dark:text-accent-400">Gereksiz</span></span>
       {{- end }}
     </a>
 
@@ -16,7 +19,7 @@
           {{ $current := . }}
           {{ range site.Menus.main }}
             <li>
-              <a href="{{ .URL }}" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 hover:bg-neutral-100 hover:text-accent-600 dark:hover:bg-neutral-800 dark:hover:text-accent-400 xl:gap-2{{ if or ($current.IsMenuCurrent "main" .) ($current.HasMenuCurrent "main" .) }} text-accent-600 dark:text-accent-400{{ end }}">{{ partial "menu-icon.html" .Name }}{{ .Name }}</a>
+              <a href="{{ .URL }}" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 hover:bg-neutral-100 hover:text-accent-700 dark:hover:bg-neutral-800 dark:hover:text-accent-400 xl:gap-2{{ if or ($current.IsMenuCurrent "main" .) ($current.HasMenuCurrent "main" .) }} text-accent-700 dark:text-accent-400{{ end }}">{{ partial "menu-icon.html" .Name }}{{ .Name }}</a>
             </li>
           {{ end }}
         </ul>
@@ -56,7 +59,7 @@
       {{ range site.Menus.main }}
         {{ $active := or ($current.IsMenuCurrent "main" .) ($current.HasMenuCurrent "main" .) }}
         <li>
-          <a href="{{ .URL }}" class="flex items-center gap-3 rounded-lg px-3 py-3 hover:bg-neutral-100 hover:text-accent-600 dark:hover:bg-neutral-800 dark:hover:text-accent-400{{ if $active }} text-accent-600 dark:text-accent-400{{ end }}">{{ partial "menu-icon.html" (dict "name" .Name "class" "h-8 w-auto shrink-0") }}{{ .Name }}</a>
+          <a href="{{ .URL }}" class="flex items-center gap-3 rounded-lg px-3 py-3 hover:bg-neutral-100 hover:text-accent-700 dark:hover:bg-neutral-800 dark:hover:text-accent-400{{ if $active }} text-accent-700 dark:text-accent-400{{ end }}">{{ partial "menu-icon.html" (dict "name" .Name "class" "h-8 w-auto shrink-0") }}{{ .Name }}</a>
         </li>
       {{ end }}
     </ul>

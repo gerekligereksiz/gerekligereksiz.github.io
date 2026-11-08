@@ -8,7 +8,7 @@
         <ul class="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 sm:grid-cols-1">
           {{- range . }}
           <li>
-            <a href="{{ .URL }}" class="inline-flex min-h-11 items-center text-base text-neutral-600 hover:text-accent-600 dark:text-neutral-300 dark:hover:text-accent-400">{{ .Name }}</a>
+            <a href="{{ .URL }}" class="inline-flex min-h-11 items-center text-base text-neutral-600 hover:text-accent-700 dark:text-neutral-300 dark:hover:text-accent-400">{{ .Name }}</a>
           </li>
           {{- end }}
         </ul>
@@ -21,7 +21,7 @@
         <ul class="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 sm:grid-cols-1">
           {{- range . }}
           <li>
-            <a href="{{ .URL }}" class="inline-flex min-h-11 items-center text-base text-neutral-600 hover:text-accent-600 dark:text-neutral-300 dark:hover:text-accent-400">{{ .Name }}</a>
+            <a href="{{ .URL }}" class="inline-flex min-h-11 items-center text-base text-neutral-600 hover:text-accent-700 dark:text-neutral-300 dark:hover:text-accent-400">{{ .Name }}</a>
           </li>
           {{- end }}
         </ul>
@@ -34,7 +34,7 @@
         <ul class="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 sm:grid-cols-1">
           {{- range . }}
           <li>
-            <a href="{{ .URL }}" class="inline-flex min-h-11 items-center text-base text-neutral-600 hover:text-accent-600 dark:text-neutral-300 dark:hover:text-accent-400">{{ .Name }}</a>
+            <a href="{{ .URL }}" class="inline-flex min-h-11 items-center text-base text-neutral-600 hover:text-accent-700 dark:text-neutral-300 dark:hover:text-accent-400">{{ .Name }}</a>
           </li>
           {{- end }}
           {{- $consentVar := false -}}
@@ -43,7 +43,7 @@
           {{- end -}}
           {{- if $consentVar }}
           <li>
-            <button type="button" data-cerez-tercihleri class="inline-flex min-h-11 cursor-pointer items-center text-base text-neutral-600 hover:text-accent-600 dark:text-neutral-300 dark:hover:text-accent-400">Çerez tercihleri</button>
+            <button type="button" data-cerez-tercihleri class="inline-flex min-h-11 cursor-pointer items-center text-base text-neutral-600 hover:text-accent-700 dark:text-neutral-300 dark:hover:text-accent-400">Çerez tercihleri</button>
           </li>
           {{- end }}
         </ul>
@@ -55,14 +55,14 @@
         <ul class="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 sm:grid-cols-1">
           {{- with site.Home.OutputFormats.Get "rss" }}
           <li>
-            <a href="{{ .RelPermalink }}" class="inline-flex min-h-11 items-center text-base text-neutral-600 hover:text-accent-600 dark:text-neutral-300 dark:hover:text-accent-400" type="application/rss+xml">RSS akışı</a>
+            <a href="{{ .RelPermalink }}" class="inline-flex min-h-11 items-center text-base text-neutral-600 hover:text-accent-700 dark:text-neutral-300 dark:hover:text-accent-400" type="application/rss+xml">RSS akışı</a>
           </li>
           {{- end }}
           <li>
-            <a href="{{ "sitemap.xml" | relURL }}" class="inline-flex min-h-11 items-center text-base text-neutral-600 hover:text-accent-600 dark:text-neutral-300 dark:hover:text-accent-400">Site haritası</a>
+            <a href="{{ "sitemap.xml" | relURL }}" class="inline-flex min-h-11 items-center text-base text-neutral-600 hover:text-accent-700 dark:text-neutral-300 dark:hover:text-accent-400">Site haritası</a>
           </li>
           <li>
-            <a href="{{ "yazilar/" | relURL }}" class="inline-flex min-h-11 items-center text-base text-neutral-600 hover:text-accent-600 dark:text-neutral-300 dark:hover:text-accent-400">Yazı arşivi</a>
+            <a href="{{ "yazilar/" | relURL }}" class="inline-flex min-h-11 items-center text-base text-neutral-600 hover:text-accent-700 dark:text-neutral-300 dark:hover:text-accent-400">Yazı arşivi</a>
           </li>
         </ul>
       </div>
@@ -71,12 +71,12 @@
     <div class="mt-10 flex flex-col gap-4 border-t border-neutral-300 pt-6 sm:flex-row sm:items-center sm:justify-between dark:border-neutral-800">
       <div class="flex flex-col gap-2">
         {{- with resources.Get "images/footer_logo.webp" }}
-        <img src="{{ .RelPermalink }}" alt="{{ site.Title }}" class="h-8 w-auto" width="{{ .Width }}" height="{{ .Height }}" loading="lazy">
+        <img src="{{ .RelPermalink }}" alt="{{ site.Title }}" class="h-8 w-auto self-start" width="{{ .Width }}" height="{{ .Height }}" loading="lazy">
         {{- end }}
-        <p class="text-sm text-neutral-500 dark:text-neutral-400">© {{ now.Year }} {{ site.Title }}</p>
+        <p class="text-sm text-neutral-600 dark:text-neutral-400">© {{ now.Year }} {{ site.Title }}</p>
         {{- with site.Params.license }}
-        <p class="text-sm text-neutral-500 dark:text-neutral-400">
-          İçerik <a href="{{ site.Params.licenseUrl }}" class="underline underline-offset-2 hover:text-accent-600 dark:hover:text-accent-400" rel="license noopener noreferrer">{{ . }}</a> ile lisanslıdır
+        <p class="text-sm text-neutral-600 dark:text-neutral-400">
+          İçerik <a href="{{ site.Params.licenseUrl }}" class="underline underline-offset-2 hover:text-accent-700 dark:hover:text-accent-400" rel="license noopener noreferrer">{{ . }}</a> ile lisanslıdır
         </p>
         {{- end }}
       </div>

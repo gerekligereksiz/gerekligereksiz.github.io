@@ -33,7 +33,7 @@
     {{- /* Sayı kimliği: mobilde yer kazanmak için gizli */ -}}
     <a href="{{ $issue.RelPermalink }}" class="hidden shrink-0 items-center gap-1.5 rounded-md px-1 py-1 hover:text-accent-700 sm:flex dark:hover:text-accent-300">
       <span class="font-hand text-[28px] leading-none">{{ $num }}. sayı</span>
-      <span class="font-hand text-[22px] leading-none text-neutral-500 dark:text-neutral-400">{{ $range }}</span>
+      <span class="font-hand text-[22px] leading-none text-neutral-600 dark:text-neutral-400">{{ $range }}</span>
     </a>
 
     {{- /* Bölümler: mobilde alt satıra kayar (hepsi görünür), sm ve üstünde
@@ -55,7 +55,7 @@
               {{- end }}
             {{- end }}
             {{ .Params.section_label | default .Title }}
-            <span data-bulten-durum class="hidden items-center font-hand text-xl sm:inline-flex leading-none text-accent-600 dark:text-accent-400" aria-hidden="true" hidden>
+            <span data-bulten-durum class="hidden items-center font-hand text-xl sm:inline-flex leading-none text-accent-700 dark:text-accent-400" aria-hidden="true" hidden>
               <svg data-bulten-durum-tik class="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" hidden aria-hidden="true"><path d="M3 8.5 6.5 12 13 4.5" /></svg>
               <span data-bulten-durum-yuzde></span>
             </span>

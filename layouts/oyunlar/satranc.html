@@ -1,4 +1,5 @@
 {{ define "main" }}
+<main id="icerik" tabindex="-1" class="focus:outline-none">
 <article class="mx-auto max-w-6xl px-4 py-10">
   <header class="mb-6">
     <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">{{ .Title }}</h1>
@@ -8,7 +9,7 @@
   <section class="rounded-xl border border-neutral-200 bg-white p-2 shadow-sm sm:p-4 dark:border-neutral-800 dark:bg-neutral-900">
     <div class="w-full overflow-x-auto">
       <div id="chessboard" class="mx-auto max-w-[600px]">
-        <div class="text-center text-sm text-neutral-500 dark:text-neutral-400">Satranç oyunu yükleniyor...</div>
+        <div class="text-center text-sm text-neutral-600 dark:text-neutral-400">Satranç oyunu yükleniyor...</div>
       </div>
     </div>
   </section>
@@ -30,4 +31,5 @@
     }
   })();
 </script>
+</main>
 {{ end }}

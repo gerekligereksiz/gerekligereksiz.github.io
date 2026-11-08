@@ -61,6 +61,11 @@ jobs:
       - name: Build
         run: hugo --gc --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
 
+      # GitHub Pages yanıt başlığı eklemeye izin vermez: CSP, satır içi script
+      # hash'leriyle birlikte <meta> olarak eklenir (hugo'dan SONRA çalışmalı).
+      - name: Add CSP meta
+        run: node scripts/csp.mjs
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:

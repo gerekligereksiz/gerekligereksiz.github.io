@@ -28,7 +28,7 @@
 {{- end -}}
 {{- with sort $girisler "Date" }}
 <p class="not-prose mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1.5 text-sm">
-  <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Haberler</span>
+  <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">Haberler</span>
   {{- range . }}
   {{- $d := partial "gun/mac-verisi.html" . -}}
   {{- $kod := $d.resultCode -}}

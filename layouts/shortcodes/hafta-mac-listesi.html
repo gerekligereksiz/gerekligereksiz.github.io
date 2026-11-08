@@ -27,9 +27,9 @@
   {{- range $sport := slice "Futbol" "Basketbol" "Satranç" -}}
     {{- with where $girisler "Params.sport" $sport -}}
     <section>
-      <h3 class="m-0 text-sm font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+      <h3 class="m-0 text-sm font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
         {{- with index $emoji $sport }}<span aria-hidden="true">{{ . }}</span> {{ end }}{{ $sport }}
-        <span class="ml-1 font-normal normal-case tracking-normal text-neutral-400 dark:text-neutral-500">({{ len . }})</span>
+        <span class="ml-1 font-normal normal-case tracking-normal text-neutral-600 dark:text-neutral-500">({{ len . }})</span>
       </h3>
       <ul class="m-0 mt-2 list-none space-y-0 p-0">
         {{- range .ByDate }}
@@ -47,14 +47,14 @@
             {{- end }}
             <a href="{{ .RelPermalink }}" class="font-medium text-accent-700 underline decoration-accent-200 underline-offset-4 hover:decoration-accent-500 dark:text-accent-300 dark:decoration-accent-900 dark:hover:decoration-accent-500">{{ .Title }}</a>
           </div>
-          <p class="m-0 mt-0.5 text-sm text-neutral-500 dark:text-neutral-400">
+          <p class="m-0 mt-0.5 text-sm text-neutral-600 dark:text-neutral-400">
             {{- partial "spor/tarih.html" .Date -}}
             {{- if and $d.home $d.opponent }} · {{ with $d.homeTitle }}{{ . }} {{ end }}{{ $d.home }} {{ with $d.homeScore }}{{ . }}–{{ $d.awayScore }} {{ end }}{{ with $d.awayTitle }}{{ . }} {{ end }}{{ $d.away }}{{ end -}}
             {{- with .Params.board }} · {{ . }}. masa{{ end -}}
             {{- with .Params.competition }} · {{ . }}{{ end -}}
           </p>
           {{- if or $d.goalsHome $d.goalsAway }}
-          <p class="m-0 mt-0.5 text-xs text-neutral-500 [overflow-wrap:anywhere] dark:text-neutral-400">
+          <p class="m-0 mt-0.5 text-xs text-neutral-600 [overflow-wrap:anywhere] dark:text-neutral-400">
             {{- with $d.goalsHome }}<span class="font-medium">{{ $d.home }}</span>: {{ delimit . ", " }}{{ end -}}
             {{- if and $d.goalsHome $d.goalsAway }}<br>{{ end -}}
             {{- with $d.goalsAway }}<span class="font-medium">{{ $d.away }}</span>: {{ delimit . ", " }}{{ end -}}

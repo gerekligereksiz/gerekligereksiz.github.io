@@ -1,0 +1,18 @@
+{{- /*
+  Paylaşım/JSON-LD görseli. Bağlam: sayfa.
+  Sayfanın kendi `image` front matter'ı varsa onu, yoksa params.defaultImage'i
+  1200 px genişliğe işler. Döndürür: dict "url" "width" "height" "own"
+  (own = görsel sayfaya ait; varsayılan değil), görsel yoksa boş dict.
+  Kullanım: {{ $img := partial "seo-image.html" . }}{{ with $img.url }}…{{ end }}
+*/ -}}
+{{- $res := false -}}
+{{- $own := false -}}
+{{- with .Params.image }}{{ with resources.Get . }}{{ $res = . }}{{ $own = true }}{{ end }}{{ end -}}
+{{- if not $res }}{{ with site.Params.defaultImage }}{{ with resources.Get . }}{{ $res = . }}{{ end }}{{ end }}{{ end -}}
+{{- $out := dict -}}
+{{- with $res }}
+  {{- with .Process "resize 1200x webp q80" }}
+    {{- $out = dict "url" .Permalink "width" .Width "height" .Height "own" $own }}
+  {{- end }}
+{{- end -}}
+{{- return $out -}}

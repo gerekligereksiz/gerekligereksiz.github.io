@@ -17,13 +17,13 @@
       <span class="text-2xl font-bold tabular-nums" aria-hidden="true">{{ $d.homeScore }}</span>
     </p>
     {{- with $d.goalsHome }}
-    <ul class="m-0 list-none p-0 text-sm text-neutral-500 [overflow-wrap:anywhere] dark:text-neutral-400">
+    <ul class="m-0 list-none p-0 text-sm text-neutral-600 [overflow-wrap:anywhere] dark:text-neutral-400">
       {{- range . }}<li>{{ . }}</li>{{ end }}
     </ul>
     {{- end }}
   </div>
   <div class="hidden w-5 flex-col items-center sm:flex" aria-hidden="true">
-    <span class="text-xl leading-none font-normal text-neutral-400 dark:text-neutral-500">–</span>
+    <span class="text-xl leading-none font-normal text-neutral-600 dark:text-neutral-500">–</span>
     {{- if $topGoster }}
     <svg class="mt-1 h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(4.5, 4.5)"><circle cx="7.5" cy="7.5" fill="#FFFFFF" r="7.5" stroke="#000000" stroke-width="1"></circle><g fill="#000000" fill-opacity="0.9"><polygon points="7.5 5 9.87764129 6.72745751 8.96946313 9.52254249 6.03053687 9.52254249 5.12235871 6.72745751"></polygon><path d="M 9.683,0.343 L 8.969,2.522 L 6.031,2.522 L 5.317,0.343 A 7.5,7.5 0 0 1 9.683,0.343 Z"></path><path d="M 1.731,12.285 L 3.5,11 L 5.877,12.727 L 5.312,14.467 A 7.5,7.5 0 0 1 1.731,12.285 Z"></path><path d="M 13.300,12.307 L 11.5,11 L 9.122,12.727 L 9.750,14.639 A 7.5,7.5 0 0 0 13.300,12.307 Z"></path><path d="M 9.683,0.343 L 8.969,2.522 L 6.031,2.522 L 5.317,0.343 A 7.5,7.5 0 0 1 9.683,0.343 Z" transform="rotate(-80 7.5 7.5)"></path><path d="M 9.683,0.343 L 8.969,2.522 L 6.031,2.522 L 5.317,0.343 A 7.5,7.5 0 0 1 9.683,0.343 Z" transform="rotate(80 7.5 7.5)"></path></g></g></svg>
     {{- end }}
@@ -34,7 +34,7 @@
       <span class="order-1 font-semibold [overflow-wrap:anywhere] sm:order-2">{{ with $d.awayFlag }}<span class="mr-1 select-none" aria-hidden="true">{{ . }}</span>{{ end }}{{ $d.away }}</span>
     </p>
     {{- with $d.goalsAway }}
-    <ul class="m-0 list-none p-0 text-sm text-neutral-500 [overflow-wrap:anywhere] dark:text-neutral-400">
+    <ul class="m-0 list-none p-0 text-sm text-neutral-600 [overflow-wrap:anywhere] dark:text-neutral-400">
       {{- range . }}<li>{{ . }}</li>{{ end }}
     </ul>
     {{- end }}
