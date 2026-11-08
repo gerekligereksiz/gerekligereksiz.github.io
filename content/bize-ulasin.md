@@ -4,7 +4,7 @@ description: "Görüş, düzeltme ve önerilerinizi nasıl iletebilirsiniz?"
 date: 2026-10-21T12:00:00+03:00
 ---
 
-Bu portaldeki her şey elle hazırlanıyor. Bir yanlış gördüyseniz, eksik bir uygulama biliyorsanız ya da sadece bir şey söylemek istiyorsanız, duymak isteriz.
+Bu portaldaki her şey elle hazırlanıyor. Bir yanlış gördüyseniz, eksik bir uygulama biliyorsanız ya da sadece bir şey söylemek istiyorsanız, duymak isteriz.
 
 ## Ne için yazabilirsiniz?
 

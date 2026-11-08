@@ -4,7 +4,7 @@ description: "Portalda otomatik güncellenen verilerin kaynağı, güncellenme s
 date: 2026-10-21T12:00:00+03:00
 ---
 
-Bu portaldeki bazı veriler elle değil, otomatik olarak güncellenir. Hangi verinin nereden geldiğini ve ne sıklıkla yenilendiğini buradan takip edebilirsiniz.
+Bu portaldaki bazı veriler elle değil, otomatik olarak güncellenir. Hangi verinin nereden geldiğini ve ne sıklıkla yenilendiğini buradan takip edebilirsiniz.
 
 ### Veri kalitesi kuralları
 

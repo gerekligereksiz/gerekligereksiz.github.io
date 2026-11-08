@@ -1,10 +1,11 @@
 ---
 title: "Çerez Politikası"
-description: "Bu portalde hangi çerezler kullanılır, ne için kullanılır ve onayınızı nasıl geri alırsınız?"
+description: "Bu portalda hangi çerezler kullanılır, ne için kullanılır ve onayınızı nasıl geri alırsınız?"
 date: 2026-10-21T12:00:00+03:00
+lastmod: 2026-11-08T12:00:00+03:00
 ---
 
-**Son güncelleme:** 6 Kasım 2026
+**Son güncelleme:** 8 Kasım 2026
 
 ## Kısaca: izin vermediğiniz sürece üçüncü taraf isteği yok
 
@@ -30,7 +31,7 @@ Ayarlar penceresinde **Üçüncü taraf** yalnızca bir grup başlığıdır; ke
 
 **Gerekli** kategorisi açık gelir ve kapatılamaz. Çerez kullanmaz: yalnızca tercihinizi (`cerez-onay`) ve haftalık bültendeki okuma ilerlemenizi (`bulten:*`) hatırlamak için tarayıcınızda yerel kayıt tutulur; bu kayıtlar sunucuya gönderilmez. Video yer tutucusundaki **"YouTube'a izin ver"** düğmesi de aynı `cerez-onay` kaydına yazar: analitik tercihinize dokunmaz, yalnızca YouTube iznini işaretler.
 
-## Bu portalde kullanılan çerezler
+## Bu portalda kullanılan çerezler
 
 | Tür | Kullanılıyor mu? |
 |---|---|
@@ -51,6 +52,8 @@ Site **statiktir** — sunucu tarafında oturum tutan bir sistem yoktur, dolayı
 
 Bu çerezler reklam amacıyla kullanılmaz, başka sitelerdeki ziyaretlerinizle ilişkilendirilmez.
 
+Tablodaki **süre**, çerezin tarayıcınızda ne kadar kalabileceğini gösterir. Google Analytics'te ölçüm verisinin saklama süresi ayrıdır ve **en fazla 14 aydır**; 2 yıl, verinin 2 yıl saklandığı anlamına gelmez.
+
 ### YouTube videoları (onay sonrası)
 
 Yazılarda YouTube videosu gömülü olabilir. Onay vermediğiniz sürece video kapağı yüklenmez; yerel bir oynatıcı yüzeyi çizilir ve **"YouTube'a izin ver"** paneli gösterilir; YouTube'a istek gitmez.
@@ -68,7 +71,7 @@ YouTube çerezleri **üçüncü taraf** çerezleridir; doğrudan bu portal taraf
 Çerezden farklı olarak, **Gerekli** kategorisindeki işlevsel veriler tarayıcınızın `localStorage` alanında tutulur:
 
 | Anahtar | Amaç |
-|---|---|---|
+|---|---|
 | `bulten:<sayı>:<tarih>` | Haftalık bültende kaldığınız yeri ve üstteki okuma yüzdesini hatırlamak |
 | `cerez-onay` | Kategorilere verdiğiniz izni, izin tarihini ve kaydın şema sürümünü hatırlamak |
 
@@ -88,7 +91,7 @@ Daha önce izin verdiyseniz aşağıdaki **Çerez tercihleri** düğmesiyle ayar
 
 {{< cerez-tercihleri >}}
 
-- **Analitik** iznini kaldırırsanız `_ga`, `_gid` ve `_ga_*` çerezleri silinir.
+- **Analitik** iznini kaldırırsanız `_ga` ve `_ga_*` çerezleri silinir.
 - **YouTube** iznini kaldırırsanız yüklenmiş videolar kaldırılır ve yer tutucuya döner.
 
 Tercihiniz **siz değiştirene kadar** geçerlidir; bant yalnızca tarayıcınızda kayıt yoksa, kayıt şema sürümü eskiyse ya da site verilerini temizlediyseniz yeniden gösterilir. Tarayıcı ayarlarınızdan site verilerini temizlemek de aynı sonucu verir. Silindikten sonra bülten okuma yüzdesi sıfırdan başlar.

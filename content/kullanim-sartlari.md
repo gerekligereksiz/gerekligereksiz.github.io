@@ -1,16 +1,17 @@
 ---
 title: "Kullanım Şartları"
-description: "Bu portaldeki içeriğin kullanımına ilişkin koşullar ve sorumluluk sınırları."
+description: "Bu portaldaki içeriğin kullanımına ilişkin koşullar ve sorumluluk sınırları."
 date: 2026-10-21T12:00:00+03:00
+lastmod: 2026-11-08T12:00:00+03:00
 ---
 
 Bu portalı kullanarak aşağıdaki koşulları kabul etmiş sayılırsınız.
 
-**Son güncelleme:** 3 Kasım 2026
+**Son güncelleme:** 8 Kasım 2026
 
 ## Lisans: CC BY-NC-ND 4.0
 
-Portalda üretilen özgün içerikler (yazılar, derlemeler ve özgün görseller) [Creative Commons Atıf-GayriTicari-Türetilemez 4.0 Uluslararası](https://creativecommons.org/licenses/by-nc-nd/4.0/deed.tr) lisansı ile sunulur.
+Portalda üretilen özgün içerikler (yazılar, derlemeler ve insan eliyle üretilmiş özgün görseller) [Creative Commons Atıf-GayriTicari-Türetilemez 4.0 Uluslararası](https://creativecommons.org/licenses/by-nc-nd/4.0/deed.tr) lisansı ile sunulur.
 
 **Serbest:** Atıf vermek, ticari olmayan amaçla ve içeriği değiştirmeden paylaşmak — tam metin dahil.
 
@@ -18,7 +19,7 @@ Portalda üretilen özgün içerikler (yazılar, derlemeler ve özgün görselle
 
 **Atıf biçimi:** "Kaynak: Gerekli Gereksiz — gerekli-gereksiz.com" + ilgili sayfaya bağlantı + lisans bağlantısı.
 
-**Kapsam dışı:** Üçüncü taraflara ait görsel ve metinler, gömülü içerikler ve site logosu bu lisans kapsamında değildir. FSEK m.35 uyarınca kaynak gösterilerek yapılan kısa alıntılar lisanstan bağımsız olarak serbesttir.
+**Kapsam dışı:** Üçüncü taraflara ait görsel ve metinler, gömülü içerikler, yapay zekâ ile üretilmiş görseller ve site logosu bu lisans kapsamında değildir. FSEK m.35 uyarınca kaynak gösterilerek yapılan kısa alıntılar lisanstan bağımsız olarak serbesttir.
 
 ## Üçüncü taraf içerik
 
@@ -26,11 +27,11 @@ Portalda üçüncü taraflara ait fotoğraf ya da metin kullanıldığında kayn
 
 ## Yapay zekâ ile üretilmiş içerik
 
-Yapay zekâ ile üretilen görseller kullanıldıkları sayfada açıkça belirtilir.
+Yapay zekâ ile üretilen görseller kullanıldıkları sayfada açıkça belirtilir. Bu görsellerin telif korumasından yararlanıp yararlanmadığı hukuken belirsiz olabileceğinden, bunlar için yukarıdaki CC lisansı taahhüdü verilmez; yeniden kullanmadan önce ilgili sayfadaki notlara bakın.
 
 ## Verilerin doğruluğu
 
-Bu portaldeki bilgiler **olabildiğince doğru** olacak şekilde hazırlanır; kaynak belirtilemeyen bilgi yayımlanmaz.
+Bu portaldaki bilgiler **olabildiğince doğru** olacak şekilde hazırlanır; kaynak belirtilemeyen bilgi yayımlanmaz.
 
 Ancak:
 
@@ -47,6 +48,10 @@ Otomatik güncellenen verilerin kaynağı ve güncellenme sıklığı [Veri Kayn
 ## Dış bağlantılar
 
 Yazılarda verilen dış bağlantıların içeriğinden ilgili siteler sorumludur.
+
+## Uygulanacak hukuk ve yetki
+
+Bu şartlar Türkiye Cumhuriyeti hukukuna tabidir. Bu şartlardan doğan uyuşmazlıklarda Türkiye mahkemeleri ve icra daireleri yetkilidir. Zorunlu tüketici hukuku hükümleri saklıdır.
 
 ## Değişiklikler
 

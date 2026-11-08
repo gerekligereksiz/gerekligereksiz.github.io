@@ -2,11 +2,12 @@
 title: "KVKK Aydınlatma Metni"
 description: "6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında aydınlatma metni."
 date: 2026-10-21T12:00:00+03:00
+lastmod: 2026-11-08T12:00:00+03:00
 ---
 
-İşbu aydınlatma metni, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") m.10 uyarınca hazırlanmıştır.
+İşbu aydınlatma metni, 6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) m.10 ve Aydınlatma Yükümlülüğünün Yerine Getirilmesinde Uyulacak Usul ve Esaslar Hakkında Tebliğ uyarınca hazırlanmıştır.
 
-**Son güncelleme:** 4 Kasım 2026
+**Son güncelleme:** 8 Kasım 2026
 
 ## Veri sorumlusu
 
@@ -14,17 +15,17 @@ Bu portal **Gerekli Gereksiz** adıyla yayımlanmaktadır. İletişim: {{< ileti
 
 ## İşlenen kişisel veriler
 
-Portal **statik** bir site olarak yayımlanır. Üyelik, giriş, form, yorum ya da e-ticaret işlevi bulunmaz. Bu nedenle portal tarafından **doğrudan** toplanan ve işlenen bir kişisel veri kümesi bulunmamaktadır.
+Portal **statik** bir site olarak yayımlanır. Üyelik, giriş, form, yorum ya da e-ticaret işlevi bulunmaz. Bu nedenle sizden form ya da üyelik yoluyla **doğrudan beyana dayalı** kişisel veri alınmaz.
 
-Aşağıdaki kayıtlar istisnadır:
+Buna karşılık aşağıdaki veriler, IP adresi gibi kişisel veri niteliği taşıyabilir ve siteyi ziyaret ettiğinizde otomatik yöntemlerle (sunucu kayıtları, çerezler ve benzeri teknolojiler) işlenir:
 
 | Veri | Kaynak | Amaç | Hukuki sebep | Saklama |
 |---|---|---|---|---|
-| IP adresi, tarayıcı bilgisi, istek zamanı | Barındırma sağlayıcısı | Sitenin çalışırlığı ve güvenliği | KVKK m.5/2-f (meşru menfaat) | Sağlayıcının saklama politikası |
-| Sayfa görüntüleme, oturum süresi, yaklaşık konum, cihaz bilgisi | Google Analytics 4 | Kullanım ölçümü ve site iyileştirme | KVKK m.5/1 (açık rıza) | En fazla 14 ay |
+| IP adresi, tarayıcı bilgisi, istek zamanı | GitHub Pages (GitHub, Inc., ABD) | Sitenin çalışırlığı ve güvenliği | KVKK m.5/2-f (meşru menfaat) | GitHub'ın saklama politikası |
+| IP adresi (yaklaşık konum için kullanılır, Analytics'te kalıcı saklanmaz), sayfa görüntüleme, oturum süresi, yaklaşık konum (şehir/ülke düzeyi), cihaz ve tarayıcı bilgisi, etkileşim olayları (sayfa kaydırma, dış bağlantı tıklamaları, dosya indirmeleri, site içi arama) | Google Analytics 4 | Kullanım ölçümü ve site iyileştirme | KVKK m.5/1 (açık rıza) | En fazla 14 ay |
 | IP adresi, tarayıcı bilgisi, izlenen video | YouTube (Google) | Video oynatma | KVKK m.5/1 (açık rıza) | Google/YouTube saklama politikası |
 
-Google Analytics ve YouTube gömülü videoları yalnızca çerez ayarlarında ilgili kategoriye izin verdiğinizde çalışır. İzin vermezseniz Google'a ya da YouTube'a istek gönderilmez; analitik veri işlenmez ve video yüklenmez.
+Google Analytics ve YouTube gömülü videoları yalnızca çerez ayarlarında ilgili kategoriye izin verdiğinizde çalışır. İzin vermezseniz Google'a ya da YouTube'a istek gönderilmez; analitik veri işlenmez ve video yüklenmez. İznizi istediğiniz zaman çerez ayarlarından geri alabilirsiniz.
 
 ## Toplanmayan veriler
 
@@ -32,7 +33,7 @@ Portal üzerinden aşağıdaki veriler **toplanmaz**:
 
 - Ad, soyad, kimlik numarası
 - E-posta adresi (bize yazmadığınız sürece)
-- Konum bilgisi
+- Kesin (GPS gibi) konum bilgisi
 - Telefon numarası
 - Ödeme ya da finansal bilgi
 - Sağlık, din, etnik köken gibi özel nitelikli veriler
@@ -45,13 +46,15 @@ Portal üzerinden aşağıdaki veriler **toplanmaz**:
 
 Portal, kişisel verilerinizi pazarlama amacıyla üçüncü kişilerle paylaşmaz. Yalnızca şu aktarımlar söz konusudur:
 
-- **Barındırma sağlayıcısı** — sitenin yayımlanması için teknik zorunluluk.
-- **Google LLC (ABD)** — yalnızca çerez ayarlarında analitik izni verdiyseniz, Google Analytics 4 kapsamında kullanım verisi. Bu bir **yurt dışı aktarımdır** ve KVKK m.9 kapsamında açık rızanıza dayanır. İzin vermezseniz aktarım gerçekleşmez.
-- **Google LLC / Google Ireland** — yalnızca bir YouTube videosunu oynattıysanız veya YouTube izni verdiyseniz, video oynatma kapsamında IP adresi ve tarayıcı bilgisi. Bu da **yurt dışı aktarımdır** ve KVKK m.9 kapsamında açık rızanıza dayanır. Video oynatmazsanız aktarım gerçekleşmez.
+- **GitHub, Inc. (ABD), GitHub Pages** — sitenin yayımlanması için teknik zorunluluk; ziyaret sırasında IP adresi ve tarayıcı bilgisi GitHub'a iletilir. Bu bir **yurt dışı aktarımdır** ve KVKK m.9 hükümlerine tabidir. Aktarım, sitenin sunulmasının kaçınılmaz sonucudur; ayrıntı için [GitHub Gizlilik Beyanı](https://docs.github.com/tr/site-policy/privacy-policies/github-general-privacy-statement).
+- **Google LLC (ABD)** — yalnızca çerez ayarlarında analitik izni verdiyseniz, Google Analytics 4 kapsamında kullanım verisi. Bu bir **yurt dışı aktarımdır**, KVKK m.9 hükümlerine tabidir ve yalnızca siz izin verdiğinizde gerçekleşir. İzin vermezseniz aktarım gerçekleşmez.
+- **Google LLC / Google Ireland, YouTube** — yalnızca bir YouTube videosunu oynattıysanız veya YouTube izni verdiyseniz, video oynatma kapsamında IP adresi ve tarayıcı bilgisi. Bu da **yurt dışı aktarımdır**, KVKK m.9 hükümlerine tabidir ve yalnızca siz izin verdiğinizde gerçekleşir. Video oynatmazsanız aktarım gerçekleşmez.
+
+Google Analytics hesabımızdaki Google ile veri paylaşım ayarları (Google ürünleri ve hizmetleri, ölçüm katkıları ve iş içgörüleri, teknik destek, işletme önerileri) kapalıdır. Bu nedenle Analytics verileriniz Google tarafından yalnızca Analytics hizmetinin sağlanması, sürdürülmesi ve korunması için gereken ölçüde işlenir.
 
 ## Saklama süresi
 
-Doğrudan toplanan veri bulunmadığı için portal tarafında bir saklama süresi işletilmez. Barındırma sağlayıcısının tuttuğu erişim kayıtları için sağlayıcının saklama politikası geçerlidir. Google Analytics verileri en fazla **14 ay** saklanır; YouTube videosu oynatıldığında Google'ın saklama politikası geçerlidir.
+Portalın kendi sunucusunda tuttuğu bir kişisel veri bulunmadığı için portal tarafında bir saklama süresi işletilmez. GitHub Pages'in tuttuğu erişim kayıtları için GitHub'ın saklama politikası geçerlidir. Bize e-posta yoluyla ilettiğiniz bilgiler, talebinizin yanıtlanması için gereken süre boyunca saklanır. Google Analytics verileri en fazla **14 ay** saklanır; YouTube videosu oynatıldığında Google'ın saklama politikası geçerlidir.
 
 ## KVKK m.11 kapsamındaki haklarınız
 
@@ -72,6 +75,8 @@ haklarına sahipsiniz.
 ## Başvuru
 
 Haklarınıza ilişkin taleplerinizi {{< iletisim-eposta >}} adresine iletebilirsiniz. Talepler en geç **30 gün** içinde yanıtlanır.
+
+Başvurunuza verilen cevabı yetersiz bulursanız, süresinde cevap verilmezse veya başvurunuz reddedilirse; cevabı öğrendiğiniz tarihten itibaren 30 gün ve her hâlde başvuru tarihinden itibaren 60 gün içinde Kişisel Verileri Koruma Kurulu’na şikâyette bulunabilirsiniz (KVKK m.14).
 
 ## İlgili sayfalar
 

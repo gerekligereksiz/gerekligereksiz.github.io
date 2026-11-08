@@ -1,6 +1,6 @@
 ---
 title: "Hakkımızda"
-description: "Gerekli Gereksiz nedir, neden kuruldu ve bu portalde neler bulunur?"
+description: "Gerekli Gereksiz nedir, neden kuruldu ve bu portalda neler bulunur?"
 date: 2026-10-21T12:00:00+03:00
 ---
 
@@ -15,7 +15,7 @@ date: 2026-10-21T12:00:00+03:00
 
 ## İlkeler
 
-Bu portalde dikkat edilen birkaç şey var:
+Bu portalda dikkat edilen birkaç şey var:
 
 **Kaynak belirtilir.** Sporcu başarıları ve istatistikler yalnızca kaynağı gösterilebilen bilgiden oluşur. Emin olunmayan bir bilgi yazılmaz.
 
