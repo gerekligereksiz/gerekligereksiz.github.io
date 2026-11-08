@@ -1,3 +1,16 @@
+{{ define "head" }}
+  {{- /* LCP görseli CSS'in (satır içi, ~81 KB) arkasında kalıyor: preload ile ilk baytlarda başlar.
+         Dosyalar main bloğundaki <picture> ile birebir aynı Process/Fill çağrılarından gelir. */ -}}
+  {{- with resources.Get "images/genel/hero-kolaj.webp" }}
+    {{- with .Fill "700x420 center webp q65" }}
+    <link rel="preload" as="image" href="{{ .RelPermalink }}" media="(max-width: 767px)" fetchpriority="high">
+    {{- end }}
+    {{- with .Process "resize 1200x webp q72" }}
+    <link rel="preload" as="image" href="{{ .RelPermalink }}" media="(min-width: 768px)" fetchpriority="high">
+    {{- end }}
+  {{- end }}
+{{ end }}
+
 {{ define "main" }}
   <main id="icerik" tabindex="-1" class="focus:outline-none">
     <section class="relative isolate mx-auto mt-3 max-w-[1200px] overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">

@@ -38,6 +38,9 @@
            inmeye başlar. Caveat preload edilmez (mobilde menüde görünmez). */ -}}
     <link rel="preload" href="{{ "fonts/inter-400-latin.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="{{ "fonts/inter-400-latin-ext.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+    {{- /* Sayfaya özel <head> kancası (ör. ana sayfada hero preload). CSS'ten önce gelir:
+           satır içi CSS büyük olduğu için preload'lar ilk baytlarda bulunmalı. */ -}}
+    {{ block "head" . }}{{ end }}
     {{ with (templates.Defer (dict "key" "global")) }}
       {{ partial "css.html" . }}
     {{ end }}
