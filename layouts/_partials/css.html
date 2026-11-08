@@ -1,3 +1,7 @@
+{{- /* Üretimde 100 KB'tan küçük (ham; gzip ≈ 13 KB) CSS <head> içine gömülür: render-blocking istek
+       (mobilde ek bir gidiş-dönüş) ortadan kalkar. CSP için scripts/csp.mjs
+       satır içi <style>'ı sha256 ile izinler. Büyürse otomatik <link>'e döner;
+       geliştirmede her zaman <link>. */ -}}
 {{ with resources.Get "css/main.css" }}
   {{ $opts := dict "minify" (not hugo.IsDevelopment) }}
   {{ with . | css.TailwindCSS $opts }}
@@ -5,7 +9,11 @@
       <link rel="stylesheet" href="{{ .RelPermalink }}">
     {{ else }}
       {{ with . | fingerprint }}
-        <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous">
+        {{ if lt (len .Content) 100000 }}
+          <style>{{ .Content | safeCSS }}</style>
+        {{ else }}
+          <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous">
+        {{ end }}
       {{ end }}
     {{ end }}
   {{ end }}

@@ -6,14 +6,14 @@
     {{- $img := resources.Get . }}
     {{- with $img }}
   <a href="{{ $p.RelPermalink }}" aria-hidden="true" tabindex="-1" class="block aspect-video w-full overflow-hidden bg-neutral-100 dark:bg-neutral-800">
-    {{- /* 320/480/640 genişlik; kart ~315px (lg), ~45vw (sm), tam genişlik (mobil). */ -}}
+    {{- /* 320-640 genişlik; kart ~315px (lg), ~45vw (sm), tam genişlik (mobil). */ -}}
     {{- $srcset := slice }}
-    {{- range slice 320 480 640 }}
-      {{- with $img.Process (printf "resize %dx webp q70 photo" .) }}
+    {{- range slice 320 400 480 560 640 }}
+      {{- with $img.Process (printf "resize %dx webp q65 photo" .) }}
         {{- $srcset = $srcset | append (printf "%s %dw" .RelPermalink .Width) }}
       {{- end }}
     {{- end }}
-    {{- with ($img.Process "resize 640x webp q70 photo") }}
+    {{- with ($img.Process "resize 640x webp q65 photo") }}
     <img src="{{ .RelPermalink }}" srcset="{{ delimit $srcset ", " }}" sizes="(min-width: 1024px) 315px, (min-width: 640px) 45vw, calc(100vw - 2rem)" width="{{ .Width }}" height="{{ .Height }}" alt="" loading="lazy" class="h-full w-full object-cover transition group-hover:scale-105">
     {{- end }}
   </a>

@@ -5,6 +5,8 @@ build:
 	@[ -d node_modules ] || npm install >/dev/null 2>&1
 	@out=$$(hugo --gc --minify 2>&1); rc=$$?; \
 	if [ $$rc -ne 0 ]; then echo "$$out" | tail -n 20; exit $$rc; fi; \
+	csp=$$(node scripts/csp.mjs 2>&1); rc=$$?; \
+	if [ $$rc -ne 0 ]; then echo "$$csp" | tail -n 20; exit $$rc; fi; \
 	echo OK; echo "$$out" | grep -iE 'warn|deprecat' | head -n 10 || true
 
 serve:

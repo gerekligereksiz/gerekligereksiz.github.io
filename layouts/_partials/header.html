@@ -3,10 +3,13 @@
     <a href="{{ site.Home.RelPermalink }}" class="flex h-full shrink-0 items-center overflow-hidden" aria-label="{{ site.Title }} ana sayfa">
       {{- $logo := resources.Get "images/logo_primary.webp" }}
       {{- with $logo }}
-        {{- /* Gösterilen yükseklik 64px (mobil) / 128px (lg): 1x = x128, 2x = x256. */ -}}
-        {{- $l1 := .Process "resize x128 webp q80" }}
-        {{- $l2 := .Process "resize x256 webp q80" }}
-      <img src="{{ $l1.RelPermalink }}" srcset="{{ $l1.RelPermalink }} 1x, {{ $l2.RelPermalink }} 2x" alt="{{ site.Title }}" class="h-full w-auto object-contain" width="{{ $l1.Width }}" height="{{ $l1.Height }}">
+        {{- /* Gösterilen yükseklik 64px (mobil) / 128px (lg). Yüksekliğe göre x64/x128/x256
+               üretilir (x130: mobilde 2x ekran için 93x2=186 px'i karşılayan ara boyut);
+               srcset `w` birimiyle, ekran yoğunluğuna göre tarayıcı seçer. */ -}}
+        {{- $l1 := .Process "resize x64 webp q80" }}
+        {{- $l2 := .Process "resize x130 webp q80" }}
+        {{- $l3 := .Process "resize x256 webp q80" }}
+      <img src="{{ $l2.RelPermalink }}" srcset="{{ $l1.RelPermalink }} {{ $l1.Width }}w, {{ $l2.RelPermalink }} {{ $l2.Width }}w, {{ $l3.RelPermalink }} {{ $l3.Width }}w" sizes="(min-width: 1024px) 185px, {{ $l1.Width }}px" alt="{{ site.Title }}" class="h-full w-auto object-contain" width="{{ $l1.Width }}" height="{{ $l1.Height }}">
       {{- else }}
       <span class="text-lg font-bold tracking-tight">Gerekli<span class="text-accent-700 dark:text-accent-400">Gereksiz</span></span>
       {{- end }}
